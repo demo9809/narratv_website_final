@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-black: #050505;
+  --brand-card: #111111;
+  --brand-gray: #F3F3F3;
+  --brand-accent: #f3795d;
+  --brand-cream: #F9F9F7;
+}
+
+body {
+  background-color: var(--brand-black);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-accent);
+}
+
+.logo-font {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.05em;
+}
+
+/* Rich Text Typography for SEO Content */
+.rich-text > * + * {
+  margin-top: 1.5em;
+}
+
+.rich-text h2 {
+  font-size: 1.875rem; /* 3xl */
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: #050505;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.rich-text h3 {
+  font-size: 1.5rem; /* 2xl */
+  line-height: 2rem;
+  font-weight: 700;
+  color: #050505;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.rich-text p {
+  font-size: 1.125rem; /* lg */
+  line-height: 1.75rem;
+  color: #4B5563; /* gray-600 */
+}
+
+.rich-text ul {
+  list-style-type: disc;
+  padding-left: 1.625rem;
+  color: #4B5563;
+}
+
+.rich-text ol {
+  list-style-type: decimal;
+  padding-left: 1.625rem;
+  color: #4B5563;
+}
+
+.rich-text li {
+  margin-top: 0.5rem;
+  font-size: 1.125rem;
+}
+
+.rich-text strong {
+  color: #050505;
+  font-weight: 700;
+}
+
+.rich-text blockquote {
+  border-left-width: 4px;
+  border-color: var(--brand-accent);
+  padding-left: 1rem;
+  font-style: italic;
+  color: #374151;
+  background-color: var(--brand-cream);
+  padding: 1.5rem;
+  border-radius: 0.125rem;
+}
+
+.rich-text a {
+  color: var(--brand-accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.rich-text .lead {
+  font-size: 1.25rem;
+  line-height: 2rem;
+  color: #1F2937;
+  font-weight: 500;
+}

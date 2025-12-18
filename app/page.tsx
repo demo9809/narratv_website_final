@@ -407,69 +407,73 @@ const Home: React.FC = () => {
         </div>
       </Section>
 
-      {/* 5. METHODOLOGY */}
-      <Section className="bg-white py-32 overflow-hidden">
-        <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+      {/* 5. STRATEGIC PROCESS (Premium Dark Mode) */}
+      <section className="bg-brand-black py-32 relative overflow-hidden text-white">
+        {/* Background Texture */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
           <div className="text-center mb-24">
-            <h2 className="text-5xl md:text-6xl font-bold text-brand-black mb-6 tracking-tight">Our Methodology</h2>
-            <p className="text-xl text-gray-500 max-w-2xl mx-auto">How we move from chaos to clarity.</p>
+            <h2 className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-6 inline-flex items-center gap-2">
+              <span className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span> Our Process
+            </h2>
+            <h3 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.9]">
+              From Chaos to <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-200 to-gray-500">Clarity.</span>
+            </h3>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light">
+              We don't guess. We engineer brands for impact using a battle-tested framework.
+            </p>
           </div>
 
-          <div className="relative">
-            {/* Vertical Line */}
-            <div className="absolute left-[19px] md:left-1/2 top-0 bottom-0 w-[1px] bg-gray-200 md:-translate-x-1/2" />
-
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
-              { title: "Audit", desc: "We assess your current metrics, sales data, and brand perception to establish a baseline." },
-              { title: "Analyze", desc: "We look outward at the market, competitors, and cultural trends impacting your sector." },
-              { title: "Synthesize", desc: "We combine internal truths with external realities to form a unique strategic position." },
-              { title: "Roadmap", desc: "We deliver a phased plan of action for creative and marketing execution." }
-            ].map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="relative flex flex-col md:flex-row items-center mb-24 last:mb-0"
-              >
-
-                {/* Left Box (Desktop) */}
-                <div className={`hidden md:block w-1/2 px-12 ${idx % 2 === 0 ? 'text-right' : 'opacity-0'}`}>
-                  {idx % 2 === 0 && (
-                    <div className="group">
-                      <h3 className="text-3xl font-bold mb-4 group-hover:text-brand-accent transition-colors duration-300">{step.title}</h3>
-                      <p className="text-xl text-gray-600 leading-relaxed">{step.desc}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Center Dot */}
-                <div className="absolute left-0 md:left-1/2 w-10 h-10 flex items-center justify-center md:-translate-x-1/2 z-10">
-                  <div className="w-4 h-4 bg-white border-[3px] border-brand-black rounded-full shadow-[0_0_0_4px_white] group-hover:scale-125 transition-transform duration-300" />
-                </div>
-
-                {/* Right Box (Desktop) */}
-                <div className={`hidden md:block w-1/2 px-12 ${idx % 2 !== 0 ? 'text-left' : 'opacity-0'}`}>
-                  {idx % 2 !== 0 && (
-                    <div className="group">
-                      <h3 className="text-3xl font-bold mb-4 group-hover:text-brand-accent transition-colors duration-300">{step.title}</h3>
-                      <p className="text-xl text-gray-600 leading-relaxed">{step.desc}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Mobile Content */}
-                <div className="md:hidden pl-12 w-full pt-1">
-                  <h3 className="text-2xl font-bold mb-2">{step.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{step.desc}</p>
-                </div>
-
-              </motion.div>
+              { step: "01", title: "Discovery", desc: "We audit your brand, analyze competitors, and uncover the raw truths that define your market position." },
+              { step: "02", title: "Strategy", desc: "We synthesize data into a roadmap. No fluff, just a clear plan of action for creative dominance." },
+              { step: "03", title: "Creation", desc: "Our design and content teams build the assets—visual identity, campaigns, and digital experiences." },
+              { step: "04", title: "Scale", desc: "We launch and optimize. Using performance data to refine the message and maximize ROI." }
+            ].map((item, idx) => (
+              <div key={idx} className="group relative p-8 border border-white/10 bg-white/5 backdrop-blur-sm rounded-lg hover:bg-white/10 transition-all duration-500">
+                <div className="text-6xl font-black text-white/5 absolute top-4 right-4 group-hover:text-brand-accent/20 transition-colors duration-500">{item.step}</div>
+                <h4 className="text-2xl font-bold mb-4 text-white group-hover:text-brand-accent transition-colors">{item.title}</h4>
+                <p className="text-gray-400 leading-relaxed text-sm">{item.desc}</p>
+                <div className="w-full h-[1px] bg-gradient-to-r from-brand-accent/50 to-transparent mt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
             ))}
           </div>
         </div>
-      </Section>
+      </section>
+
+      {/* 6. FAQ SECTION (SEO Rich) */}
+      <section className="bg-brand-cream py-32">
+        <div className="container mx-auto px-6 md:px-12 max-w-4xl">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-brand-black mb-6 tracking-tight">Frequently Asked Questions</h2>
+            <p className="text-lg text-gray-600">Answers to common questions about our services and approach.</p>
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {[
+              { q: "Why choose Narratv Space over other branding agencies in Kerala?", a: "Narratv Space combines local cultural understanding with global design standards. Unlike traditional agencies, we prioritize strategy before aesthetics, ensuring your brand isn't just beautiful, but built for business growth." },
+              { q: "Do you work with businesses outside of India?", a: "Yes. Approximately 40% of our portfolio consists of international clients in Dubai, London, and Qatar. We are fully equipped to handle cross-border branding and digital campaigns remotely." },
+              { q: "What is your typical timeline for a rebranding project?", a: "A comprehensive rebranding project typically takes 4-8 weeks. This includes the Discovery phase, Strategy development, Visual Identity creation, and Brand Guidelines delivery. Timelines vary based on scope." },
+              { q: "Do you offer performance marketing services?", a: "Yes. We don't just create assets; we distribute them. Our digital marketing team specializes in high-ROI campaigns across Meta (Instagram/Facebook), Google Ads, and LinkedIn, focusing on lead generation and sales." },
+              { q: "How much does a branding project cost?", a: "We build custom packages based on your specific goals and scale. We work with startups looking for foundational identity as well as established enterprises seeking complete market repositioning. Contact us for a tailored proposal." }
+            ].map((faq, idx) => (
+              <details key={idx} className="group bg-white border border-gray-200 rounded-lg open:shadow-lg open:border-brand-accent/30 transition-all duration-300">
+                <summary className="flex items-center justify-between p-6 cursor-pointer font-bold text-lg text-brand-black list-none">
+                  <span>{faq.q}</span>
+                  <span className="transform group-open:rotate-180 transition-transform duration-300 text-brand-accent">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </span>
+                </summary>
+                <div className="px-6 pb-6 text-gray-600 leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 };

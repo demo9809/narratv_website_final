@@ -3,16 +3,20 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Phone, MessageCircle, Headphones } from 'lucide-react';
 import { NAV_LINKS } from '../constants';
 import { CONTACT_DETAILS } from '../types';
 import { Button } from './ui';
 import PortfolioRequestModal from './PortfolioRequestModal';
+import CallbackRequestModal from './CallbackRequestModal';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
+  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
+  const [isCallPopoverOpen, setIsCallPopoverOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -85,14 +89,35 @@ const Navbar: React.FC = () => {
             </Link>
           </nav>
 
-          {/* Mobile Toggle */}
-          <button
-            className="md:hidden z-50 relative text-white hover:text-brand-accent transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle Menu"
-          >
-            {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
-          </button>
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-4 md:hidden">
+            {/* WhatsApp */}
+            <a
+              href={`https://wa.me/${CONTACT_DETAILS.whatsapp.replace(/[^0-9]/g, '')}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-white hover:text-brand-accent transition-colors"
+            >
+              <MessageCircle className="w-6 h-6" />
+            </a>
+
+            {/* Call Toggle */}
+            <button
+              onClick={() => setIsCallPopoverOpen(!isCallPopoverOpen)}
+              className={`transition-colors ${isCallPopoverOpen ? 'text-brand-accent' : 'text-white hover:text-brand-accent'}`}
+            >
+              <Phone className="w-6 h-6" />
+            </button>
+
+            {/* Hamburger */}
+            <button
+              className="z-50 relative text-white hover:text-brand-accent transition-colors ml-2"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle Menu"
+            >
+              {isOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -126,6 +151,46 @@ const Navbar: React.FC = () => {
         isOpen={isPortfolioModalOpen}
         onClose={() => setIsPortfolioModalOpen(false)}
       />
+
+      <CallbackRequestModal
+        isOpen={isCallbackModalOpen}
+        onClose={() => setIsCallbackModalOpen(false)}
+      />
+
+      {/* Call Popover Logic */}
+      <AnimatePresence>
+        {isCallPopoverOpen && (
+          <>
+            <div className="fixed inset-0 z-[45]" onClick={() => setIsCallPopoverOpen(false)}></div>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="fixed top-20 right-4 z-[50] bg-white text-brand-black p-4 rounded-lg shadow-2xl w-80 md:hidden border border-gray-100"
+            >
+              <div className="mb-4">
+                <h4 className="font-bold text-lg mb-1">Talk to a sales advisor</h4>
+                <p className="text-gray-500 text-xs mb-3">Available 9am - 6pm IST</p>
+                <a href={`tel:${CONTACT_DETAILS.phone}`} className="flex items-center gap-2 text-brand-accent font-bold text-lg hover:underline">
+                  <Phone className="w-5 h-5" />
+                  {CONTACT_DETAILS.phone}
+                </a>
+              </div>
+
+              <div className="bg-gray-50 p-3 rounded-md border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => { setIsCallPopoverOpen(false); setIsCallbackModalOpen(true); }}>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2 font-bold text-sm">
+                    <Headphones className="w-4 h-4" />
+                    Request a call back
+                  </div>
+                  <span className="text-gray-400 text-xs">&rarr;</span>
+                </div>
+                <p className="text-gray-500 text-xs">Call backs typically happen in a few minutes.</p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };

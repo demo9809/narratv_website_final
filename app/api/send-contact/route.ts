@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
         const telegramMessage = `
 🚀 *New Inquiry Received*
-*Type:* ${formType === 'project' ? 'Start a Project' : 'General Inquiry'}
+*Type:* ${formType === 'project' ? 'Start a Project' : formType === 'callback' ? 'Request a Call Back' : 'General Inquiry'}
 *Name:* ${name}
 *Email:* ${email}
 ${formType === 'project' ? `*Phone:* ${body.phone || 'N/A'}\n*Company:* ${body.company || 'N/A'}\n*Budget:* ${body.budget || 'N/A'}\n*Services:* ${body.services?.join(', ') || 'N/A'}` : `*Phone:* ${phone || 'N/A'}`}

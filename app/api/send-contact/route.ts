@@ -8,43 +8,31 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, formType } = body;
 
-    // Validate required fields to prevent early failures
     if (!name || !email) {
         return NextResponse.json({ errors: [{ error: 'Name and Email are required' }] }, { status: 400 });
     }
 
-    // Helper to sanitize error objects for JSON response
     const sanitizeError = (err: any) => {
         if (err instanceof Error) return err.message;
         if (typeof err === 'object') return JSON.stringify(err, Object.getOwnPropertyNames(err));
         return String(err);
     };
 
-    // Prepare Tasks
-    const sendEmail = async () => {
-        try {
-            await resend.emails.send({
-                from: 'Narratv Space Website <access@updates.narratv.space>',
-                to: ['labeeb@narratv.space'],
-                replyTo: email,
-                subject: `New Inquiry: ${name} (${formType === 'project' ? 'Project' : 'General'})`,
-                react: ContactFormEmail(body),
-            });
-            return { status: 'fulfilled', type: 'email' };
-        } catch (error) {
-            console.error('Email sending failed:', error);
-            throw { type: 'email', error: sanitizeError(error) };
-        }
+    const results = {
+        telegram: 'skipped',
+        email: 'skipped',
+        errors: [] as any[]
     };
 
-    const sendTelegram = async () => {
-        try {
-            const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
-            const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
+    // 1. PRIORITY: Send Telegram Notification
+    try {
+        // Fallback credentials are meant for debug/test if env vars missing
+        const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
+        const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
 
-            if (!telegramToken || !telegramChatId) throw new Error('Missing Telegram credentials');
+        if (!telegramToken || !telegramChatId) throw new Error('Missing Telegram credentials');
 
-            const telegramMessage = `
+        const telegramMessage = `
 🚀 *New Inquiry Received*
 *Type:* ${formType === 'project' ? 'Start a Project' : 'General Inquiry'}
 *Name:* ${name}
@@ -52,62 +40,62 @@ export async function POST(request: Request) {
 ${formType === 'project' ? `*Phone:* ${body.phone || 'N/A'}\n*Company:* ${body.company || 'N/A'}\n*Budget:* ${body.budget || 'N/A'}\n*Services:* ${body.services?.join(', ') || 'N/A'}` : ''}
 *Message:*
 ${body.message}
-            `;
+        `;
 
-            const tgResponse = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: telegramChatId,
-                    text: telegramMessage,
-                    parse_mode: 'Markdown',
-                }),
-            });
+        const tgResponse = await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: telegramChatId,
+                text: telegramMessage,
+                parse_mode: 'Markdown',
+            }),
+        });
 
-            if (!tgResponse.ok) {
-                const text = await tgResponse.text();
-                throw new Error(`Telegram API Error: ${text}`);
-            }
-            return { status: 'fulfilled', type: 'telegram' };
-        } catch (error) {
-            console.error('Telegram sending failed:', error);
-            throw { type: 'telegram', error: sanitizeError(error) };
+        if (!tgResponse.ok) {
+            const text = await tgResponse.text();
+            throw new Error(`Telegram API Error: ${text}`);
         }
-    };
-
-    // Execute in Parallel with Timeout (8 seconds) to prevent Vercel 504
-    const formatTimeout = (ms: number) => new Promise((resolve) => setTimeout(() => resolve({ status: 'rejected', reason: 'Timeout' }), ms));
-
-    const results = await Promise.race([
-        Promise.allSettled([sendEmail(), sendTelegram()]),
-        new Promise<any[]>((resolve) =>
-            setTimeout(() => resolve([{ status: 'rejected', reason: 'API Timeout' }, { status: 'rejected', reason: 'API Timeout' }]), 8000)
-        )
-    ]);
-
-    // Process Results
-    const responseData = {
-        email: 'skipped',
-        telegram: 'skipped',
-        errors: [] as any[]
-    };
-
-    results.forEach((result, index) => {
-        const type = index === 0 ? 'email' : 'telegram';
-        if (result.status === 'fulfilled') {
-            // @ts-ignore
-            responseData[type] = 'sent';
-        } else {
-            // @ts-ignore
-            responseData[type] = 'failed';
-            responseData.errors.push(result.reason);
-        }
-    });
-
-    // Return success if at least one succeeded
-    if (responseData.email === 'failed' && responseData.telegram === 'failed') {
-        return NextResponse.json(responseData, { status: 500 });
+        results.telegram = 'sent';
+    } catch (error) {
+        console.error('Telegram sending failed:', error);
+        results.telegram = 'failed';
+        results.errors.push({ type: 'telegram', error: sanitizeError(error) });
     }
 
-    return NextResponse.json(responseData);
+    // 2. SECONDARY: Send Email (Fire & Forget style with timeout)
+    // Only attempt email if we haven't crashed yet.
+    try {
+        const sendEmailPromise = resend.emails.send({
+            from: 'Narratv Space Website <access@updates.narratv.space>',
+            to: ['labeeb@narratv.space'],
+            replyTo: email,
+            subject: `New Inquiry: ${name} (${formType === 'project' ? 'Project' : 'General'})`,
+            react: ContactFormEmail(body),
+        });
+
+        // Race against a 3s timeout so we don't block the user response
+        await Promise.race([
+            sendEmailPromise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Email Timeout')), 3000))
+        ]);
+
+        results.email = 'sent';
+    } catch (error) {
+        console.error('Email sending failed (or timed out):', error);
+        results.email = 'failed';
+        // We do NOT add this to results.errors if Telegram succeeded, to avoid scaring the user.
+        if (results.telegram !== 'sent') {
+            results.errors.push({ type: 'email', error: sanitizeError(error) });
+        }
+    }
+
+    // DECISION: If Telegram worked, we return 200 OK. 
+    // We only fail if BOTH fail.
+    if (results.telegram === 'failed' && results.email === 'failed') {
+        const msg = results.errors.map(e => e.error).join(', ');
+        return NextResponse.json({ error: `All notifications failed: ${msg}` }, { status: 500 });
+    }
+
+    return NextResponse.json(results);
 }

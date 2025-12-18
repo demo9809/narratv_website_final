@@ -19,15 +19,42 @@ export async function POST(request: Request) {
         // Safest bet: Send to 'access@updates.narratv.space' (which is verified) and maybe BCC the gmail?
         // Let's stick to the verified domain for TO field for now to ensure delivery.
 
-        const data = await resend.emails.send({
+        // 1. Send Email Notification to Admin & User
+        const emailData = await resend.emails.send({
             from: 'Narratv Space Website <access@updates.narratv.space>',
-            to: ['narratvthoughts@gmail.com'], // Notification to admin
-            reply_to: email, // Reply to the user directly
+            to: ['labeeb@narratv.space'], // Admin Email
+            reply_to: email, // Reply to the user
             subject: `New Inquiry: ${name} (${formType === 'project' ? 'Project' : 'General'})`,
             react: ContactFormEmail(body),
         });
 
-        return NextResponse.json(data);
+        // 2. Send Telegram Notification
+        const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+        const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+
+        if (telegramToken && telegramChatId) {
+            const telegramMessage = `
+🚀 *New Inquiry Received*
+*Type:* ${formType === 'project' ? 'Start a Project' : 'General Inquiry'}
+*Name:* ${name}
+*Email:* ${email}
+${formType === 'project' ? `*Phone:* ${body.phone || 'N/A'}\n*Company:* ${body.company || 'N/A'}\n*Budget:* ${body.budget || 'N/A'}\n*Services:* ${body.services?.join(', ') || 'N/A'}` : ''}
+*Message:*
+${body.message}
+            `;
+
+            await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: telegramChatId,
+                    text: telegramMessage,
+                    parse_mode: 'Markdown',
+                }),
+            });
+        }
+
+        return NextResponse.json(emailData);
     } catch (error) {
         return NextResponse.json({ error });
     }

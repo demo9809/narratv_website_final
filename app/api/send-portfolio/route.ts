@@ -16,6 +16,36 @@ export async function POST(request: Request) {
             react: PortfolioAccessEmail({ name }),
         });
 
+        // Notify Admin via Email (Optional, but good for records)
+        await resend.emails.send({
+            from: 'Narratv Space Website <access@updates.narratv.space>',
+            to: ['labeeb@narratv.space'],
+            subject: `Portfolio Access Requested: ${name}`,
+            text: `Name: ${name}\nEmail: ${email}\n\nThey have been sent the access link.`,
+        });
+
+        // Notify Admin via Telegram
+        const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+        const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+
+        if (telegramToken && telegramChatId) {
+            const telegramMessage = `
+🔐 *Portfolio Access Requested*
+*Name:* ${name}
+*Email:* ${email}
+            `;
+
+            await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: telegramChatId,
+                    text: telegramMessage,
+                    parse_mode: 'Markdown',
+                }),
+            });
+        }
+
         return NextResponse.json(data);
     } catch (error) {
         return NextResponse.json({ error });

@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // output: 'export', // Disabled to allow API routes (SSR/Serverless)
   images: {
     unoptimized: true,
     remotePatterns: [

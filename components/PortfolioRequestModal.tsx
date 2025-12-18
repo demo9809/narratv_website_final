@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, CheckCircle, Phone } from 'lucide-react';
 import { Button } from './ui';
+import { COUNTRY_CODES } from '../constants/countries';
+
 
 
 interface PortfolioRequestModalProps {
@@ -24,15 +26,6 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [countdown, setCountdown] = useState(4);
-
-    const COUNTRY_CODES = [
-        { code: '+91', country: 'IN' },
-        { code: '+971', country: 'AE' },
-        { code: '+44', country: 'UK' },
-        { code: '+1', country: 'US' },
-        { code: '+974', country: 'QA' },
-        { code: '+966', country: 'SA' },
-    ];
 
 
 
@@ -198,11 +191,11 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
                                                 <select
                                                     value={countryCode}
                                                     onChange={(e) => setCountryCode(e.target.value)}
-                                                    className="appearance-none h-full pl-3 pr-8 bg-gray-50 border border-gray-200 border-r-0 rounded-l-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm font-medium text-gray-600 cursor-pointer"
+                                                    className="appearance-none h-full pl-3 pr-8 bg-gray-50 border border-gray-200 border-r-0 rounded-l-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm font-medium text-gray-900 cursor-pointer min-w-[100px]"
                                                 >
-                                                    {COUNTRY_CODES.map((c) => (
-                                                        <option key={c.code} value={c.code}>
-                                                            {c.country} ({c.code})
+                                                    {COUNTRY_CODES.map((c, i) => (
+                                                        <option key={`${c.country}-${i}`} value={c.code}>
+                                                            {c.flag} {c.country} ({c.code})
                                                         </option>
                                                     ))}
                                                 </select>

@@ -5,6 +5,8 @@ import React, { useState } from 'react';
 import { Section, Button } from '../../components/ui';
 import { Mail, MapPin, Phone, CheckCircle, AlertCircle } from 'lucide-react';
 import { CONTACT_DETAILS } from '../../types';
+import { COUNTRY_CODES } from '../../constants/countries';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Contact: React.FC = () => {

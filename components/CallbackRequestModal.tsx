@@ -89,11 +89,13 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                         initial={{ scale: 0.95, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                        className="relative bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl z-10 overflow-hidden"
+                        className="relative bg-[#0a0a0a] border border-white/10 w-full max-w-md p-8 rounded-2xl shadow-2xl z-10 overflow-hidden"
                     >
+                        {/* Background Decor */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+                        <div className="absolute bottom-0 left-0 w-40 h-40 bg-brand-accent/5 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none" />
                         <button
-                            onClick={onClose}
-                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors z-20"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -107,27 +109,27 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                 >
                                     <CheckCircle className="w-10 h-10" />
                                 </motion.div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3">Request Received</h3>
-                                <p className="text-gray-500 max-w-xs mx-auto mb-8 font-light">
+                                <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Request Received</h3>
+                                <p className="text-gray-400 max-w-xs mx-auto mb-8 font-light leading-relaxed">
                                     We'll call you back shortly.
                                 </p>
                             </div>
                         ) : (
-                            <div>
-                                <div className="mb-6">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Clock className="w-5 h-5 text-brand-accent" />
+                            <div className="relative z-10">
+                                <div className="mb-8">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-1 h-4 bg-brand-accent rounded-full"></div>
                                         <span className="text-brand-accent font-bold text-xs tracking-widest uppercase">Quick Response</span>
                                     </div>
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Request a Call Back</h3>
-                                    <p className="text-gray-500 text-sm">
+                                    <h3 className="text-3xl font-bold text-white mb-3 tracking-tight">Request a Call</h3>
+                                    <p className="text-gray-400 text-sm leading-relaxed">
                                         Enter your details and our team will contact you within a few minutes.
                                     </p>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    <div>
-                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                                <form onSubmit={handleSubmit} className="space-y-5">
+                                    <div className="space-y-1">
+                                        <label htmlFor="name" className="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
                                             Name
                                         </label>
                                         <input
@@ -136,13 +138,13 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                             required
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
-                                            placeholder="Your Name"
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-brand-black"
+                                            placeholder="John Doe"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600"
                                         />
                                     </div>
 
-                                    <div>
-                                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <div className="space-y-1">
+                                        <label htmlFor="phone" className="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
                                             Phone Number
                                         </label>
                                         <div className="relative flex">
@@ -150,14 +152,18 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                                 <select
                                                     value={countryCode}
                                                     onChange={(e) => setCountryCode(e.target.value)}
-                                                    className="appearance-none h-full pl-3 pr-8 bg-gray-50 border border-gray-200 border-r-0 rounded-l-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm font-medium text-gray-900 cursor-pointer min-w-[100px]"
+                                                    className="appearance-none h-full pl-3 pr-8 bg-white/5 border border-white/10 border-r-0 rounded-l-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-sm font-bold text-white cursor-pointer min-w-[100px]"
                                                 >
                                                     {COUNTRY_CODES.map((c, i) => (
-                                                        <option key={`${c.country}-${i}`} value={c.code}>
+                                                        <option key={`${c.country}-${i}`} value={c.code} className="bg-gray-900 text-white">
                                                             {c.flag} {c.country} ({c.code})
                                                         </option>
                                                     ))}
                                                 </select>
+                                                {/* Custom Arrow */}
+                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                                    <svg className="fill-current h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                                </div>
                                             </div>
                                             <div className="relative flex-1">
                                                 <input
@@ -167,35 +173,36 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                                     value={phone}
                                                     onChange={(e) => setPhone(e.target.value)}
                                                     placeholder="98765 43210"
-                                                    className="w-full pl-4 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-r-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-brand-black"
+                                                    className="w-full pl-4 pr-4 py-3 bg-white/5 border border-white/10 rounded-r-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600"
                                                 />
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                    <div className="space-y-1">
+                                        <label htmlFor="email" className="block text-xs font-bold text-gray-500 uppercase tracking-wider ml-1">
                                             Email (Optional)
                                         </label>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
                                             <input
                                                 type="email"
                                                 id="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 placeholder="you@company.com"
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-brand-black"
+                                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600"
                                             />
                                         </div>
                                     </div>
 
                                     <Button
                                         variant="primary"
-                                        mode="dark"
+                                        mode="light"
                                         disabled={loading}
                                         type="submit"
-                                        className="w-full justify-center py-3 !bg-brand-accent !text-white !border-brand-accent hover:!bg-brand-accent/90"
+                                        className="w-full justify-center py-4 text-lg font-bold mt-2"
+                                        icon
                                     >
                                         {loading ? 'Sending Request...' : 'Call Me Back'}
                                     </Button>

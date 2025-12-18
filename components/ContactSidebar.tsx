@@ -93,14 +93,17 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 z-[70] h-full w-full max-w-md bg-white shadow-2xl flex flex-col overflow-y-auto"
+                        className="fixed top-0 right-0 z-[70] h-full w-full max-w-md bg-[#0a0a0a] border-l border-white/10 shadow-2xl flex flex-col overflow-y-auto"
                     >
                         {/* Header */}
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
-                            <h2 className="text-xl font-bold text-gray-900 tracking-tight">Contact Us</h2>
+                        <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
+                            <div className="flex items-center gap-3">
+                                <div className="w-1.5 h-6 bg-brand-accent rounded-sm"></div>
+                                <h2 className="text-xl font-bold text-white tracking-tight">Contact Us</h2>
+                            </div>
                             <button
                                 onClick={onClose}
-                                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all"
+                                className="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -109,49 +112,47 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                         {/* Content */}
                         <div className="p-8 flex-1">
                             {/* Direct Contact Section */}
-                            <div className="mb-10">
-                                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Speak to a Strategist</h3>
+                            <div className="mb-12">
+                                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Speak to a Strategist</h3>
                                 <a
                                     href={`tel:${CONTACT_DETAILS.phone}`}
-                                    className="flex items-center gap-4 text-3xl md:text-4xl font-black text-brand-black hover:text-brand-accent transition-colors mb-2 tracking-tighter"
+                                    className="flex items-center gap-4 text-3xl md:text-3xl font-black text-white hover:text-brand-accent transition-colors mb-3 tracking-tighter"
                                 >
                                     {CONTACT_DETAILS.phone}
                                 </a>
-                                <p className="text-gray-500 font-medium">Available 9am - 6pm IST</p>
+                                <p className="text-gray-500 text-sm font-medium flex items-center gap-2">
+                                    <Clock className="w-4 h-4" /> Available 9am - 6pm IST
+                                </p>
                             </div>
 
-                            <div className="w-full h-px bg-gray-100 mb-10"></div>
+                            <div className="w-full h-px bg-white/10 mb-10"></div>
 
                             {/* Callback Form */}
                             <div className="relative">
                                 {submitted ? (
-                                    <div className="text-center py-10 bg-green-50 rounded-2xl border border-green-100">
+                                    <div className="text-center py-10 bg-green-500/10 rounded-2xl border border-green-500/20">
                                         <motion.div
                                             initial={{ scale: 0 }}
                                             animate={{ scale: 1 }}
-                                            className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4"
+                                            className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
                                         >
                                             <CheckCircle className="w-8 h-8" />
                                         </motion.div>
-                                        <h3 className="text-xl font-bold text-gray-900 mb-2">Request Received</h3>
-                                        <p className="text-gray-600 px-4">
+                                        <h3 className="text-xl font-bold text-white mb-2">Request Received</h3>
+                                        <p className="text-gray-400 px-4">
                                             We'll call you back shortly.
                                         </p>
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="mb-6">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Clock className="w-4 h-4 text-brand-accent" />
-                                                <span className="text-brand-accent font-bold text-xs tracking-widest uppercase">Quick Call Back</span>
-                                            </div>
-                                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Request a Call</h3>
-                                            <p className="text-gray-500 text-sm leading-relaxed">
+                                        <div className="mb-8">
+                                            <h3 className="text-xl font-bold text-white mb-2">Request a Call</h3>
+                                            <p className="text-gray-400 text-sm leading-relaxed">
                                                 Prefer us to call you? Enter your details and we'll be in touch within minutes.
                                             </p>
                                         </div>
 
-                                        <form onSubmit={handleSubmit} className="space-y-4">
+                                        <form onSubmit={handleSubmit} className="space-y-6">
                                             <div className="group">
                                                 <input
                                                     type="text"
@@ -159,19 +160,19 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                                                     value={name}
                                                     onChange={(e) => setName(e.target.value)}
                                                     placeholder="Your Name"
-                                                    className="w-full px-0 py-3 bg-transparent border-b border-gray-200 focus:border-brand-accent outline-none transition-all text-brand-black placeholder-gray-400 font-medium"
+                                                    className="w-full px-0 py-3 bg-transparent border-b border-gray-700 focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600 font-medium text-lg"
                                                 />
                                             </div>
 
-                                            <div className="group flex gap-3">
-                                                <div className="w-24 border-b border-gray-200">
+                                            <div className="group flex gap-4">
+                                                <div className="w-24 border-b border-gray-700">
                                                     <select
                                                         value={countryCode}
                                                         onChange={(e) => setCountryCode(e.target.value)}
-                                                        className="w-full h-full bg-transparent border-none outline-none text-sm font-bold text-gray-900 cursor-pointer appearance-none py-3"
+                                                        className="w-full h-full bg-transparent border-none outline-none text-base font-bold text-white cursor-pointer appearance-none py-3"
                                                     >
                                                         {COUNTRY_CODES.map((c, i) => (
-                                                            <option key={`${c.country}-${i}`} value={c.code}>
+                                                            <option key={`${c.country}-${i}`} value={c.code} className="bg-gray-900">
                                                                 {c.flag} {c.code}
                                                             </option>
                                                         ))}
@@ -183,7 +184,7 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                                                     value={phone}
                                                     onChange={(e) => setPhone(e.target.value)}
                                                     placeholder="Phone Number"
-                                                    className="flex-1 px-0 py-3 bg-transparent border-b border-gray-200 focus:border-brand-accent outline-none transition-all text-brand-black placeholder-gray-400 font-medium"
+                                                    className="flex-1 px-0 py-3 bg-transparent border-b border-gray-700 focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600 font-medium text-lg"
                                                 />
                                             </div>
 
@@ -193,22 +194,23 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                                                     value={email}
                                                     onChange={(e) => setEmail(e.target.value)}
                                                     placeholder="Business Email (Optional)"
-                                                    className="w-full px-0 py-3 bg-transparent border-b border-gray-200 focus:border-brand-accent outline-none transition-all text-brand-black placeholder-gray-400 font-medium"
+                                                    className="w-full px-0 py-3 bg-transparent border-b border-gray-700 focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600 font-medium text-lg"
                                                 />
                                             </div>
 
                                             <div className="pt-4">
                                                 <Button
                                                     variant="primary"
-                                                    mode="dark"
+                                                    mode="light"
                                                     disabled={loading}
                                                     type="submit"
-                                                    className="w-full justify-center py-4 !bg-brand-black !text-white hover:!bg-brand-accent transition-colors flex items-center gap-2 group"
+                                                    className="w-full justify-center py-4 transition-colors flex items-center gap-2 group text-base"
                                                 >
                                                     {loading ? 'Sending Request...' : 'Call Me Now'}
                                                     {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
                                                 </Button>
                                             </div>
+
 
                                             {error && (
                                                 <div className="bg-red-50 text-red-600 text-xs p-3 rounded text-center font-medium">
@@ -222,8 +224,8 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                         </div>
 
                         {/* Footer */}
-                        <div className="p-6 bg-gray-50 border-t border-gray-200">
-                            <a href={`mailto:${CONTACT_DETAILS.email}`} className="flex items-center gap-3 text-gray-500 hover:text-brand-black transition-colors text-sm font-medium">
+                        <div className="p-6 bg-white/5 border-t border-white/10">
+                            <a href={`mailto:${CONTACT_DETAILS.email}`} className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors text-sm font-medium">
                                 <Mail className="w-4 h-4" />
                                 {CONTACT_DETAILS.email}
                             </a>

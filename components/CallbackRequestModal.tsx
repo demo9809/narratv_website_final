@@ -89,13 +89,12 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                         initial={{ scale: 0.95, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                        className="relative bg-[#0a0a0a] border border-white/10 w-full max-w-md p-8 rounded-2xl shadow-2xl z-10 overflow-hidden"
+                        className="relative bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl z-10 overflow-hidden"
                     >
                         {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-brand-accent/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
-                        <div className="absolute bottom-0 left-0 w-40 h-40 bg-brand-accent/5 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
                         <button
-                            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors z-20"
+                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors z-20"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -109,8 +108,8 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                 >
                                     <CheckCircle className="w-10 h-10" />
                                 </motion.div>
-                                <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Request Received</h3>
-                                <p className="text-gray-400 max-w-xs mx-auto mb-8 font-light leading-relaxed">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 tracking-tight">Request Received</h3>
+                                <p className="text-gray-500 max-w-xs mx-auto mb-8 font-light leading-relaxed">
                                     We'll call you back shortly.
                                 </p>
                             </div>
@@ -121,8 +120,8 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                         <div className="w-1 h-4 bg-brand-accent rounded-full"></div>
                                         <span className="text-brand-accent font-bold text-xs tracking-widest uppercase">Quick Response</span>
                                     </div>
-                                    <h3 className="text-3xl font-bold text-white mb-3 tracking-tight">Request a Call</h3>
-                                    <p className="text-gray-400 text-sm leading-relaxed">
+                                    <h3 className="text-3xl font-bold text-gray-900 mb-3 tracking-tight">Request a Call</h3>
+                                    <p className="text-gray-500 text-sm leading-relaxed">
                                         Enter your details and our team will contact you within a few minutes.
                                     </p>
                                 </div>
@@ -139,7 +138,7 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
                                             placeholder="John Doe"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
                                         />
                                     </div>
 
@@ -152,10 +151,10 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                                 <select
                                                     value={countryCode}
                                                     onChange={(e) => setCountryCode(e.target.value)}
-                                                    className="appearance-none h-full pl-3 pr-8 bg-white/5 border border-white/10 border-r-0 rounded-l-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-sm font-bold text-white cursor-pointer min-w-[100px]"
+                                                    className="appearance-none h-full pl-3 pr-8 bg-gray-50 border border-gray-200 border-r-0 rounded-l-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm font-bold text-gray-900 cursor-pointer min-w-[100px]"
                                                 >
                                                     {COUNTRY_CODES.map((c, i) => (
-                                                        <option key={`${c.country}-${i}`} value={c.code} className="bg-gray-900 text-white">
+                                                        <option key={`${c.country}-${i}`} value={c.code} className="text-gray-900">
                                                             {c.flag} {c.country} ({c.code})
                                                         </option>
                                                     ))}
@@ -173,7 +172,7 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                                     value={phone}
                                                     onChange={(e) => setPhone(e.target.value)}
                                                     placeholder="98765 43210"
-                                                    className="w-full pl-4 pr-4 py-3 bg-white/5 border border-white/10 rounded-r-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600"
+                                                    className="w-full pl-4 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-r-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
                                                 />
                                             </div>
                                         </div>
@@ -184,24 +183,24 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                             Email (Optional)
                                         </label>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                             <input
                                                 type="email"
                                                 id="email"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 placeholder="you@company.com"
-                                                className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all text-white placeholder-gray-600"
+                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
                                             />
                                         </div>
                                     </div>
 
                                     <Button
                                         variant="primary"
-                                        mode="light"
+                                        mode="dark"
                                         disabled={loading}
                                         type="submit"
-                                        className="w-full justify-center py-4 text-lg font-bold mt-2"
+                                        className="w-full justify-center py-4 text-lg font-bold mt-2 !bg-brand-black !text-white hover:!bg-brand-accent border-none"
                                         icon
                                     >
                                         {loading ? 'Sending Request...' : 'Call Me Back'}

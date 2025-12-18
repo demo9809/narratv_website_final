@@ -84,7 +84,6 @@ const Contact: React.FC = () => {
           email: '',
           phone: '',
           company: '',
-          budget: '',
           services: [],
           message: ''
         });

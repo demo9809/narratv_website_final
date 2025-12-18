@@ -80,8 +80,17 @@ export async function POST(request: Request) {
         }
     };
 
-    // Execute Parallel
-    const results = await Promise.allSettled([sendUserEmail(), sendAdminEmail(), sendTelegram()]);
+    // Execute Parallel with Timeout (8 seconds)
+    const results = await Promise.race([
+        Promise.allSettled([sendUserEmail(), sendAdminEmail(), sendTelegram()]),
+        new Promise<any[]>((resolve) =>
+            setTimeout(() => resolve([
+                { status: 'rejected', reason: 'API Timeout' },
+                { status: 'rejected', reason: 'API Timeout' },
+                { status: 'rejected', reason: 'API Timeout' }
+            ]), 8000)
+        )
+    ]);
 
     const responseData = {
         email: 'skipped',

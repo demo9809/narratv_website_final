@@ -75,8 +75,15 @@ ${body.message}
         }
     };
 
-    // Execute in Parallel
-    const results = await Promise.allSettled([sendEmail(), sendTelegram()]);
+    // Execute in Parallel with Timeout (8 seconds) to prevent Vercel 504
+    const formatTimeout = (ms: number) => new Promise((resolve) => setTimeout(() => resolve({ status: 'rejected', reason: 'Timeout' }), ms));
+
+    const results = await Promise.race([
+        Promise.allSettled([sendEmail(), sendTelegram()]),
+        new Promise<any[]>((resolve) =>
+            setTimeout(() => resolve([{ status: 'rejected', reason: 'API Timeout' }, { status: 'rejected', reason: 'API Timeout' }]), 8000)
+        )
+    ]);
 
     // Process Results
     const responseData = {

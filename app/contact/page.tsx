@@ -20,7 +20,6 @@ const Contact: React.FC = () => {
     email: '',
     phone: '',
     company: '',
-    budget: '',
     services: [] as string[],
     message: ''
   });
@@ -32,13 +31,10 @@ const Contact: React.FC = () => {
     const { id, value } = e.target;
     // Handle select element which doesn't have an id attribute in standard way sometimes, but here we can rely on id or name
     // The select for budget needs an id or name.
-    setFormData(prev => ({ ...prev, [id || 'budget']: value }));
+    setFormData(prev => ({ ...prev, [id]: value }));
   };
 
-  // Special handler for select since it didn't have an ID in original code
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, budget: e.target.value }));
-  };
+
 
   const handleCheckboxChange = (service: string) => {
     setFormData(prev => {
@@ -266,22 +262,7 @@ const Contact: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="group relative">
-                          <select
-                            onChange={handleSelectChange}
-                            value={formData.budget}
-                            className="peer w-full bg-transparent border-b border-gray-300 py-3 focus:border-brand-accent outline-none transition-all text-lg appearance-none rounded-none text-brand-black"
-                          >
-                            <option value="" disabled>Select Budget</option>
-                            <option value="10k-25k">$10k - $25k</option>
-                            <option value="25k-50k">$25k - $50k</option>
-                            <option value="50k-100k">$50k - $100k</option>
-                            <option value="100k+">$100k+</option>
-                          </select>
-                          <label className="absolute left-0 -top-3.5 text-sm text-gray-500 transition-all peer-focus:text-brand-accent">Budget Range</label>
-                        </div>
-                      </div>
+
 
                       <div>
                         <label className="block text-sm font-medium text-gray-500 mb-4">Services Needed</label>

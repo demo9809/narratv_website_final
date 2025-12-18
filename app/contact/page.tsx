@@ -3,13 +3,15 @@
 
 import React, { useState } from 'react';
 import { Section, Button } from '../../components/ui';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone, CheckCircle, AlertCircle } from 'lucide-react';
 import { CONTACT_DETAILS } from '../../types';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Contact: React.FC = () => {
   const [formType, setFormType] = useState<'general' | 'project'>('project');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,6 +46,7 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setStatus({ type: null, message: '' });
 
     try {
       const response = await fetch('/api/send-contact', {
@@ -57,8 +60,13 @@ const Contact: React.FC = () => {
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        alert('Message sent! We will be in touch shortly.');
+        setStatus({
+          type: 'success',
+          message: 'Thank you! We have received your message and will be in touch shortly.'
+        });
         setFormData({
           name: '',
           email: '',
@@ -69,12 +77,13 @@ const Contact: React.FC = () => {
           message: ''
         });
       } else {
-        alert('Failed to send message. Please try again.');
-        console.error('Submission failed');
+        const errorMessage = data?.errors?.[0]?.error || 'Failed to send message. Please try again.';
+        setStatus({ type: 'error', message: errorMessage });
+        console.error('Submission failed', data);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
-      alert('An error occurred. Please try again later.');
+      setStatus({ type: 'error', message: 'An unexpected error occurred. Please try again later.' });
     } finally {
       setIsSubmitting(false);
     }
@@ -269,10 +278,27 @@ const Contact: React.FC = () => {
                     <label htmlFor="message" className="absolute left-0 -top-3.5 text-sm text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-brand-accent">Project Details / Message</label>
                   </div>
 
-                  <div className="pt-8">
+                  <div className="pt-8 space-y-4">
                     <Button variant="primary" mode="light" type="submit" disabled={isSubmitting} className="w-full md:w-auto px-12 py-5 text-lg" icon>
                       {isSubmitting ? 'Sending...' : 'Send Inquiry'}
                     </Button>
+
+                    <AnimatePresence mode="wait">
+                      {status.type && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          className={`p-4 rounded-md flex items-center gap-3 ${status.type === 'success'
+                              ? 'bg-green-50 text-green-700 border border-green-200'
+                              : 'bg-red-50 text-red-700 border border-red-200'
+                            }`}
+                        >
+                          {status.type === 'success' ? <CheckCircle className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
+                          <p className="text-sm font-medium">{status.message}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </form>
               </div>

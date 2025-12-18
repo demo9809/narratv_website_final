@@ -9,14 +9,16 @@ import { CONTACT_DETAILS } from '../types';
 import { Button } from './ui';
 import PortfolioRequestModal from './PortfolioRequestModal';
 import CallbackRequestModal from './CallbackRequestModal';
+import ContactSidebar from './ContactSidebar';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
-  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false);
-  const [isCallPopoverOpen, setIsCallPopoverOpen] = useState(false);
+  const [isCallbackModalOpen, setIsCallbackModalOpen] = useState(false); // Mobile Only
+  const [isCallPopoverOpen, setIsCallPopoverOpen] = useState(false); // Mobile Only
+  const [isContactSidebarOpen, setIsContactSidebarOpen] = useState(false); // Desktop Only
   const pathname = usePathname();
 
   useEffect(() => {
@@ -99,10 +101,18 @@ const Navbar: React.FC = () => {
                 </svg>
               </a>
 
-              {/* Call Toggle */}
+              {/* Call Toggle - Desktop (Sidebar) */}
+              <button
+                onClick={() => setIsContactSidebarOpen(true)}
+                className="transition-colors text-gray-300 hover:text-brand-accent hidden md:block"
+              >
+                <Phone className="w-5 h-5" />
+              </button>
+
+              {/* Call Toggle - Mobile (Popover) */}
               <button
                 onClick={() => setIsCallPopoverOpen(!isCallPopoverOpen)}
-                className={`transition-colors ${isCallPopoverOpen ? 'text-brand-accent' : 'text-gray-300 hover:text-brand-accent'}`}
+                className={`transition-colors md:hidden ${isCallPopoverOpen ? 'text-brand-accent' : 'text-gray-300 hover:text-brand-accent'}`}
               >
                 <Phone className="w-5 h-5" />
               </button>
@@ -184,7 +194,12 @@ const Navbar: React.FC = () => {
         onClose={() => setIsCallbackModalOpen(false)}
       />
 
-      {/* Call Popover Logic */}
+      <ContactSidebar
+        isOpen={isContactSidebarOpen}
+        onClose={() => setIsContactSidebarOpen(false)}
+      />
+
+      {/* Call Popover Logic (Mobile Only) */}
       <AnimatePresence>
         {isCallPopoverOpen && (
           <>
@@ -193,7 +208,7 @@ const Navbar: React.FC = () => {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="fixed top-20 right-4 lg:right-32 z-[50] bg-white text-brand-black p-4 rounded-lg shadow-2xl w-80 border border-gray-100"
+              className="fixed top-20 right-4 z-[50] bg-white text-brand-black p-4 rounded-lg shadow-2xl w-80 md:hidden border border-gray-100"
             >
               <div className="mb-4">
                 <h4 className="font-bold text-lg mb-1">Speak to a strategist</h4>

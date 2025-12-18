@@ -205,16 +205,20 @@ const Navbar: React.FC = () => {
           <>
             <div className="fixed inset-0 z-[45] bg-black/60 backdrop-blur-sm" onClick={() => setIsCallPopoverOpen(false)}></div>
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, x: '-50%', y: '-40%' }}
-              animate={{ opacity: 1, scale: 1, x: '-50%', y: '-50%' }}
-              exit={{ opacity: 0, scale: 0.95, x: '-50%', y: '-40%' }}
-              className="fixed top-1/2 left-1/2 z-[50] bg-white text-brand-black p-6 rounded-2xl shadow-2xl w-[90%] max-w-sm md:hidden border border-gray-100"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 right-0 z-[50] bg-white text-brand-black p-6 pb-10 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] md:hidden border-t border-gray-100"
             >
-              <div className="mb-6">
+              {/* Handle */}
+              <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>
+
+              <div className="mb-8">
                 <h4 className="font-bold text-xl mb-1 text-gray-900">Speak to a Strategist</h4>
                 <p className="text-gray-500 text-sm mb-4">Available 9am - 6pm IST</p>
-                <a href={`tel:${CONTACT_DETAILS.phone}`} className="flex items-center gap-3 text-brand-black font-black text-2xl hover:text-brand-accent transition-colors">
-                  <Phone className="w-6 h-6" />
+                <a href={`tel:${CONTACT_DETAILS.phone}`} className="flex items-center gap-3 text-brand-black font-black text-3xl hover:text-brand-accent transition-colors">
+                  <Phone className="w-6 h-6 stroke-[2.5px]" />
                   {CONTACT_DETAILS.phone}
                 </a>
               </div>

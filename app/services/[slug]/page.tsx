@@ -1,26 +1,25 @@
 import React from 'react';
 import Link from 'next/link';
-import { SERVICES } from '../../../constants';
+import { SERVICES, PROJECTS } from '../../../constants';
 import { Section, Button } from '../../../components/ui';
-import { ArrowLeft, Check, ChevronDown, ArrowRight, Star, Grid } from 'lucide-react';
-import { InteractiveElementType } from '../../../types';
+import { ArrowLeft, ArrowUpRight, Check, Star, Grid as GridIcon, Phone, Minus, Plus } from 'lucide-react';
+import { InteractiveElementType, Project } from '../../../types';
 import BrandAuditSlider from '../../../components/interactive/BrandAuditSlider';
 import ROICalculator from '../../../components/interactive/ROICalculator';
 import SpeedTestCTA from '../../../components/interactive/SpeedTestCTA';
 import FAQ from '../../../components/FAQ';
 
-// SEO: Generate Static Params for Export
+// SEO: Generate Static Params
 export function generateStaticParams() {
   return SERVICES.map((service) => ({
     slug: service.slug,
   }));
 }
 
-// SEO: Dynamic Metadata
+// SEO: Metadata
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const service = SERVICES.find(s => s.slug === params.slug);
   if (!service) return { title: 'Service Not Found' };
-
   return {
     title: service.seoTitle,
     description: service.seoDescription,
@@ -34,7 +33,10 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
 
   if (!service) return null;
 
-  // SEO: FAQ Schema
+  // Filter Related Projects
+  const relatedProjects = PROJECTS.filter(p => p.category === service.category).slice(0, 3);
+
+  // Schema
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -50,14 +52,10 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
 
   const renderInteractiveElement = (type?: InteractiveElementType) => {
     switch (type) {
-      case 'BRAND_AUDIT_SLIDER':
-        return <BrandAuditSlider />;
-      case 'ROI_CALCULATOR':
-        return <ROICalculator />;
-      case 'SPEED_TEST_CTA':
-        return <SpeedTestCTA />;
-      default:
-        return null;
+      case 'BRAND_AUDIT_SLIDER': return <BrandAuditSlider />;
+      case 'ROI_CALCULATOR': return <ROICalculator />;
+      case 'SPEED_TEST_CTA': return <SpeedTestCTA />;
+      default: return null;
     }
   };
 
@@ -68,158 +66,209 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      {/* 1. HERO HEADER */}
-      <section className="relative min-h-[70vh] flex items-center bg-brand-black text-white overflow-hidden pt-20">
-        <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10 flex flex-col md:flex-row items-center gap-12">
-          <div className="md:w-3/5 animate-fade-in-up">
-            <Link href="/services" className="inline-flex items-center text-gray-400 hover:text-brand-accent mb-8 transition-colors">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Back to Services
-            </Link>
-            <span className="text-brand-accent font-mono text-sm tracking-widest uppercase mb-4 block">{service.details.tagline}</span>
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-none mb-8">
-              {service.title}
-            </h1>
-            <p className="text-xl text-gray-300 max-w-xl leading-relaxed mb-8">
-              {service.description}
-            </p>
-            <Link href="#contact">
-              <Button variant="primary" mode="dark">
-                Book a Strategy Call
-              </Button>
-            </Link>
-          </div>
-          {/* Hero Image/Visual */}
-          <div className="md:w-2/5 h-[400px] md:h-[600px] relative rounded-sm overflow-hidden hidden md:block">
-            <img src={service.details.heroImage} className="w-full h-full object-cover opacity-80" alt={service.title} />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-black to-transparent" />
+      {/* 1. HERO SECTION (Reference Style: Dark, Left Aligned, Big Type) */}
+      <section className="relative min-h-screen flex items-end pb-20 bg-[#050505] text-white pt-32 overflow-hidden">
+        {/* Abstract Background Elements */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none" />
+
+        {/* Background Image Overlay (Subtle) */}
+        <div className="absolute inset-0 z-0 opacity-20 bg-[url('/assets/noise.png')] mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-0" />
+
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
+          <Link href="/services" className="inline-flex items-center text-gray-500 hover:text-white mb-12 transition-colors group">
+            <div className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center mr-3 group-hover:border-white transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+            </div>
+            Back to Services
+          </Link>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+            <div className="lg:col-span-8">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-2 h-2 bg-brand-accent rounded-full animate-pulse" />
+                <span className="text-brand-accent font-medium tracking-widest uppercase text-sm">{service.category}</span>
+              </div>
+              <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[0.9] mb-8 text-white">
+                {service.title.split(' ').map((word, i) => (
+                  <span key={i} className="block">{word}</span>
+                ))}
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-400 max-w-2xl leading-relaxed">
+                {service.details.tagline} &mdash; {service.description}
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. THE PHILOSOPHY (Intro & Problem/Solution) */}
-      <Section className="bg-white">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-8">
-            <h2 className="text-4xl font-bold mb-6">{service.details.introHeadline}</h2>
-            <div
-              className="rich-text mb-12 prose prose-lg prose-neutral max-w-none text-gray-600 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: service.details.introContent }}
-            />
+      {/* 2. INTRO & PHILOSOPHY (Grid Layout) */}
+      <section className="py-24 bg-[#050505] text-white border-t border-white/5">
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-8">
+                {service.details.introHeadline}
+              </h2>
+            </div>
+            <div className="prose prose-lg prose-invert text-gray-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: service.details.introContent }} />
+          </div>
+        </div>
+      </section>
 
-            {/* Problem & Solution Grid */}
-            <div className="grid md:grid-cols-2 gap-8 my-16">
-              <div className="bg-gray-50 p-8 rounded-sm border-t-4 border-gray-300">
-                <h3 className="text-xl font-bold mb-4 text-brand-black">{service.details.problemTitle}</h3>
-                <div className="prose prose-sm text-gray-600" dangerouslySetInnerHTML={{ __html: service.details.problemContent }} />
+      {/* 3. CAPABILITIES GRID (The Reference "Content Services" Look) */}
+      <section className="py-24 bg-[#0a0a0a] text-white">
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl">
+          <div className="flex items-end justify-between mb-16">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">Capabilities</h2>
+            <div className="hidden md:block text-gray-500 text-sm">
+              Comprehensive solutions for growth.
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {service.details.subServices.map((sub, idx) => (
+              <div key={idx} className="group p-8 bg-[#111] border border-white/5 hover:border-brand-accent/50 transition-all duration-300 rounded-lg md:aspect-square flex flex-col justify-between">
+                <div className="flex justify-between items-start">
+                  <span className="text-brand-accent/50 font-mono text-xs">0{idx + 1}</span>
+                  <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-brand-accent transition-colors" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{sub.title}</h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">{sub.description}</p>
+                </div>
               </div>
-              <div className="bg-brand-accent/5 p-8 rounded-sm border-t-4 border-brand-accent shadow-sm">
-                <h3 className="text-xl font-bold mb-4 text-brand-black">{service.details.solutionTitle}</h3>
-                <div className="prose prose-sm text-gray-600" dangerouslySetInnerHTML={{ __html: service.details.solutionContent }} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. SUCCESS STORIES (Related Projects) */}
+      {relatedProjects.length > 0 && (
+        <section className="py-24 bg-[#050505] text-white overflow-hidden">
+          <div className="container mx-auto px-6 md:px-12 max-w-7xl">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+              <div>
+                <span className="text-brand-accent font-mono text-sm tracking-widest uppercase mb-2 block">Proven Results</span>
+                <h2 className="text-4xl md:text-5xl font-bold">Featured Projects</h2>
               </div>
+              <Link href="/work">
+                <Button variant="outline" mode="dark" className="!border-white/20 !text-white hover:!border-white hover:!bg-white hover:!text-black">
+                  View All Work
+                </Button>
+              </Link>
             </div>
 
-            {/* INTERACTIVE ELEMENT INJECTION */}
-            {service.details.interactiveElement && (
-              <div className="my-16">
-                {renderInteractiveElement(service.details.interactiveElement)}
-              </div>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedProjects.map((project) => (
+                <Link href={`/work/${project.slug}`} key={project.id} className="group block">
+                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-6">
+                    <img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2 group-hover:text-brand-accent transition-colors">{project.title}</h3>
+                  <p className="text-sm text-gray-500">{project.tags.join(' / ')}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-            {/* SUB-SERVICES GRID */}
-            <div className="mt-16">
-              <h3 className="text-2xl font-bold mb-8 flex items-center gap-2">
-                <Grid className="text-brand-accent" /> Capabilities
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {service.details.subServices.map((sub, idx) => (
-                  <div key={idx} className="border border-gray-200 p-6 rounded-sm hover:border-brand-accent transition-colors group">
-                    <h4 className="font-bold text-lg mb-2 group-hover:text-brand-accent">{sub.title}</h4>
-                    <p className="text-gray-600 text-sm">{sub.description}</p>
+      {/* 5. IMPACT / WHY CHOOSE US */}
+      <section className="py-24 bg-[#111] text-white border-y border-white/5">
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-8">Why leading brands trust us with their {service.title}</h2>
+              <div className="space-y-4">
+                {service.details.benefits.map((benefit, idx) => (
+                  <div key={idx} className="flex items-start p-4 border-b border-white/10">
+                    <Star className="w-5 h-5 text-brand-accent mr-4 shrink-0 mt-0.5 fill-brand-accent" />
+                    <span className="text-lg text-gray-300">{benefit}</span>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* SEO Content Block */}
-            {service.details.seoContent && (
-              <div className="mt-16 prose prose-lg prose-neutral max-w-none text-gray-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: service.details.seoContent }} />
-            )}
-          </div>
-
-          {/* Right Column - Sidebar */}
-          <div className="lg:col-span-4 h-fit sticky top-32 space-y-8">
-            {/* Quick Contact Block */}
-            <div className="bg-brand-black text-white p-8 rounded-sm shadow-xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none group-hover:scale-150 transition-transform duration-700" />
-              <h4 className="font-bold text-xl mb-4 relative z-10">Start your project</h4>
-              <p className="text-sm text-gray-400 mb-6 relative z-10">Ready to transform your brand? Let's discuss your goals.</p>
-              <Link href="/contact" className="relative z-10">
-                <Button variant="primary" mode="dark" className="w-full">
-                  Request Proposal
-                </Button>
-              </Link>
-              <div className="mt-6 pt-6 border-t border-white/10 relative z-10">
-                <a href="tel:+918714531301" className="text-brand-accent font-bold hover:text-white transition-colors flex items-center justify-center">
-                  +91 87145 31301
-                </a>
+            <div className="relative">
+              {/* Abstract Stats Visual */}
+              <div className="grid grid-cols-2 gap-4 h-full">
+                <div className="bg-[#050505] p-8 rounded-2xl flex flex-col justify-center border border-white/5">
+                  <span className="text-4xl md:text-5xl font-bold text-white mb-2">98%</span>
+                  <span className="text-gray-500 text-sm">Client Retention Rate</span>
+                </div>
+                <div className="bg-[#050505] p-8 rounded-2xl flex flex-col justify-center border border-white/5 mt-8">
+                  <span className="text-4xl md:text-5xl font-bold text-brand-accent mb-2">50+</span>
+                  <span className="text-gray-500 text-sm">Global Awards</span>
+                </div>
+                <div className="bg-brand-accent p-8 rounded-2xl flex flex-col justify-center text-black col-span-2">
+                  <span className="text-xl font-bold mb-2">Let's create impact.</span>
+                  <span className="text-black/70 text-sm">Our strategies are built for measurable growth.</span>
+                </div>
               </div>
-            </div>
-
-            {/* Deliverables Block */}
-            <div className="bg-gray-50 p-8 rounded-sm border border-gray-100">
-              <h3 className="text-sm font-bold uppercase tracking-widest mb-6 border-b border-gray-200 pb-2">Deliverables</h3>
-              <ul className="space-y-3">
-                {service.details.deliverables.map((item, idx) => (
-                  <li key={idx} className="flex items-start text-sm text-gray-700 font-medium">
-                    <Check className="w-4 h-4 text-green-500 mr-2 shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Benefits Block */}
-            <div className="bg-white p-8 rounded-sm border border-gray-100 shadow-lg">
-              <h3 className="text-sm font-bold uppercase tracking-widest mb-6 border-b border-gray-200 pb-2">Why Us?</h3>
-              <ul className="space-y-3">
-                {service.details.benefits.map((item, idx) => (
-                  <li key={idx} className="flex items-start text-sm text-gray-700 font-medium">
-                    <Star className="w-4 h-4 text-brand-accent mr-2 shrink-0 mt-0.5 fill-brand-accent" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
         </div>
-      </Section>
+      </section>
 
+      {/* 6. INTERACTIVE & PROBLEM/SOL */}
+      <section className="py-24 bg-[#050505] text-white">
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl">
+          {service.details.interactiveElement && (
+            <div className="mb-24">
+              {renderInteractiveElement(service.details.interactiveElement)}
+            </div>
+          )}
 
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-[#111] p-10 rounded-2xl border border-white/5">
+              <h3 className="text-xl text-gray-500 mb-4 font-mono uppercase tracking-widest">{service.details.problemTitle}</h3>
+              <div className="prose prose-p:text-gray-300 prose-invert" dangerouslySetInnerHTML={{ __html: service.details.problemContent }} />
+            </div>
+            <div className="bg-brand-accent p-10 rounded-2xl text-black">
+              <h3 className="text-xl text-black/60 mb-4 font-mono uppercase tracking-widest">{service.details.solutionTitle}</h3>
+              <div className="prose prose-p:text-black/90 prose-p:font-medium prose-invert" dangerouslySetInnerHTML={{ __html: service.details.solutionContent }} />
+            </div>
+          </div>
+        </div>
+      </section>
 
-      {/* 5. FAQ Section */}
-      <Section className="bg-white border-t border-gray-100">
+      {/* 7. FAQ */}
+      <Section className="bg-white text-black">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-center">Frequently Asked Questions</h2>
+          <h2 className="text-4xl font-bold mb-12 text-center text-gray-900">Freqently Asked</h2>
           <FAQ items={service.details.faq} />
         </div>
       </Section>
 
-      {/* 6. CTA */}
-      <section id="contact" className="py-24 bg-brand-black text-center px-6">
-        <h2 className="text-4xl md:text-6xl font-bold mb-8 text-white">Ready to elevate your {service.title}?</h2>
-        <div className="flex flex-col md:flex-row justify-center gap-6">
-          <Link href="/contact">
-            <Button variant="primary" mode="light" className="px-12 py-5 text-lg">
-              Book Strategy Call
-            </Button>
-          </Link>
-          <Link href="/work">
-            <Button variant="outline" mode="dark" className="px-12 py-5 text-lg">
-              View Case Studies
-            </Button>
-          </Link>
+      {/* 8. FOOTER CTA */}
+      <section className="py-32 bg-brand-black text-center px-6 border-t border-white/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-brand-accent/5" />
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <h2 className="text-5xl md:text-7xl font-bold mb-8 text-white tracking-tighter">
+            Ready to scale?
+          </h2>
+          <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+            Let's discuss how our {service.title} services can transform your business.
+          </p>
+          <div className="flex flex-col md:flex-row justify-center gap-6">
+            <Link href="/contact">
+              <Button variant="primary" mode="dark" className="!bg-brand-accent !text-black hover:!bg-white px-10 py-6 text-xl h-auto">
+                Book Strategy Call
+              </Button>
+            </Link>
+            <a href={`tel:${'8714531301'}`} className="flex items-center justify-center gap-3 px-10 py-6 text-xl font-bold text-white border border-white/20 rounded-full hover:bg-white/5 transition-all">
+              <Phone className="w-5 h-5" />
+              +91 87145 31301
+            </a>
+          </div>
         </div>
-      </section >
+      </section>
     </>
   );
 }

@@ -24,12 +24,24 @@ const PORTFOLIO_IMAGES = [
   "/assets/portfolio/portfolio-18.webp",
 ];
 
-export default function ProjectDetail() {
+import { PROJECTS } from '../../../constants';
+
+export async function generateStaticParams() {
+  return PROJECTS.map((project) => ({
+    slug: project.slug,
+  }));
+}
+
+export default function ProjectDetail({ params }: { params: { slug: string } }) {
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
+  const project = PROJECTS.find((p) => p.slug === params.slug);
 
   return (
     <>
       <section className="bg-brand-black min-h-screen py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
+
+        {/* Dynamic Project Title (Optional enhancement since we have data) */}
+        {/* Keeping existing layout but ensuring unique render context if needed */}
 
         {/* Scrolling Portfolio Background */}
         <div className="absolute inset-0 z-0 opacity-40">
@@ -89,11 +101,11 @@ export default function ProjectDetail() {
           </div>
 
           <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
-            Public Results. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-700">Private Strategies.</span>
+            {project ? project.title : 'Public Results.'} <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-700">Private Strategies.</span>
           </h2>
 
           <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-14 leading-relaxed font-light">
-            To view this case study, please request access.
+            {project ? `To view the full ${project.client} case study, please request access.` : 'To view this case study, please request access.'}
           </p>
 
           <Button

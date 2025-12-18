@@ -29,8 +29,8 @@ export async function POST(request: Request) {
         });
 
         // 2. Send Telegram Notification
-        const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-        const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+        const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
+        const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
 
         if (telegramToken && telegramChatId) {
             const telegramMessage = `

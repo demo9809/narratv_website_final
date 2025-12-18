@@ -22,6 +22,17 @@ const Contact: React.FC = () => {
     message: ''
   });
 
+  const [countryCode, setCountryCode] = useState('+91');
+
+  const COUNTRY_CODES = [
+    { code: '+91', country: 'IN' },
+    { code: '+971', country: 'AE' },
+    { code: '+44', country: 'UK' },
+    { code: '+1', country: 'US' },
+    { code: '+974', country: 'QA' },
+    { code: '+966', country: 'SA' },
+  ];
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     // Handle select element which doesn't have an id attribute in standard way sometimes, but here we can rely on id or name
@@ -56,6 +67,7 @@ const Contact: React.FC = () => {
         },
         body: JSON.stringify({
           ...formData,
+          phone: `${countryCode} ${formData.phone}`,
           formType,
         }),
       });
@@ -223,14 +235,25 @@ const Contact: React.FC = () => {
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="group relative">
-                          <input
-                            type="tel"
-                            id="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            className="peer w-full bg-transparent border-b border-gray-300 py-3 focus:border-brand-accent outline-none transition-all text-lg placeholder-transparent text-brand-black"
-                            placeholder="Phone / WhatsApp"
-                          />
+                          <div className="flex bg-transparent border-b border-gray-300 focus-within:border-brand-accent transition-colors">
+                            <select
+                              value={countryCode}
+                              onChange={(e) => setCountryCode(e.target.value)}
+                              className="bg-transparent border-none py-3 pr-2 focus:ring-0 outline-none text-lg text-brand-black cursor-pointer font-bold w-20 appearance-none"
+                            >
+                              {COUNTRY_CODES.map((c) => (
+                                <option key={c.code} value={c.code}>{c.code}</option>
+                              ))}
+                            </select>
+                            <input
+                              type="tel"
+                              id="phone"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              className="peer w-full bg-transparent border-none py-3 focus:ring-0 outline-none transition-all text-lg placeholder-transparent text-brand-black"
+                              placeholder="Phone / WhatsApp"
+                            />
+                          </div>
                           <label htmlFor="phone" className="absolute left-0 -top-3.5 text-sm text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-brand-accent">Phone / WhatsApp</label>
                         </div>
                         <div className="group relative">
@@ -307,8 +330,8 @@ const Contact: React.FC = () => {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
                           className={`p-4 rounded-md flex items-center gap-3 ${status.type === 'success'
-                              ? 'bg-green-50 text-green-700 border border-green-200'
-                              : 'bg-red-50 text-red-700 border border-red-200'
+                            ? 'bg-green-50 text-green-700 border border-green-200'
+                            : 'bg-red-50 text-red-700 border border-red-200'
                             }`}
                         >
                           {status.type === 'success' ? <CheckCircle className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}

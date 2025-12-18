@@ -18,11 +18,22 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
     const [name, setName] = useState('');
     const [company, setCompany] = useState('');
     const [phone, setPhone] = useState('');
+    const [countryCode, setCountryCode] = useState('+91');
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [countdown, setCountdown] = useState(4);
+
+    const COUNTRY_CODES = [
+        { code: '+91', country: 'IN' },
+        { code: '+971', country: 'AE' },
+        { code: '+44', country: 'UK' },
+        { code: '+1', country: 'US' },
+        { code: '+974', country: 'QA' },
+        { code: '+966', country: 'SA' },
+    ];
+
 
 
     const router = useRouter();
@@ -38,7 +49,7 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
             const response = await fetch('/api/send-portfolio', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, company, phone }),
+                body: JSON.stringify({ name, email, company, phone: `${countryCode} ${phone}` }),
             });
             // ... (rest of error handling same)
             let data;
@@ -182,17 +193,36 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
                                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                                             Phone / WhatsApp
                                         </label>
-                                        <div className="relative">
-                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                                            <input
-                                                type="tel"
-                                                id="phone"
-                                                required
-                                                value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
-                                                placeholder="+91 98765 43210"
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all"
-                                            />
+                                        <div className="relative flex">
+                                            <div className="relative">
+                                                <select
+                                                    value={countryCode}
+                                                    onChange={(e) => setCountryCode(e.target.value)}
+                                                    className="appearance-none h-full pl-3 pr-8 bg-gray-50 border border-gray-200 border-r-0 rounded-l-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-sm font-medium text-gray-600 cursor-pointer"
+                                                >
+                                                    {COUNTRY_CODES.map((c) => (
+                                                        <option key={c.code} value={c.code}>
+                                                            {c.country} ({c.code})
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                {/* Custom Arrow */}
+                                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                                                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
+                                                </div>
+                                            </div>
+                                            <div className="relative flex-1">
+                                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                                <input
+                                                    type="tel"
+                                                    id="phone"
+                                                    required
+                                                    value={phone}
+                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    placeholder="98765 43210"
+                                                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-r-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 

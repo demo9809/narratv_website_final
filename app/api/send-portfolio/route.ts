@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     // 3. Send Email (Secondary - Re-enabled)
     try {
         await resend.emails.send({
-            from: 'Narratv Space <access@updates.narratv.space>',
+            from: 'onboarding@resend.dev', // Use default testing domain to ensure delivery if custom domain unverified
             to: [email],
             subject: 'Access Granted: Narratv Space Portfolio',
             react: PortfolioAccessEmail({ name }),

@@ -96,11 +96,18 @@ export default function Portfolio() {
             To view our detailed case studies, please request access.
           </p>
 
+
           <Button
             variant="primary"
             mode="dark"
             className="!px-12 !py-6 text-lg !bg-brand-accent !border-brand-accent !text-white hover:!bg-brand-accent/90 shadow-[0_0_40px_-10px_rgba(243,121,93,0.3)] hover:shadow-[0_0_60px_-10px_rgba(243,121,93,0.5)] active:scale-95 transition-all duration-300"
-            onClick={() => setIsPortfolioModalOpen(true)}
+            onClick={() => {
+              if (typeof window !== 'undefined' && localStorage.getItem('portfolio_access') === 'true') {
+                window.location.href = '/work/access-granted';
+              } else {
+                setIsPortfolioModalOpen(true);
+              }
+            }}
             icon
           >
             Unlock Full Portfolio

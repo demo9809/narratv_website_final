@@ -71,11 +71,18 @@ export default function PortfolioRequestModal({ isOpen, onClose }: PortfolioRequ
             setLoading(false);
             setSubmitted(true);
 
+
             // Redirect after showing success message briefly
             setTimeout(() => {
+                // Set persistence flag so user doesn't need to request again
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('portfolio_access', 'true');
+                }
+
                 onClose();
                 setSubmitted(false);
                 router.push('/work/access-granted');
+
 
                 // Reset form
                 setName('');

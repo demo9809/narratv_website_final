@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 import PortfolioAccessEmail from '@/components/emails/PortfolioAccessEmail';
 
 export async function POST(request: Request) {
-    // 1. Initialize Resend inside handler (Safe now that 'output: export' is gone)
+    // 1. Initialize Resend inside handler
     const resend = new Resend(process.env.RESEND_API_KEY || 're_imm7t67k_88x3hcJ8BvQZDmtYRhpE78jo');
 
     const { name, email, company, phone } = await request.json();
@@ -61,7 +61,6 @@ export async function POST(request: Request) {
 
         if (!tgResponse.ok) {
             console.error(`Telegram API Error: ${await tgResponse.text()}`);
-            // We log but don't crash, so Email can still try
         } else {
             results.telegram = 'sent';
         }
@@ -71,10 +70,10 @@ export async function POST(request: Request) {
         results.errors.push({ type: 'telegram', error: error.message });
     }
 
-    // 3. Send Email (Secondary - Re-enabled)
+    // 3. Send Email (Secondary)
     try {
         await resend.emails.send({
-            from: 'Narratv Space <access@updates.narratv.space>', // Reverting to custom domain
+            from: 'Narratv Space <access@updates.narratv.space>',
             to: [email],
             subject: 'Access Granted: Narratv Space Portfolio',
             react: PortfolioAccessEmail({ name }),
@@ -85,10 +84,7 @@ export async function POST(request: Request) {
         results.email = 'failed';
         results.errors.push({ type: 'email', error: error.message });
     }
-}
-}
 
-// Return success if at least one worked (or generic success to not block user)
-// Client side relies on 200 OK to redirect.
-return NextResponse.json({ success: true, results });
+    // Return success
+    return NextResponse.json({ success: true, results });
 }

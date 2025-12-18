@@ -30,22 +30,38 @@ export default function PortfolioRequestModal({ isOpen, onClose }: PortfolioRequ
         try {
             const response = await fetch('/api/send-portfolio', {
                 method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email }),
             });
 
-            const data = await response.json();
+            let data;
+            const responseText = await response.text();
+
+            try {
+                data = JSON.parse(responseText);
+            } catch (e) {
+                console.error('JSON Parse Error:', e);
+                // Show raw server error (potentially HTML)
+                throw new Error(`Server Error: ${responseText.slice(0, 100)}...`);
+            }
 
             if (!response.ok) {
                 // If API returns error
-                const errorMessage = data?.errors?.[0]?.error || 'Failed to send request. Please try again.';
+                let errorMessage = 'Failed to send request.';
+                if (data?.errors && Array.isArray(data.errors)) {
+                    errorMessage = data.errors.map((e: any) => `${e.type}: ${e.error}`).join(' | ');
+                } else if (data?.error) {
+                    errorMessage = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+                }
+
                 setError(errorMessage);
                 setLoading(false);
                 return;
             }
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Failed to send email:', error);
-            setError('An error occurred. Please try again.');
+            setError(`Debug: ${error.message || String(error)}`);
             setLoading(false);
             return;
         }
@@ -195,6 +211,7 @@ export default function PortfolioRequestModal({ isOpen, onClose }: PortfolioRequ
                                         variant="primary"
                                         mode="dark"
                                         disabled={loading}
+                                        type="submit"
                                         className="w-full justify-center py-3 !bg-brand-accent !text-white !border-brand-accent hover:!bg-brand-accent/90"
                                     >
                                         {loading ? 'Sending Request...' : 'Get Portfolio Access'}

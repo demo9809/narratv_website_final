@@ -84,7 +84,7 @@ const About: React.FC = () => {
             />
             {/* Floating Badge */}
             <div className="absolute -bottom-8 -right-4 md:-right-12 z-20 bg-brand-accent text-white p-6 md:p-8 rounded-sm shadow-xl max-w-[200px] hidden md:block">
-              <p className="text-3xl font-bold mb-1">5+</p>
+              <p className="text-3xl font-bold mb-1">8+</p>
               <p className="text-xs uppercase tracking-widest font-medium opacity-90">Years of Impact</p>
             </div>
           </motion.div>
@@ -106,57 +106,11 @@ const About: React.FC = () => {
               </p>
             </div>
 
-            <div className="mt-10 flex gap-6">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Sig.png" alt="Signature" className="h-12 opacity-40" />
-            </div>
+
           </div>
         </div>
       </Section>
 
-      {/* WHY CALICUT? - New Section */}
-      <section className="py-24 bg-brand-black text-white relative overflow-hidden">
-        {/* Map Background */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none grayscale bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/World_map_blank_without_borders.svg/2000px-World_map_blank_without_borders.svg.png')] bg-cover bg-center"></div>
-
-        <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
-          <div className="flex flex-col lg:flex-row gap-16 items-center">
-            <div className="lg:w-1/2">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span> Why Calicut?
-              </h2>
-              <h3 className="text-4xl md:text-6xl font-bold mb-8 leading-tight">
-                The City of Spices.<br />
-                The City of Truth.
-              </h3>
-              <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
-                <p>
-                  Calicut (Kozhikode) is not just a location; it is our competitive edge. For over 500 years, this city has been a global hub of fair trade, welcoming explorers from Vasco da Gama to modern tech giants.
-                </p>
-                <p>
-                  We embody the spirit of this city—hardworking, honest, and globally connected. Being based away from the chaotic noise of metros allows us to focus on <strong>Deep Work</strong>.
-                </p>
-                <p className="text-white font-medium">
-                  We deliver London-quality strategy at Kerala efficiency.
-                </p>
-              </div>
-            </div>
-
-            <div className="lg:w-1/2 grid grid-cols-2 gap-6">
-              {[
-                { label: "Cost Efficiency", val: "Global Quality, Local Rates" },
-                { label: "Talent Pool", val: "Access to KINFRA Tech Park" },
-                { label: "Connectivity", val: "Direct flights to GCC" },
-                { label: "Culture", val: "Honesty & Transparency" }
-              ].map((item, idx) => (
-                <div key={idx} className="bg-white/5 border border-white/10 p-8 rounded-sm backdrop-blur-sm hover:bg-white/10 transition-colors">
-                  <h4 className="text-brand-accent font-bold text-lg mb-2">{item.label}</h4>
-                  <p className="text-gray-400 text-sm">{item.val}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Core Values */}
       <Section bgColor="gray" className="relative">

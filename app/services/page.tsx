@@ -12,12 +12,12 @@ const Services: React.FC = () => {
     <>
       <section className="bg-brand-black text-white pt-40 pb-20">
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ duration: 0.6 }}
-             className="max-w-4xl"
-           >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-4xl"
+          >
             <span className="text-brand-accent font-mono text-sm tracking-widest uppercase mb-4 block">Our Expertise</span>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8">Creative Agency Services in Kerala</h1>
             <p className="text-xl text-gray-400 leading-relaxed max-w-2xl">
@@ -31,8 +31,8 @@ const Services: React.FC = () => {
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
           <div className="grid grid-cols-1 gap-8">
             {SERVICES.map((service, index) => (
-              <motion.div 
-                key={service.id} 
+              <motion.div
+                key={service.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -40,7 +40,7 @@ const Services: React.FC = () => {
                 className="grid grid-cols-1 lg:grid-cols-12 gap-8 border border-gray-100 p-8 md:p-12 group hover:border-brand-accent/30 hover:shadow-2xl hover:shadow-brand-accent/5 transition-all duration-500 rounded-sm bg-white relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden lg:block">
-                   <ArrowRight className="w-8 h-8 text-brand-accent -rotate-45" />
+                  <ArrowRight className="w-8 h-8 text-brand-accent -rotate-45" />
                 </div>
 
                 <div className="lg:col-span-4 flex flex-col justify-between">
@@ -49,15 +49,15 @@ const Services: React.FC = () => {
                     <h2 className="text-3xl font-bold mb-4">{service.title}</h2>
                   </div>
                 </div>
-                
+
                 <div className="lg:col-span-5">
                   <p className="text-lg text-gray-600 leading-relaxed mb-6">
                     {service.description}
                   </p>
                   <Link href={`/services/${service.slug}`}>
-                     <Button variant="text" className="text-brand-black group-hover:text-brand-accent" icon>
-                        Explore Service
-                     </Button>
+                    <Button variant="text" className="text-brand-black group-hover:text-brand-accent" icon>
+                      Explore Service
+                    </Button>
                   </Link>
                 </div>
 
@@ -84,7 +84,7 @@ const Services: React.FC = () => {
               <p className="text-gray-400">We specialize in cross-market strategies for brands scaling globally.</p>
             </div>
             <Link href="/contact">
-              <Button variant="primary" className="bg-white text-black hover:bg-brand-accent hover:text-white border-none">Get a Proposal</Button>
+              <Button variant="primary" className="bg-black  text-white border-brand-accent hover:bg-brand-accent hover:text-white border-brand-accent">Get a Proposal</Button>
             </Link>
           </div>
         </div>

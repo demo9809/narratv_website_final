@@ -18,12 +18,12 @@ const CLIENTS = [
 
 const ClientMarquee = () => {
     return (
-        <section className="bg-white py-24 overflow-hidden">
+        <section className="bg-white py-12 overflow-hidden">
             {/* Unified Container */}
             <div className="container mx-auto px-6 md:px-12 max-w-7xl">
 
                 {/* Header */}
-                <div className="mb-12">
+                <div className="mb-8">
                     <h3 className="text-sm font-bold uppercase tracking-[0.2em] text-center text-gray-400">
                         Trusted Partners
                     </h3>
@@ -51,7 +51,7 @@ const ClientMarquee = () => {
                             {[...CLIENTS, ...CLIENTS, ...CLIENTS, ...CLIENTS].map((logo, index) => (
                                 <div
                                     key={index}
-                                    className="relative w-48 h-24 md:w-64 md:h-32 flex-shrink-0 mx-8 md:mx-16 flex items-center justify-center grayscale hover:grayscale-0 opacity-50 hover:opacity-100 transition-all duration-500 cursor-pointer"
+                                    className="relative w-32 h-16 md:w-40 md:h-24 flex-shrink-0 mx-4 md:mx-6 flex items-center justify-center transition-all duration-500 cursor-pointer hover:scale-110"
                                 >
                                     <img
                                         src={logo}

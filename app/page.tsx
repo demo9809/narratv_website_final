@@ -7,9 +7,31 @@ import { ArrowRight, Globe, Layers, Zap, Users, ArrowUpRight, Play, Star } from 
 import { Section, Button } from '../components/ui';
 import { PROJECTS, SERVICES } from '../constants';
 import ClientMarquee from '../components/ClientMarquee';
+import HeroTextSlider from '../components/HeroTextSlider';
+import PortfolioRequestModal from '../components/PortfolioRequestModal';
 
 const Home: React.FC = () => {
   const [activeProject, setActiveProject] = useState<string | null>(PROJECTS[0].id);
+  const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
+
+  const PORTFOLIO_IMAGES = [
+    "/assets/portfolio/portfolio-01.webp",
+    "/assets/portfolio/portfolio-02.webp",
+    "/assets/portfolio/portfolio-03.webp",
+    "/assets/portfolio/portfolio-05.webp",
+    "/assets/portfolio/portfolio-06.webp",
+    "/assets/portfolio/portfolio-07.webp",
+    "/assets/portfolio/portfolio-08.webp",
+    "/assets/portfolio/portfolio-09.webp",
+    "/assets/portfolio/portfolio-10.webp",
+    "/assets/portfolio/portfolio-12.webp",
+    "/assets/portfolio/portfolio-13.webp",
+    "/assets/portfolio/portfolio-14.webp",
+    "/assets/portfolio/portfolio-15.webp",
+    "/assets/portfolio/portfolio-16.webp",
+    "/assets/portfolio/portfolio-17.webp",
+    "/assets/portfolio/portfolio-18.webp",
+  ];
   const containerRef = useRef(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -65,6 +87,10 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <PortfolioRequestModal
+        isOpen={isPortfolioModalOpen}
+        onClose={() => setIsPortfolioModalOpen(false)}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
@@ -112,7 +138,7 @@ const Home: React.FC = () => {
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
                 className="block"
               >
-                Narratv
+                Narrative
               </motion.span>
               <motion.span
                 initial={{ y: 100, opacity: 0 }}
@@ -132,14 +158,20 @@ const Home: React.FC = () => {
             </h1>
 
             <div className="flex flex-col md:flex-row gap-12 items-start md:items-end">
-              <motion.p
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-lg md:text-2xl text-gray-400 max-w-xl font-light leading-relaxed"
+                className="text-lg md:text-3xl text-gray-400 max-w-3xl font-light leading-relaxed"
               >
-                <span className="text-white font-medium">Narratv Space</span> (pronounced <em>Narrative Space</em>) is a strategy-driven advertising agency based in Calicut. We build premium brands for Kerala, the Middle East, and Europe through Branding, Video Production, and Digital Marketing.
-              </motion.p>
+                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <span>We are building</span>
+                  <HeroTextSlider />
+                </div>
+                <p className="mt-4 text-base md:text-xl text-gray-500 max-w-xl">
+                  Narratv Space is a strategy-first agency bridging the gap between Calicut's heritage and global design standards.
+                </p>
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
@@ -152,11 +184,14 @@ const Home: React.FC = () => {
                     Start Project
                   </Button>
                 </Link>
-                <Link href="/work">
-                  <Button variant="outline" mode="dark" className="w-full sm:w-auto px-10 py-5 text-sm hover:border-brand-accent hover:text-brand-accent transition-colors">
-                    Our Portfolio
-                  </Button>
-                </Link>
+                <Button
+                  onClick={() => setIsPortfolioModalOpen(true)}
+                  variant="outline"
+                  mode="dark"
+                  className="w-full sm:w-auto px-10 py-5 text-sm hover:border-brand-accent hover:text-brand-accent transition-colors"
+                >
+                  Our Portfolio
+                </Button>
               </motion.div>
             </div>
           </motion.div>
@@ -255,85 +290,83 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. SELECTED WORK - INTERACTIVE LIST */}
-      <section className="bg-brand-black min-h-screen py-32 flex flex-col justify-center relative overflow-hidden">
-        {/* Background Glow */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* 3. LOCKED WORK SECTION */}
+      <section className="bg-brand-black min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
 
-        <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
-          <div className="flex justify-between items-end mb-24">
-            <div>
-              <span className="text-brand-accent font-mono text-xs tracking-widest uppercase mb-4 block">Portfolio</span>
-              <h2 className="text-4xl md:text-7xl font-bold text-white tracking-tight">Recent Work</h2>
-            </div>
-            <Link href="/work" className="hidden md:block group">
-              <div className="flex items-center gap-4 text-white">
-                <span className="text-sm font-bold uppercase tracking-widest group-hover:text-brand-accent transition-colors">View All Case Studies</span>
-                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-brand-black transition-all">
-                  <ArrowRight className="w-4 h-4" />
-                </div>
+        {/* Scrolling Portfolio Background - 3 Row Horizontal Marquee */}
+        <div className="absolute inset-0 z-0 opacity-60 flex flex-col justify-center gap-8 -rotate-3 scale-110">
+
+          {/* Row 1 - Left */}
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+            className="flex gap-8 whitespace-nowrap w-max pl-6"
+          >
+            {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].map((src, i) => (
+              <div key={`row1-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden brightness-90 hover:brightness-110 transition-all duration-700 grayscale-[20%] hover:grayscale-0 shrink-0">
+                <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
               </div>
-            </Link>
+            ))}
+          </motion.div>
+
+          {/* Row 2 - Right (Opposite) */}
+          <motion.div
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{ repeat: Infinity, duration: 70, ease: "linear" }}
+            className="flex gap-8 whitespace-nowrap w-max pl-6"
+          >
+            {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].reverse().map((src, i) => (
+              <div key={`row2-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden brightness-90 hover:brightness-110 transition-all duration-700 grayscale-[20%] hover:grayscale-0 shrink-0">
+                <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Row 3 - Left */}
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ repeat: Infinity, duration: 65, ease: "linear" }}
+            className="flex gap-8 whitespace-nowrap w-max pl-6"
+          >
+            {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].slice(5).map((src, i) => (
+              <div key={`row3-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden brightness-90 hover:brightness-110 transition-all duration-700 grayscale-[20%] hover:grayscale-0 shrink-0">
+                <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
+              </div>
+            ))}
+          </motion.div>
+
+        </div>
+
+        {/* Gradient Overlay - Increased Density */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-black/90 via-brand-black/70 to-brand-black/90 pointer-events-none"></div>
+        <div className="absolute inset-0 z-0 bg-brand-black/30 backdrop-blur-[2px] pointer-events-none"></div>
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-3 mb-8 border border-white/10 rounded-full px-5 py-2 bg-black/40 backdrop-blur-md shadow-lg">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
+            </span>
+            <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-white/90">Curated Access</span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-            {/* Project List */}
-            <div className="lg:col-span-6 space-y-2">
-              {PROJECTS.slice(0, 5).map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  onMouseEnter={() => setActiveProject(project.id)}
-                  className={`group relative py-8 border-b border-white/10 cursor-pointer transition-all duration-300 ${activeProject === project.id ? 'pl-8 border-white/40' : 'hover:pl-4 hover:border-white/20'}`}
-                >
-                  {/* Active Indicator Line */}
-                  <div className={`absolute left-0 top-0 bottom-0 w-1 bg-brand-accent transition-all duration-300 ${activeProject === project.id ? 'opacity-100 h-full' : 'opacity-0 h-0'}`} />
+          <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
+            Public Results. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-700">Private Strategies.</span>
+          </h2>
 
-                  <div className="flex justify-between items-center">
-                    <h3 className={`text-3xl md:text-4xl font-bold transition-colors ${activeProject === project.id ? 'text-white' : 'text-gray-500 group-hover:text-gray-300'}`}>
-                      {project.title}
-                    </h3>
-                    <span className="text-xs font-mono text-gray-600 hidden md:block">0{index + 1}</span>
-                  </div>
-                  <p className={`mt-2 text-sm uppercase tracking-widest transition-colors ${activeProject === project.id ? 'text-brand-accent' : 'text-gray-600'}`}>
-                    {project.category}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-14 leading-relaxed font-light">
+            In a world of oversharing, we value discretion. Our most transformative work protects our partners' competitive edge. Request access to view our complete, confidential case studies.
+          </p>
 
-            {/* Image Preview Area */}
-            <div className="lg:col-span-6 sticky top-32 hidden lg:block h-[600px]">
-              <div className="relative w-full h-full rounded-sm overflow-hidden bg-gray-900 shadow-2xl">
-                <AnimatePresence mode="wait">
-                  {PROJECTS.map((project) => (
-                    activeProject === project.id && (
-                      <motion.div
-                        key={project.id}
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
-                        className="absolute inset-0"
-                      >
-                        <img src={project.imageUrl} alt={project.title} className="w-full h-full object-cover opacity-80" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black via-transparent to-transparent opacity-80" />
-                        <div className="absolute bottom-8 left-8 right-8">
-                          <p className="text-gray-300 text-lg line-clamp-2 mb-6">{project.overview}</p>
-                          <Link href="/work" className="inline-flex items-center gap-2 text-white font-bold border-b border-brand-accent pb-1 hover:gap-4 transition-all">
-                            View Project <ArrowUpRight className="w-4 h-4" />
-                          </Link>
-                        </div>
-                      </motion.div>
-                    )
-                  ))}
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
+          <Button
+            variant="primary"
+            mode="dark"
+            className="!px-12 !py-6 text-lg !bg-brand-accent !border-brand-accent !text-white hover:!bg-brand-accent/90 shadow-[0_0_40px_-10px_rgba(243,121,93,0.3)] hover:shadow-[0_0_60px_-10px_rgba(243,121,93,0.5)] active:scale-95 transition-all duration-300"
+            onClick={() => setIsPortfolioModalOpen(true)}
+            icon
+          >
+            Unlock Full Portfolio
+          </Button>
         </div>
       </section>
 

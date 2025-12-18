@@ -42,6 +42,9 @@ export const metadata: Metadata = {
     description: 'Transforming brands through strategy and storytelling. Narrative Space.',
     images: ['https://narratv.co/og-image.jpg'],
   },
+  icons: {
+    icon: '/assets/favicon.webp',
+  },
 };
 
 export default function RootLayout({

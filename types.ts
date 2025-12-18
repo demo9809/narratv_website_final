@@ -1,10 +1,12 @@
 export enum ServiceCategory {
   BRANDING = 'Branding & Identity',
   STRATEGY = 'Creative Strategy',
-  ADVERTISING = 'Ad Campaigns',
-  DIGITAL = 'Digital Marketing',
+  WEB = 'Website Development',
+  ECOMMERCE = 'Ecommerce Design',
+  PERFORMANCE = 'Performance Marketing',
+  SOCIAL = 'Social Media Marketing',
   PRODUCTION = 'Video Production',
-  CONTENT = 'Content Creation'
+  AI = 'AI Creative'
 }
 
 export interface FaqItem {
@@ -16,6 +18,8 @@ export interface SubService {
   title: string;
   description: string;
 }
+
+export type InteractiveElementType = 'BRAND_AUDIT_SLIDER' | 'ROI_CALCULATOR' | 'SPEED_TEST_CTA' | 'NONE';
 
 export interface ServiceDetail {
   heroImage: string;
@@ -31,6 +35,8 @@ export interface ServiceDetail {
   deliverables: string[];
   processSteps: { title: string; description: string }[];
   faq: FaqItem[];
+  interactiveElement?: InteractiveElementType; // Helper for dynamic component rendering
+  seoContent?: string; // HTML allowed: Extra SEO keywords block
 }
 
 export interface Service {
@@ -51,7 +57,7 @@ export interface Project {
   slug: string;
   title: string;
   client: string;
-  category: ServiceCategory; 
+  category: ServiceCategory;
   tags: string[];
   imageUrl: string;
   overview: string;
@@ -106,3 +112,19 @@ export const CONTACT_DETAILS = {
   address: "Room No. 6, Ground Floor, KINFRA Advanced Technology Park, Ramanattukara - Calicut, Kerala 673631",
   mapsLink: "https://maps.google.com/?q=KINFRA+Advanced+Technology+Park+Calicut"
 };
+
+export interface Location {
+  id: string;
+  slug: string;
+  name: string;
+  geoFocus: 'Kerala' | 'GCC' | 'Global';
+  seoTitle: string;
+  seoDescription: string;
+  heroHeadline: string;
+  heroSubhead: string;
+  description: string;
+  whyUsPoints: string[];
+  ctaText: string;
+  mapEmbedUrl?: string; // Optional for Global
+  officeAddress?: string;
+}

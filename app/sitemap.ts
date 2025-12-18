@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { SERVICES, PROJECTS, BLOG_POSTS } from '../constants';
+import { SERVICES, PROJECTS, BLOG_POSTS, LOCATIONS } from '../constants';
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = 'https://narratv.co';
@@ -20,15 +20,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
     // Dynamic Service routes (High priority)
-    const serviceRoutes = SERVICES.map((service) => ({
+    const serviceUrls = SERVICES.map((service) => ({
         url: `${baseUrl}/services/${service.slug}`,
         lastModified: new Date(),
         changeFrequency: 'weekly' as const,
-        priority: 0.9,
+        priority: 0.8,
     }));
 
     // Dynamic Project routes
-    const projectRoutes = PROJECTS.map((project) => ({
+    const projectUrls = PROJECTS.map((project) => ({
         url: `${baseUrl}/work/${project.slug}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,
@@ -36,12 +36,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
     // Dynamic Blog routes
-    const blogRoutes = BLOG_POSTS.map((post) => ({
+    const blogUrls = BLOG_POSTS.map((post) => ({
         url: `${baseUrl}/insights/${post.slug}`,
         lastModified: new Date(),
-        changeFrequency: 'yearly' as const,
-        priority: 0.6,
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
     }));
 
-    return [...staticRoutes, ...serviceRoutes, ...projectRoutes, ...blogRoutes];
+    const locationUrls = LOCATIONS.map((loc) => ({
+        url: `${baseUrl}/locations/${loc.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.8,
+    }));
+
+    return [
+        ...staticRoutes,
+        ...serviceUrls,
+        ...projectUrls,
+        ...blogUrls,
+        ...locationUrls,
+    ];
 }

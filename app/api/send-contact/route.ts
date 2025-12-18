@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         const emailData = await resend.emails.send({
             from: 'Narratv Space Website <access@updates.narratv.space>',
             to: ['labeeb@narratv.space'], // Admin Email
-            reply_to: email, // Reply to the user
+            replyTo: email, // Reply to the user
             subject: `New Inquiry: ${name} (${formType === 'project' ? 'Project' : 'General'})`,
             react: ContactFormEmail(body),
         });

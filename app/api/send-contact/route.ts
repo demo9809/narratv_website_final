@@ -2,9 +2,11 @@ import { Resend } from 'resend';
 import ContactFormEmail from '@/components/emails/ContactFormEmail';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
+    // Moved init inside to prevent top-level crashes
+    const resend = new Resend(process.env.RESEND_API_KEY || 're_imm7t67k_88x3hcJ8BvQZDmtYRhpE78jo');
+
     const body = await request.json();
     const { name, email, formType } = body;
 

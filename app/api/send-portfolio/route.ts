@@ -3,9 +3,10 @@ import { Resend } from 'resend';
 import PortfolioAccessEmail from '@/components/emails/PortfolioAccessEmail';
 import { NextResponse } from 'next/server';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_imm7t67k_88x3hcJ8BvQZDmtYRhpE78jo');
 
 export async function POST(request: Request) {
+    const resend = new Resend(process.env.RESEND_API_KEY || 're_imm7t67k_88x3hcJ8BvQZDmtYRhpE78jo');
+
     const { name, email } = await request.json();
 
     if (!name || !email) {

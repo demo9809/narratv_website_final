@@ -1,3 +1,4 @@
+// Forced Re-deploy: 2025-12-18 T15:37 (Cache Buster)
 import React from 'react';
 import './globals.css';
 import type { Metadata } from 'next';

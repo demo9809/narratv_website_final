@@ -7,6 +7,7 @@ import { Mail, MapPin, Phone, CheckCircle, AlertCircle } from 'lucide-react';
 import { CONTACT_DETAILS } from '../../types';
 import { COUNTRY_CODES } from '../../constants/countries';
 
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Contact: React.FC = () => {
@@ -26,14 +27,6 @@ const Contact: React.FC = () => {
 
   const [countryCode, setCountryCode] = useState('+91');
 
-  const COUNTRY_CODES = [
-    { code: '+91', country: 'IN' },
-    { code: '+971', country: 'AE' },
-    { code: '+44', country: 'UK' },
-    { code: '+1', country: 'US' },
-    { code: '+974', country: 'QA' },
-    { code: '+966', country: 'SA' },
-  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -241,10 +234,12 @@ const Contact: React.FC = () => {
                             <select
                               value={countryCode}
                               onChange={(e) => setCountryCode(e.target.value)}
-                              className="bg-transparent border-none py-3 pr-2 focus:ring-0 outline-none text-lg text-brand-black cursor-pointer font-bold w-20 appearance-none"
+                              className="bg-transparent border-none py-3 pr-2 focus:ring-0 outline-none text-lg text-brand-black cursor-pointer font-bold w-24 appearance-none"
                             >
-                              {COUNTRY_CODES.map((c) => (
-                                <option key={c.code} value={c.code}>{c.code}</option>
+                              {COUNTRY_CODES.map((c, i) => (
+                                <option key={`${c.country}-${i}`} value={c.code}>
+                                  {c.flag} {c.country} ({c.code})
+                                </option>
                               ))}
                             </select>
                             <input

@@ -60,7 +60,16 @@ const Contact: React.FC = () => {
         }),
       });
 
-      const data = await response.json();
+      let data;
+      const responseText = await response.text();
+
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        // If response is not JSON (e.g. Vercel 500 HTML), show a snippet
+        console.error('JSON Parse Error:', e);
+        throw new Error(`Server Error: ${responseText.slice(0, 100)}...`);
+      }
 
       if (response.ok) {
         setStatus({
@@ -77,13 +86,21 @@ const Contact: React.FC = () => {
           message: ''
         });
       } else {
-        const errorMessage = data?.errors?.[0]?.error || 'Failed to send message. Please try again.';
-        setStatus({ type: 'error', message: errorMessage });
+        // Extract error details
+        let errorMsg = 'Failed to send message.';
+
+        if (data?.errors && Array.isArray(data.errors)) {
+          errorMsg = data.errors.map((e: any) => `${e.type}: ${e.error}`).join(' | ');
+        } else if (data?.error) {
+          errorMsg = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
+        }
+
+        setStatus({ type: 'error', message: errorMsg });
         console.error('Submission failed', data);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting form:', error);
-      setStatus({ type: 'error', message: 'An unexpected error occurred. Please try again later.' });
+      setStatus({ type: 'error', message: `Debug Error: ${error.message || String(error)}` });
     } finally {
       setIsSubmitting(false);
     }

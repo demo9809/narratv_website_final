@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button } from '../../../components/ui';
 import PortfolioRequestModal from '../../../components/PortfolioRequestModal';
 import { motion } from 'framer-motion';
-import { Project } from '../../../constants';
+import { Project } from '../../../types';
 
 const PORTFOLIO_IMAGES = [
     "/assets/portfolio/portfolio-01.webp",

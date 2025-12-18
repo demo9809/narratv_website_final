@@ -85,9 +85,7 @@ export async function POST(request: Request) {
         results.email = 'failed';
         results.errors.push({ type: 'email', error: error.message });
     }
-} catch (error: any) {
-    console.error('Email failed:', error);
-    results.errors.push({ type: 'email', error: error.message });
+}
 }
 
 // Return success if at least one worked (or generic success to not block user)

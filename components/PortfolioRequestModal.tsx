@@ -22,6 +22,8 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [countdown, setCountdown] = useState(4);
+
 
     const router = useRouter();
 
@@ -113,18 +115,26 @@ export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: Po
                         </button>
 
                         {submitted ? (
-                            <div className="text-center py-10">
+                            <div className="text-center py-8">
                                 <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
-                                    className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    className="w-20 h-20 bg-brand-accent/10 text-brand-accent rounded-full flex items-center justify-center mx-auto mb-6"
                                 >
-                                    <CheckCircle className="w-8 h-8" />
+                                    <CheckCircle className="w-10 h-10" />
                                 </motion.div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-2">Request Received</h3>
-                                <p className="text-gray-600 max-w-xs mx-auto leading-relaxed">
-                                    We have received your details. Our team will share the confidential portfolio access via <strong className="text-brand-black">WhatsApp</strong> or <strong className="text-brand-black">Email</strong> shortly.
+                                <h3 className="text-3xl font-black text-gray-900 mb-3 tracking-tight">Access Granted</h3>
+                                <p className="text-gray-500 max-w-xs mx-auto mb-8 font-light">
+                                    Redirecting to private portfolio in <span className="font-bold text-brand-black">{countdown}s</span>...
                                 </p>
+                                <div className="w-full bg-gray-100 h-1 rounded-full overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: "100%" }}
+                                        animate={{ width: "0%" }}
+                                        transition={{ duration: 4, ease: "linear" }}
+                                        className="h-full bg-brand-accent"
+                                    />
+                                </div>
                             </div>
                         ) : (
                             <div>

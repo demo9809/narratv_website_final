@@ -28,7 +28,16 @@ import { useRouter } from 'next/navigation';
 
 export default function Portfolio() {
   const [isPortfolioModalOpen, setIsPortfolioModalOpen] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
   const router = useRouter();
+
+  // Check access on mount
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('portfolio_access') === 'true') {
+      setHasAccess(true);
+    }
+  }, []);
+
 
   return (
     <>
@@ -42,8 +51,7 @@ export default function Portfolio() {
             mode="dark"
             className="!px-12 !py-6 text-lg !bg-brand-accent !border-brand-accent !text-white hover:!bg-brand-accent/90 shadow-[0_0_40px_-10px_rgba(243,121,93,0.3)] hover:shadow-[0_0_60px_-10px_rgba(243,121,93,0.5)] active:scale-95 transition-all duration-300"
             onClick={() => {
-              console.log("Unlock Clicked. LocalStorage:", typeof window !== 'undefined' ? localStorage.getItem('portfolio_access') : 'N/A');
-              if (typeof window !== 'undefined' && localStorage.getItem('portfolio_access') === 'true') {
+              if (hasAccess) {
                 router.push('/work/access-granted');
               } else {
                 setIsPortfolioModalOpen(true);
@@ -51,7 +59,7 @@ export default function Portfolio() {
             }}
             icon
           >
-            Unlock Full Portfolio
+            {hasAccess ? "Open Private Portfolio" : "Unlock Full Portfolio"}
           </Button>
         </div>
       </section>
@@ -59,6 +67,7 @@ export default function Portfolio() {
       <PortfolioRequestModal
         isOpen={isPortfolioModalOpen}
         onClose={() => setIsPortfolioModalOpen(false)}
+        onSuccess={() => setHasAccess(true)}
       />
     </>
   );

@@ -66,18 +66,13 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      {/* 1. HERO SECTION (Reference Style: Dark, Left Aligned, Big Type) */}
-      <section className="relative min-h-screen flex items-end pb-20 bg-[#050505] text-white pt-32 overflow-hidden">
+      {/* 1. HERO SECTION (Dark - Original Style) */}
+      <section className="relative min-h-[80vh] flex items-end pb-20 bg-brand-black text-white pt-32 overflow-hidden">
         {/* Abstract Background Elements */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-accent/5 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-900/10 rounded-full blur-[100px] pointer-events-none" />
-
-        {/* Background Image Overlay (Subtle) */}
-        <div className="absolute inset-0 z-0 opacity-20 bg-[url('/assets/noise.png')] mix-blend-overlay"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent z-0" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-accent/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
-          <Link href="/services" className="inline-flex items-center text-gray-500 hover:text-white mb-12 transition-colors group">
+          <Link href="/services" className="inline-flex items-center text-gray-400 hover:text-white mb-12 transition-colors group">
             <div className="w-8 h-8 rounded-full border border-gray-700 flex items-center justify-center mr-3 group-hover:border-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
             </div>
@@ -103,39 +98,39 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
         </div>
       </section>
 
-      {/* 2. INTRO & PHILOSOPHY (Grid Layout) */}
-      <section className="py-24 bg-[#050505] text-white border-t border-white/5">
+      {/* 2. INTRO & PHILOSOPHY (Light Theme) */}
+      <section className="py-24 bg-white text-brand-black">
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div>
-              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-8">
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-8 text-gray-900">
                 {service.details.introHeadline}
               </h2>
             </div>
-            <div className="prose prose-lg prose-invert text-gray-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: service.details.introContent }} />
+            <div className="prose prose-lg prose-gray text-gray-600 leading-relaxed" dangerouslySetInnerHTML={{ __html: service.details.introContent }} />
           </div>
         </div>
       </section>
 
-      {/* 3. CAPABILITIES GRID (The Reference "Content Services" Look) */}
-      <section className="py-24 bg-[#0a0a0a] text-white">
+      {/* 3. CAPABILITIES GRID (Light Theme - Gray Background) */}
+      <section className="py-24 bg-gray-50 text-brand-black">
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
           <div className="flex items-end justify-between mb-16">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">Capabilities</h2>
-            <div className="hidden md:block text-gray-500 text-sm">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900">Capabilities</h2>
+            <div className="hidden md:block text-gray-500 text-sm font-medium">
               Comprehensive solutions for growth.
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {service.details.subServices.map((sub, idx) => (
-              <div key={idx} className="group p-8 bg-[#111] border border-white/5 hover:border-brand-accent/50 transition-all duration-300 rounded-lg md:aspect-square flex flex-col justify-between">
+              <div key={idx} className="group p-8 bg-white border border-gray-100 hover:border-brand-accent/30 hover:shadow-xl transition-all duration-300 rounded-xl md:aspect-square flex flex-col justify-between">
                 <div className="flex justify-between items-start">
-                  <span className="text-brand-accent/50 font-mono text-xs">0{idx + 1}</span>
-                  <ArrowUpRight className="w-5 h-5 text-gray-600 group-hover:text-brand-accent transition-colors" />
+                  <span className="text-gray-300 font-mono text-xs font-bold">0{idx + 1}</span>
+                  <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-brand-accent transition-colors" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-3 group-hover:text-brand-accent transition-colors">{sub.title}</h3>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900 group-hover:text-brand-accent transition-colors">{sub.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{sub.description}</p>
                 </div>
               </div>
@@ -144,17 +139,17 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
         </div>
       </section>
 
-      {/* 4. SUCCESS STORIES (Related Projects) */}
+      {/* 4. SUCCESS STORIES (Light Theme) */}
       {relatedProjects.length > 0 && (
-        <section className="py-24 bg-[#050505] text-white overflow-hidden">
+        <section className="py-24 bg-white text-brand-black overflow-hidden border-t border-gray-100">
           <div className="container mx-auto px-6 md:px-12 max-w-7xl">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
               <div>
-                <span className="text-brand-accent font-mono text-sm tracking-widest uppercase mb-2 block">Proven Results</span>
-                <h2 className="text-4xl md:text-5xl font-bold">Featured Projects</h2>
+                <span className="text-brand-accent font-bold font-mono text-sm tracking-widest uppercase mb-2 block">Proven Results</span>
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900">Featured Projects</h2>
               </div>
               <Link href="/work">
-                <Button variant="outline" mode="dark" className="!border-white/20 !text-white hover:!border-white hover:!bg-white hover:!text-black">
+                <Button variant="outline" mode="light" className="hover:!bg-brand-black hover:!text-white">
                   View All Work
                 </Button>
               </Link>
@@ -163,16 +158,16 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {relatedProjects.map((project) => (
                 <Link href={`/work/${project.slug}`} key={project.id} className="group block">
-                  <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-6">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-sm">
                     <img
                       src={project.imageUrl}
                       alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-2 group-hover:text-brand-accent transition-colors">{project.title}</h3>
-                  <p className="text-sm text-gray-500">{project.tags.join(' / ')}</p>
+                  <h3 className="text-2xl font-bold mb-2 text-gray-900 group-hover:text-brand-accent transition-colors">{project.title}</h3>
+                  <p className="text-sm text-gray-500 font-medium">{project.tags.join(' / ')}</p>
                 </Link>
               ))}
             </div>
@@ -180,8 +175,8 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
         </section>
       )}
 
-      {/* 5. IMPACT / WHY CHOOSE US */}
-      <section className="py-24 bg-[#111] text-white border-y border-white/5">
+      {/* 5. IMPACT / WHY CHOOSE US (Dark to Stand Out) */}
+      <section className="py-24 bg-brand-black text-white">
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div>
@@ -198,17 +193,17 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
             <div className="relative">
               {/* Abstract Stats Visual */}
               <div className="grid grid-cols-2 gap-4 h-full">
-                <div className="bg-[#050505] p-8 rounded-2xl flex flex-col justify-center border border-white/5">
+                <div className="bg-white/5 p-8 rounded-2xl flex flex-col justify-center border border-white/5 backdrop-blur-sm">
                   <span className="text-4xl md:text-5xl font-bold text-white mb-2">98%</span>
-                  <span className="text-gray-500 text-sm">Client Retention Rate</span>
+                  <span className="text-gray-400 text-sm">Client Retention Rate</span>
                 </div>
-                <div className="bg-[#050505] p-8 rounded-2xl flex flex-col justify-center border border-white/5 mt-8">
+                <div className="bg-white/5 p-8 rounded-2xl flex flex-col justify-center border border-white/5 mt-8 backdrop-blur-sm">
                   <span className="text-4xl md:text-5xl font-bold text-brand-accent mb-2">50+</span>
-                  <span className="text-gray-500 text-sm">Global Awards</span>
+                  <span className="text-gray-400 text-sm">Global Awards</span>
                 </div>
-                <div className="bg-brand-accent p-8 rounded-2xl flex flex-col justify-center text-black col-span-2">
+                <div className="bg-brand-accent p-8 rounded-2xl flex flex-col justify-center text-black col-span-2 shadow-[0_0_30px_rgba(255,51,102,0.3)]">
                   <span className="text-xl font-bold mb-2">Let's create impact.</span>
-                  <span className="text-black/70 text-sm">Our strategies are built for measurable growth.</span>
+                  <span className="text-black/70 text-sm font-medium">Our strategies are built for measurable growth.</span>
                 </div>
               </div>
             </div>
@@ -216,8 +211,8 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
         </div>
       </section>
 
-      {/* 6. INTERACTIVE & PROBLEM/SOL */}
-      <section className="py-24 bg-[#050505] text-white">
+      {/* 6. INTERACTIVE & PROBLEM/SOL (Light Theme) */}
+      <section className="py-24 bg-white text-gray-900 border-b border-gray-100">
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
           {service.details.interactiveElement && (
             <div className="mb-24">
@@ -226,13 +221,13 @@ export default function ServiceDetail({ params }: { params: { slug: string } }) 
           )}
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-[#111] p-10 rounded-2xl border border-white/5">
-              <h3 className="text-xl text-gray-500 mb-4 font-mono uppercase tracking-widest">{service.details.problemTitle}</h3>
-              <div className="prose prose-p:text-gray-300 prose-invert" dangerouslySetInnerHTML={{ __html: service.details.problemContent }} />
+            <div className="bg-gray-50 p-10 rounded-2xl border border-gray-200">
+              <h3 className="text-xl text-gray-500 mb-4 font-mono uppercase tracking-widest font-bold">{service.details.problemTitle}</h3>
+              <div className="prose prose-p:text-gray-600 prose-gray" dangerouslySetInnerHTML={{ __html: service.details.problemContent }} />
             </div>
-            <div className="bg-brand-accent p-10 rounded-2xl text-black">
-              <h3 className="text-xl text-black/60 mb-4 font-mono uppercase tracking-widest">{service.details.solutionTitle}</h3>
-              <div className="prose prose-p:text-black/90 prose-p:font-medium prose-invert" dangerouslySetInnerHTML={{ __html: service.details.solutionContent }} />
+            <div className="bg-black text-white p-10 rounded-2xl shadow-xl">
+              <h3 className="text-xl text-brand-accent mb-4 font-mono uppercase tracking-widest font-bold">{service.details.solutionTitle}</h3>
+              <div className="prose prose-p:text-gray-300 prose-invert prose-p:font-medium" dangerouslySetInnerHTML={{ __html: service.details.solutionContent }} />
             </div>
           </div>
         </div>

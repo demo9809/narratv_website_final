@@ -31,7 +31,7 @@ export default function PortfolioRequestModal({ isOpen, onClose }: PortfolioRequ
             const response = await fetch('/api/send-portfolio', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email }),
+                body: JSON.stringify({ name, email, company, phone }), // Send full data
             });
 
             let data;

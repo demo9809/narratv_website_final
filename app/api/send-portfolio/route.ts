@@ -7,49 +7,54 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_imm7t67k_88x3hcJ8BvQ
 
 export async function POST(request: Request) {
     const { name, email } = await request.json();
-    const results = {
-        email: 'skipped',
-        adminEmail: 'skipped',
-        telegram: 'skipped',
-        errors: [] as any[]
+
+    if (!name || !email) {
+        return NextResponse.json({ errors: [{ error: 'Name and Email are required' }] }, { status: 400 });
+    }
+
+    const sanitizeError = (err: any) => {
+        if (err instanceof Error) return err.message;
+        if (typeof err === 'object') return JSON.stringify(err, Object.getOwnPropertyNames(err));
+        return String(err);
     };
 
-    // 1. Send Access Email to User
-    try {
-        await resend.emails.send({
-            from: 'Narratv Space <access@updates.narratv.space>',
-            to: [email],
-            subject: 'Access Granted: Narratv Space Portfolio',
-            react: PortfolioAccessEmail({ name }),
-        });
-        results.email = 'sent';
-    } catch (error) {
-        console.error('User email failed:', error);
-        results.email = 'failed';
-        results.errors.push({ type: 'user_email', error });
-    }
+    const sendUserEmail = async () => {
+        try {
+            await resend.emails.send({
+                from: 'Narratv Space <access@updates.narratv.space>',
+                to: [email],
+                subject: 'Access Granted: Narratv Space Portfolio',
+                react: PortfolioAccessEmail({ name }),
+            });
+            return { status: 'fulfilled', type: 'user_email' };
+        } catch (error) {
+            console.error('User email failed:', error);
+            throw { type: 'user_email', error: sanitizeError(error) };
+        }
+    };
 
-    // 2. Notify Admin via Email
-    try {
-        await resend.emails.send({
-            from: 'Narratv Space Website <access@updates.narratv.space>',
-            to: ['labeeb@narratv.space'],
-            subject: `Portfolio Access Requested: ${name}`,
-            text: `Name: ${name}\nEmail: ${email}\n\nThey have been sent the access link.`,
-        });
-        results.adminEmail = 'sent';
-    } catch (error) {
-        console.error('Admin email failed:', error);
-        results.adminEmail = 'failed';
-        // We don't fail the request if just admin email fails
-    }
+    const sendAdminEmail = async () => {
+        try {
+            await resend.emails.send({
+                from: 'Narratv Space Website <access@updates.narratv.space>',
+                to: ['labeeb@narratv.space'],
+                subject: `Portfolio Access Requested: ${name}`,
+                text: `Name: ${name}\nEmail: ${email}\n\nThey have been sent the access link.`,
+            });
+            return { status: 'fulfilled', type: 'admin_email' };
+        } catch (error) {
+            console.error('Admin email failed:', error);
+            throw { type: 'admin_email', error: sanitizeError(error) };
+        }
+    };
 
-    // 3. Notify Admin via Telegram
-    try {
-        const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
-        const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
+    const sendTelegram = async () => {
+        try {
+            const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
+            const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
 
-        if (telegramToken && telegramChatId) {
+            if (!telegramToken || !telegramChatId) throw new Error('Missing Telegram credentials');
+
             const telegramMessage = `
 🔐 *Portfolio Access Requested*
 *Name:* ${name}
@@ -65,25 +70,50 @@ export async function POST(request: Request) {
                     parse_mode: 'Markdown',
                 }),
             });
-            if (tgResponse.ok) {
-                results.telegram = 'sent';
-            } else {
-                results.telegram = 'failed';
+            if (!tgResponse.ok) {
+                throw new Error(`Telegram API Error: ${await tgResponse.text()}`);
             }
+            return { status: 'fulfilled', type: 'telegram' };
+        } catch (error) {
+            console.error('Telegram failed:', error);
+            throw { type: 'telegram', error: sanitizeError(error) };
         }
-    } catch (error) {
-        console.error('Telegram failed:', error);
-        results.telegram = 'failed';
+    };
+
+    // Execute Parallel
+    const results = await Promise.allSettled([sendUserEmail(), sendAdminEmail(), sendTelegram()]);
+
+    const responseData = {
+        email: 'skipped',
+        adminEmail: 'skipped',
+        telegram: 'skipped',
+        errors: [] as any[]
+    };
+
+    results.forEach((result) => {
+        if (result.status === 'fulfilled') {
+            // @ts-ignore
+            if (result.value.type === 'user_email') responseData.email = 'sent';
+            // @ts-ignore
+            if (result.value.type === 'admin_email') responseData.adminEmail = 'sent';
+            // @ts-ignore
+            if (result.value.type === 'telegram') responseData.telegram = 'sent';
+        } else {
+            // @ts-ignore
+            if (result.reason.type === 'user_email') responseData.email = 'failed';
+            // @ts-ignore
+            if (result.reason.type === 'admin_email') responseData.adminEmail = 'failed';
+            // @ts-ignore
+            if (result.reason.type === 'telegram') responseData.telegram = 'failed';
+
+            responseData.errors.push(result.reason);
+        }
+    });
+
+    // If user didn't get email, that's a user-facing error
+    if (responseData.email === 'failed') {
+        return NextResponse.json(responseData, { status: 500 });
     }
 
-    // Critical failure only if user email failed (since getting access is the point)
-    // But for the sake of "submitting form", if telegram works, we can call it a partial success.
-    // However, the frontend probably expects 200 OK.
-
-    if (results.email === 'failed') {
-        // If the user didn't get the email, it's a problem for them.
-        return NextResponse.json(results, { status: 500 });
-    }
-
-    return NextResponse.json(results);
+    return NextResponse.json(responseData);
 }

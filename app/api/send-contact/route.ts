@@ -7,34 +7,43 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, formType } = body;
-    const results = {
-        email: 'skipped',
-        telegram: 'skipped',
-        errors: [] as any[]
-    };
 
-    // 1. Send Email Notification
-    try {
-        await resend.emails.send({
-            from: 'Narratv Space Website <access@updates.narratv.space>',
-            to: ['labeeb@narratv.space'],
-            replyTo: email,
-            subject: `New Inquiry: ${name} (${formType === 'project' ? 'Project' : 'General'})`,
-            react: ContactFormEmail(body),
-        });
-        results.email = 'sent';
-    } catch (error) {
-        console.error('Email sending failed:', error);
-        results.email = 'failed';
-        results.errors.push({ type: 'email', error });
+    // Validate required fields to prevent early failures
+    if (!name || !email) {
+        return NextResponse.json({ errors: [{ error: 'Name and Email are required' }] }, { status: 400 });
     }
 
-    // 2. Send Telegram Notification
-    try {
-        const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
-        const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
+    // Helper to sanitize error objects for JSON response
+    const sanitizeError = (err: any) => {
+        if (err instanceof Error) return err.message;
+        if (typeof err === 'object') return JSON.stringify(err, Object.getOwnPropertyNames(err));
+        return String(err);
+    };
 
-        if (telegramToken && telegramChatId) {
+    // Prepare Tasks
+    const sendEmail = async () => {
+        try {
+            await resend.emails.send({
+                from: 'Narratv Space Website <access@updates.narratv.space>',
+                to: ['labeeb@narratv.space'],
+                replyTo: email,
+                subject: `New Inquiry: ${name} (${formType === 'project' ? 'Project' : 'General'})`,
+                react: ContactFormEmail(body),
+            });
+            return { status: 'fulfilled', type: 'email' };
+        } catch (error) {
+            console.error('Email sending failed:', error);
+            throw { type: 'email', error: sanitizeError(error) };
+        }
+    };
+
+    const sendTelegram = async () => {
+        try {
+            const telegramToken = process.env.TELEGRAM_BOT_TOKEN || '5222581316:AAH9PgAi0ydK1VJd0EbbvzY2T4UK6nZyECw';
+            const telegramChatId = process.env.TELEGRAM_CHAT_ID || '-695246838';
+
+            if (!telegramToken || !telegramChatId) throw new Error('Missing Telegram credentials');
+
             const telegramMessage = `
 🚀 *New Inquiry Received*
 *Type:* ${formType === 'project' ? 'Start a Project' : 'General Inquiry'}
@@ -55,25 +64,43 @@ ${body.message}
                 }),
             });
 
-            if (tgResponse.ok) {
-                results.telegram = 'sent';
-            } else {
-                const tgError = await tgResponse.text();
-                console.error('Telegram API error:', tgError);
-                results.telegram = 'failed';
-                results.errors.push({ type: 'telegram', error: tgError });
+            if (!tgResponse.ok) {
+                const text = await tgResponse.text();
+                throw new Error(`Telegram API Error: ${text}`);
             }
+            return { status: 'fulfilled', type: 'telegram' };
+        } catch (error) {
+            console.error('Telegram sending failed:', error);
+            throw { type: 'telegram', error: sanitizeError(error) };
         }
-    } catch (error) {
-        console.error('Telegram sending failed:', error);
-        results.telegram = 'failed';
-        results.errors.push({ type: 'telegram', error });
+    };
+
+    // Execute in Parallel
+    const results = await Promise.allSettled([sendEmail(), sendTelegram()]);
+
+    // Process Results
+    const responseData = {
+        email: 'skipped',
+        telegram: 'skipped',
+        errors: [] as any[]
+    };
+
+    results.forEach((result, index) => {
+        const type = index === 0 ? 'email' : 'telegram';
+        if (result.status === 'fulfilled') {
+            // @ts-ignore
+            responseData[type] = 'sent';
+        } else {
+            // @ts-ignore
+            responseData[type] = 'failed';
+            responseData.errors.push(result.reason);
+        }
+    });
+
+    // Return success if at least one succeeded
+    if (responseData.email === 'failed' && responseData.telegram === 'failed') {
+        return NextResponse.json(responseData, { status: 500 });
     }
 
-    // Return success if at least one succeeded, otherwise 500
-    if (results.email === 'failed' && results.telegram === 'failed') {
-        return NextResponse.json(results, { status: 500 });
-    }
-
-    return NextResponse.json(results);
+    return NextResponse.json(responseData);
 }

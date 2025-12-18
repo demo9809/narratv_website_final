@@ -94,6 +94,7 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                         {/* Background Decor */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
                         <button
+                            onClick={onClose}
                             className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 transition-colors z-20"
                         >
                             <X className="w-5 h-5" />

@@ -203,18 +203,18 @@ const Navbar: React.FC = () => {
       <AnimatePresence>
         {isCallPopoverOpen && (
           <>
-            <div className="fixed inset-0 z-[45]" onClick={() => setIsCallPopoverOpen(false)}></div>
+            <div className="fixed inset-0 z-[45] bg-black/60 backdrop-blur-sm" onClick={() => setIsCallPopoverOpen(false)}></div>
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="fixed top-20 right-4 z-[50] bg-white text-brand-black p-4 rounded-lg shadow-2xl w-80 md:hidden border border-gray-100"
+              initial={{ opacity: 0, scale: 0.95, x: '-50%', y: '-40%' }}
+              animate={{ opacity: 1, scale: 1, x: '-50%', y: '-50%' }}
+              exit={{ opacity: 0, scale: 0.95, x: '-50%', y: '-40%' }}
+              className="fixed top-1/2 left-1/2 z-[50] bg-white text-brand-black p-6 rounded-2xl shadow-2xl w-[90%] max-w-sm md:hidden border border-gray-100"
             >
-              <div className="mb-4">
-                <h4 className="font-bold text-lg mb-1">Speak to a strategist</h4>
-                <p className="text-gray-500 text-xs mb-3">Available 9am - 6pm IST</p>
-                <a href={`tel:${CONTACT_DETAILS.phone}`} className="flex items-center gap-2 text-brand-accent font-bold text-lg hover:underline">
-                  <Phone className="w-5 h-5" />
+              <div className="mb-6">
+                <h4 className="font-bold text-xl mb-1 text-gray-900">Speak to a Strategist</h4>
+                <p className="text-gray-500 text-sm mb-4">Available 9am - 6pm IST</p>
+                <a href={`tel:${CONTACT_DETAILS.phone}`} className="flex items-center gap-3 text-brand-black font-black text-2xl hover:text-brand-accent transition-colors">
+                  <Phone className="w-6 h-6" />
                   {CONTACT_DETAILS.phone}
                 </a>
               </div>

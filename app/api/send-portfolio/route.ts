@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         const { name, email } = await request.json();
 
         const data = await resend.emails.send({
-            from: 'Narratv Space <portfolio@resend.dev>', // Valid for testing, user should setup domain later
+            from: 'Narratv Space <access@updates.narratv.space>',
             to: [email],
             subject: 'Access Granted: Narratv Space Portfolio',
             react: PortfolioAccessEmail({ name }),

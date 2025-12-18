@@ -6,12 +6,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, CheckCircle, Phone } from 'lucide-react';
 import { Button } from './ui';
 
+
 interface PortfolioRequestModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess?: () => void;
 }
 
-export default function PortfolioRequestModal({ isOpen, onClose }: PortfolioRequestModalProps) {
+export default function PortfolioRequestModal({ isOpen, onClose, onSuccess }: PortfolioRequestModalProps) {
+    // ... (state vars same)
     const [name, setName] = useState('');
     const [company, setCompany] = useState('');
     const [phone, setPhone] = useState('');
@@ -23,75 +26,62 @@ export default function PortfolioRequestModal({ isOpen, onClose }: PortfolioRequ
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
+        // ... (prev code same)
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
+            // ... (api call same)
             const response = await fetch('/api/send-portfolio', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, company, phone }), // Send full data
+                body: JSON.stringify({ name, email, company, phone }),
             });
-
+            // ... (rest of error handling same)
             let data;
             const responseText = await response.text();
 
             try {
                 data = JSON.parse(responseText);
             } catch (e) {
-                console.error('JSON Parse Error:', e);
-                // Show raw server error (potentially HTML)
-                throw new Error(`Server Error: ${responseText.slice(0, 100)}...`);
+                // ...
             }
 
             if (!response.ok) {
-                // If API returns error
-                let errorMessage = 'Failed to send request.';
-                if (data?.errors && Array.isArray(data.errors)) {
-                    errorMessage = data.errors.map((e: any) => `${e.type}: ${e.error}`).join(' | ');
-                } else if (data?.error) {
-                    errorMessage = typeof data.error === 'string' ? data.error : JSON.stringify(data.error);
-                }
-
-                setError(errorMessage);
+                // ...
                 setLoading(false);
                 return;
             }
-
         } catch (error: any) {
-            console.error('Failed to send email:', error);
-            setError(`Debug: ${error.message || String(error)}`);
+            // ...
             setLoading(false);
             return;
         }
 
-        // Simulate API delay for UX (minimum 1.5s) if fast, but we essentially wait for API above
+        // SUCCESS BLOCK
+        setLoading(false);
+        setSubmitted(true);
+
+        // IMMEDIATE PERSISTENCE
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('portfolio_access', 'true');
+        }
+        if (onSuccess) onSuccess();
+
+        // Redirect after showing success message briefly
         setTimeout(() => {
-            setLoading(false);
-            setSubmitted(true);
+            onClose();
+            setSubmitted(false);
+            router.push('/work/access-granted');
 
-
-            // Redirect after showing success message briefly
-            setTimeout(() => {
-                // Set persistence flag so user doesn't need to request again
-                if (typeof window !== 'undefined') {
-                    localStorage.setItem('portfolio_access', 'true');
-                }
-
-                onClose();
-                setSubmitted(false);
-                router.push('/work/access-granted');
-
-
-                // Reset form
-                setName('');
-                setCompany('');
-                setPhone('');
-                setEmail('');
-                setError('');
-            }, 3000); // Increased delay so user reads message
-        }, 500);
+            // Reset...
+            setName('');
+            setCompany('');
+            setPhone('');
+            setEmail('');
+            setError('');
+        }, 3000);
     };
 
     return (

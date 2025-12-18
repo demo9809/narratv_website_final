@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     // 3. Send Email (Secondary - Re-enabled)
     try {
         await resend.emails.send({
-            from: 'onboarding@resend.dev', // Use default testing domain to ensure delivery if custom domain unverified
+            from: 'Narratv Space <access@updates.narratv.space>', // Reverting to custom domain
             to: [email],
             subject: 'Access Granted: Narratv Space Portfolio',
             react: PortfolioAccessEmail({ name }),
@@ -82,10 +82,15 @@ export async function POST(request: Request) {
         results.email = 'sent';
     } catch (error: any) {
         console.error('Email failed:', error);
+        results.email = 'failed';
         results.errors.push({ type: 'email', error: error.message });
     }
+} catch (error: any) {
+    console.error('Email failed:', error);
+    results.errors.push({ type: 'email', error: error.message });
+}
 
-    // Return success if at least one worked (or generic success to not block user)
-    // Client side relies on 200 OK to redirect.
-    return NextResponse.json({ success: true, results });
+// Return success if at least one worked (or generic success to not block user)
+// Client side relies on 200 OK to redirect.
+return NextResponse.json({ success: true, results });
 }

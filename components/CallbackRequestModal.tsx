@@ -82,14 +82,14 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                     />
 
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.95, opacity: 0, y: 20 }}
-                        className="relative bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl z-10 overflow-hidden"
+                        className="relative bg-white w-[90%] md:w-full max-w-md p-6 md:p-8 rounded-2xl shadow-2xl z-10 overflow-hidden"
                     >
                         {/* Background Decor */}
                         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-accent/5 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />

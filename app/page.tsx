@@ -291,10 +291,10 @@ const Home: React.FC = () => {
       </section>
 
       {/* 3. LOCKED WORK SECTION */}
-      <section className="bg-brand-black min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
+      <section className="bg-brand-cream min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
 
         {/* Scrolling Portfolio Background - 3 Row Horizontal Marquee */}
-        <div className="absolute inset-0 z-0 opacity-80 flex flex-col justify-center gap-8 -rotate-3 scale-110">
+        <div className="absolute inset-0 z-0 opacity-100 flex flex-col justify-center gap-8 -rotate-3 scale-110">
 
           {/* Row 1 - Left */}
           <motion.div
@@ -303,7 +303,7 @@ const Home: React.FC = () => {
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
             {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].map((src, i) => (
-              <div key={`row1-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden brightness-90 hover:brightness-110 transition-all duration-700 grayscale-[20%] hover:grayscale-0 shrink-0">
+              <div key={`row1-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
                 <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
               </div>
             ))}
@@ -316,7 +316,7 @@ const Home: React.FC = () => {
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
             {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].reverse().map((src, i) => (
-              <div key={`row2-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden brightness-90 hover:brightness-110 transition-all duration-700 grayscale-[20%] hover:grayscale-0 shrink-0">
+              <div key={`row2-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
                 <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
               </div>
             ))}
@@ -329,7 +329,7 @@ const Home: React.FC = () => {
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
             {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].slice(5).map((src, i) => (
-              <div key={`row3-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden brightness-90 hover:brightness-110 transition-all duration-700 grayscale-[20%] hover:grayscale-0 shrink-0">
+              <div key={`row3-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
                 <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
               </div>
             ))}
@@ -337,31 +337,31 @@ const Home: React.FC = () => {
 
         </div>
 
-        {/* Gradient Overlay - Reduced Density for Visibility */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-black/90 via-brand-black/20 to-brand-black/90 pointer-events-none"></div>
-        <div className="absolute inset-0 z-0 bg-brand-black/10 backdrop-blur-sm pointer-events-none"></div>
+        {/* Gradient Overlay - White/Cream for Light Theme */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-cream/95 via-brand-cream/40 to-brand-cream/95 pointer-events-none"></div>
+        <div className="absolute inset-0 z-0 bg-white/10 backdrop-blur-sm pointer-events-none"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-3 mb-8 border border-white/10 rounded-full px-5 py-2 bg-black/40 backdrop-blur-md shadow-lg">
+          <div className="inline-flex items-center gap-3 mb-8 border border-brand-black/10 rounded-full px-5 py-2 bg-white/60 backdrop-blur-md shadow-sm">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
             </span>
-            <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-white/90">Curated Access</span>
+            <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-brand-black/80">Curated Access</span>
           </div>
 
-          <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
-            Public Results. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-500 to-gray-700">Private Strategies.</span>
+          <h2 className="text-5xl md:text-8xl font-black text-brand-black tracking-tighter mb-8 leading-[0.9]">
+            Public Results. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-600">Private Strategies.</span>
           </h2>
 
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto mb-14 leading-relaxed font-light">
+          <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto mb-14 leading-relaxed font-light">
             In a world of oversharing, we value discretion. Our most transformative work protects our partners' competitive edge. Request access to view our complete, confidential case studies.
           </p>
 
           <Button
             variant="primary"
             mode="dark"
-            className="!px-12 !py-6 text-lg !bg-brand-accent !border-brand-accent !text-white hover:!bg-brand-accent/90 shadow-[0_0_40px_-10px_rgba(243,121,93,0.3)] hover:shadow-[0_0_60px_-10px_rgba(243,121,93,0.5)] active:scale-95 transition-all duration-300"
+            className="!px-12 !py-6 text-lg !bg-brand-black !border-brand-black !text-white hover:!bg-brand-accent hover:!border-brand-accent shadow-xl shadow-brand-black/10 hover:shadow-2xl hover:shadow-brand-accent/20 active:scale-95 transition-all duration-300"
             onClick={() => setIsPortfolioModalOpen(true)}
             icon
           >

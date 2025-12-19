@@ -56,7 +56,7 @@ export default function Insights() {
                 <p className="text-gray-600 leading-relaxed mb-6 line-clamp-3">
                   {post.excerpt}
                 </p>
-                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-end">
+                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-start">
                   <Link href={`/insights/${post.slug}`} className="font-bold text-sm text-brand-black hover:text-brand-accent transition-colors flex items-center gap-2">
                     READ ARTICLE <span className="text-lg">→</span>
                   </Link>

@@ -75,7 +75,7 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-10">
+          <nav className="hidden xl:flex items-center gap-10">
             {NAV_LINKS.map((link) => {
               const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
               return (
@@ -108,7 +108,7 @@ const Navbar: React.FC = () => {
               {/* Call Toggle - Desktop (Sidebar) */}
               <button
                 onClick={() => setIsContactSidebarOpen(true)}
-                className="transition-colors text-gray-300 hover:text-brand-accent hidden md:block"
+                className="transition-colors text-gray-300 hover:text-brand-accent hidden xl:block"
               >
                 <Phone className="w-5 h-5" />
               </button>
@@ -116,7 +116,7 @@ const Navbar: React.FC = () => {
               {/* Call Toggle - Mobile (Popover) */}
               <button
                 onClick={() => setIsCallPopoverOpen(!isCallPopoverOpen)}
-                className={`transition-colors md:hidden ${isCallPopoverOpen ? 'text-brand-accent' : 'text-gray-300 hover:text-brand-accent'}`}
+                className={`transition-colors xl:hidden ${isCallPopoverOpen ? 'text-brand-accent' : 'text-gray-300 hover:text-brand-accent'}`}
               >
                 <Phone className="w-5 h-5" />
               </button>
@@ -128,7 +128,7 @@ const Navbar: React.FC = () => {
           </nav>
 
           {/* Mobile Actions */}
-          <div className="flex items-center gap-4 md:hidden">
+          <div className="flex items-center gap-4 xl:hidden">
             {/* WhatsApp */}
             <a
               href={`https://wa.me/${CONTACT_DETAILS.whatsapp.replace(/[^0-9]/g, '')}?text=Hi%20Narratv%20Team%2C%20I%27d%20like%20to%20discuss%20a%20project.`}
@@ -213,7 +213,7 @@ const Navbar: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed bottom-0 left-0 right-0 z-[50] bg-white text-brand-black p-6 pb-10 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] md:hidden border-t border-gray-100"
+              className="fixed bottom-0 left-0 right-0 z-[50] bg-white text-brand-black p-6 pb-10 rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] xl:hidden border-t border-gray-100"
             >
               {/* Handle */}
               <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-8"></div>

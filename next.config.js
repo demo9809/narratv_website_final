@@ -2,7 +2,6 @@
 const nextConfig = {
   // output: 'export', // Disabled to allow API routes (SSR/Serverless)
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

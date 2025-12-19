@@ -331,6 +331,7 @@ const Home: React.FC = () => {
                     height={300}
                     className="h-full w-auto object-contain"
                     loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 500px"
                   />
                 </div>
               ))
@@ -353,6 +354,7 @@ const Home: React.FC = () => {
                     height={300}
                     className="h-full w-auto object-contain"
                     loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 500px"
                   />
                 </div>
               ))

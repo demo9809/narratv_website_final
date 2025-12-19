@@ -83,11 +83,13 @@ export default function RootLayout({
       "availableLanguage": ["en", "ml"]
     },
     "sameAs": [
-      "https://www.instagram.com/narratvspace",
-      "https://www.facebook.com/narratvspace",
-      "https://www.linkedin.com/company/narratvspace",
-      "https://x.com/narratvspace",
-      "https://www.behance.net/narratvspace"
+      "https://www.instagram.com/narratvespace",
+      "https://www.instagram.com/lifeatnarratve",
+      "https://www.facebook.com/narratvespace/",
+      "https://www.linkedin.com/company/narratvespace",
+      "https://x.com/NarratveSpace",
+      "https://www.behance.net/narratvespace",
+      "https://www.youtube.com/@NarratveSpace"
     ]
   };
 

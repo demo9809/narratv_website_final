@@ -56,18 +56,7 @@ export default function Insights() {
                 <p className="text-gray-600 leading-relaxed mb-6 line-clamp-3">
                   {post.excerpt}
                 </p>
-                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {post.authorImage && (
-                      <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
-                        <img src={post.authorImage} alt={post.author} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <div className="text-xs">
-                      <p className="font-bold text-gray-900">{post.author}</p>
-                      <p className="text-gray-500">{post.authorRole}</p>
-                    </div>
-                  </div>
+                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-end">
                   <Link href={`/insights/${post.slug}`} className="font-bold text-sm text-brand-black hover:text-brand-accent transition-colors flex items-center gap-2">
                     READ ARTICLE <span className="text-lg">→</span>
                   </Link>

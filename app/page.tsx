@@ -315,7 +315,7 @@ const Home: React.FC = () => {
           {/* Row 1 - Left */}
           <motion.div
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+            transition={{ repeat: Infinity, duration: 120, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
             {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].map((src, i) => (
@@ -328,7 +328,7 @@ const Home: React.FC = () => {
           {/* Row 2 - Right (Opposite) */}
           <motion.div
             animate={{ x: ["-50%", "0%"] }}
-            transition={{ repeat: Infinity, duration: 70, ease: "linear" }}
+            transition={{ repeat: Infinity, duration: 140, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
             {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].reverse().map((src, i) => (
@@ -341,7 +341,7 @@ const Home: React.FC = () => {
           {/* Row 3 - Left */}
           <motion.div
             animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, duration: 65, ease: "linear" }}
+            transition={{ repeat: Infinity, duration: 130, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
             {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].slice(5).map((src, i) => (

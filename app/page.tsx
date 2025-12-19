@@ -337,13 +337,8 @@ const Home: React.FC = () => {
 
         </div>
 
-        {/* Gradient Overlay - Blending with Top (White) and Bottom (Gray-50) */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/90 via-transparent to-gray-50/90 pointer-events-none"></div>
-
-        {/* Subtle Blur only near content */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
-          <div className="w-full h-1/2 bg-white/30 backdrop-blur-sm blur-3xl rounded-full"></div>
-        </div>
+        {/* Full Section Blur Overlay */}
+        <div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-[6px] pointer-events-none"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <motion.div

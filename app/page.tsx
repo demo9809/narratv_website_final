@@ -124,6 +124,11 @@ const Home: React.FC = () => {
           }}
         />
 
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
+        </div>
+
         <div className="container mx-auto px-6 md:px-12 max-w-7xl z-10 relative">
           <div className="max-w-6xl">
             <div className="flex items-center gap-4 mb-8 overflow-hidden">

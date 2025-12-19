@@ -6,6 +6,7 @@ import { X, Phone, Mail, CheckCircle, Clock, ArrowRight } from 'lucide-react';
 import { Button } from './ui';
 import { CONTACT_DETAILS } from '../types';
 import { COUNTRY_CODES } from '../constants/countries';
+import { sanitizePhoneNumber, isValidPhonePattern } from '../utils/phone-validation';
 
 interface ContactSidebarProps {
     isOpen: boolean;
@@ -28,6 +29,12 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
         e.preventDefault();
         setLoading(true);
         setError('');
+
+        if (!isValidPhonePattern(phone)) {
+            setError('Please enter a valid phone number.');
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await fetch('/api/send-contact', {
@@ -180,7 +187,10 @@ export default function ContactSidebar({ isOpen, onClose }: ContactSidebarProps)
                                                     type="tel"
                                                     required
                                                     value={phone}
-                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    onChange={(e) => {
+                                                        const val = sanitizePhoneNumber(e.target.value);
+                                                        if (val.length <= 15) setPhone(val);
+                                                    }}
                                                     placeholder="Phone Number"
                                                     className="flex-1 px-0 py-3 bg-transparent border-b border-gray-200 focus:border-brand-accent outline-none transition-all text-brand-black placeholder-gray-400 font-medium text-lg"
                                                 />

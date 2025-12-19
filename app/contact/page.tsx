@@ -6,6 +6,7 @@ import { Section, Button } from '../../components/ui';
 import { Mail, MapPin, Phone, CheckCircle, AlertCircle } from 'lucide-react';
 import { CONTACT_DETAILS } from '../../types';
 import { COUNTRY_CODES } from '../../constants/countries';
+import { sanitizePhoneNumber, isValidPhonePattern } from '../../utils/phone-validation';
 
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,6 +30,15 @@ const Contact: React.FC = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
+
+    if (id === 'phone') {
+      const sanitized = sanitizePhoneNumber(value);
+      if (sanitized.length <= 15) {
+        setFormData(prev => ({ ...prev, [id]: sanitized }));
+      }
+      return;
+    }
+
     // Handle select element which doesn't have an id attribute in standard way sometimes, but here we can rely on id or name
     // The select for budget needs an id or name.
     setFormData(prev => ({ ...prev, [id]: value }));
@@ -49,6 +59,12 @@ const Contact: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus({ type: null, message: '' });
+
+    if (!isValidPhonePattern(formData.phone)) {
+      setStatus({ type: 'error', message: 'Please enter a valid phone number.' });
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await fetch('/api/send-contact', {

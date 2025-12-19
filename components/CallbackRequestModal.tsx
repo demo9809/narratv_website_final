@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, CheckCircle, Phone, Clock } from 'lucide-react';
 import { Button } from './ui';
 import { COUNTRY_CODES } from '../constants/countries';
+import { sanitizePhoneNumber, isValidPhonePattern } from '../utils/phone-validation';
 
 interface CallbackRequestModalProps {
     isOpen: boolean;
@@ -24,6 +25,12 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
         e.preventDefault();
         setLoading(true);
         setError('');
+
+        if (!isValidPhonePattern(phone)) {
+            setError('Please enter a valid phone number.');
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await fetch('/api/send-contact', {
@@ -171,7 +178,10 @@ export default function CallbackRequestModal({ isOpen, onClose }: CallbackReques
                                                     id="phone"
                                                     required
                                                     value={phone}
-                                                    onChange={(e) => setPhone(e.target.value)}
+                                                    onChange={(e) => {
+                                                        const val = sanitizePhoneNumber(e.target.value);
+                                                        if (val.length <= 15) setPhone(val);
+                                                    }}
                                                     placeholder="98765 43210"
                                                     className="w-full pl-4 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-r-lg focus:ring-2 focus:ring-brand-accent focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
                                                 />

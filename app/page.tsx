@@ -341,32 +341,41 @@ const Home: React.FC = () => {
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-cream/95 via-brand-cream/40 to-brand-cream/95 pointer-events-none"></div>
         <div className="absolute inset-0 z-0 bg-white/10 backdrop-blur-sm pointer-events-none"></div>
 
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-3 mb-8 border border-brand-black/10 rounded-full px-5 py-2 bg-white/60 backdrop-blur-md shadow-sm">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
-            </span>
-            <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-brand-black/80">Curated Access</span>
-          </div>
-
-          <h2 className="text-5xl md:text-8xl font-black text-brand-black tracking-tighter mb-8 leading-[0.9]">
-            Public Results. <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-600">Private Strategies.</span>
-          </h2>
-
-          <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto mb-14 leading-relaxed font-light">
-            In a world of oversharing, we value discretion. Our most transformative work protects our partners' competitive edge. Request access to view our complete, confidential case studies.
-          </p>
-
-          <Button
-            variant="primary"
-            mode="dark"
-            className="!px-12 !py-6 text-lg !bg-brand-black !border-brand-black !text-white hover:!bg-brand-accent hover:!border-brand-accent shadow-xl shadow-brand-black/10 hover:shadow-2xl hover:shadow-brand-accent/20 active:scale-95 transition-all duration-300"
-            onClick={() => setIsPortfolioModalOpen(true)}
-            icon
+        <div className="relative z-10 max-w-4xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="bg-white/70 backdrop-blur-xl p-8 md:p-14 rounded-[2rem] shadow-2xl border border-white/50"
           >
-            Unlock Full Portfolio
-          </Button>
+            <div className="inline-flex items-center gap-3 mb-8 border border-brand-black/5 rounded-full px-5 py-2 bg-white shadow-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
+              </span>
+              <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-brand-black">Curated Access</span>
+            </div>
+
+            <h2 className="text-4xl md:text-7xl font-black text-brand-black tracking-tighter mb-8 leading-[0.95]">
+              Public Results. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-black to-gray-500">Private Strategies.</span>
+            </h2>
+
+            <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+              In a world of oversharing, we value discretion. Our most transformative work protects our partners' competitive edge.
+            </p>
+
+            <Button
+              variant="primary"
+              mode="dark"
+              className="!px-10 !py-5 text-lg !bg-brand-black !border-brand-black !text-white hover:!bg-brand-accent hover:!border-brand-accent shadow-xl shadow-brand-black/5 hover:shadow-2xl hover:shadow-brand-accent/20 active:scale-95 transition-all duration-300 w-full md:w-auto justify-center"
+              onClick={() => setIsPortfolioModalOpen(true)}
+              icon
+            >
+              Request Access
+            </Button>
+          </motion.div>
         </div>
       </section>
 

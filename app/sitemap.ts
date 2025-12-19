@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { SERVICES, PROJECTS, BLOG_POSTS, LOCATIONS } from '../constants';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://narratv.co';
+    const baseUrl = 'https://narratv.space';
 
     // Static routes
     const staticRoutes = [

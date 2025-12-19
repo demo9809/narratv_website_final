@@ -32,8 +32,8 @@ export default function LocationPage({ params }: { params: { slug: string } }) {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "name": `Narratv Space ${location.name}`,
-        "image": "https://narratv.co/logo.png",
-        "url": `https://narratv.co/locations/${location.slug}`,
+        "image": "https://narratv.space/logo.png",
+        "url": `https://narratv.space/locations/${location.slug}`,
         "telephone": "+918714531301",
         "address": {
             "@type": "PostalAddress",

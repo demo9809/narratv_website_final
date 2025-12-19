@@ -106,7 +106,7 @@ export interface NavLink {
 }
 
 export const CONTACT_DETAILS = {
-  email: "hello@narratv.co",
+  email: "hello@narratv.space",
   phone: "+91 87145 31301",
   whatsapp: "+91 87145 31301",
   address: "Room No. 6, Ground Floor, KINFRA Advanced Technology Park, Ramanattukara - Calicut, Kerala 673631",

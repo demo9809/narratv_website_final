@@ -69,9 +69,9 @@ const Home: React.FC = () => {
     "@type": "AdvertisingAgency",
     "name": "Narratv Space",
     "alternateName": "Narrative Space",
-    "image": "https://narratv.co/logo.png",
-    "@id": "https://narratv.co",
-    "url": "https://narratv.co",
+    "image": "https://narratv.space/logo.png",
+    "@id": "https://narratv.space",
+    "url": "https://narratv.space",
     "telephone": "+918714531301",
     "address": {
       "@type": "PostalAddress",

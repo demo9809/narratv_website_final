@@ -10,8 +10,12 @@ import Footer from '../components/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://narratv.space'),
   title: 'Narratv Space | Advertising Agency Kerala | Branding & Digital Marketing',
-  description: 'Narratv Space (Narrative Space) is a strategic advertising agency in Calicut, Kerala. We specialize in Branding, Ad Campaigns, Video Production, and Digital Marketing for clients in Kochi, UAE, and India.',
+  description: 'Narratv Space (Narrative Space) is a strategic advertising agency in Calicut, Kerala. We specialize in Branding, Ad Campaigns, Video Production, and Digital Marketing.',
+  alternates: {
+    canonical: './',
+  },
   keywords: [
     'Advertising Agency Kerala',
     'Narrative Space Calicut',
@@ -25,11 +29,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Narratv Space | Advertising Agency Kerala',
     description: 'Strategic branding and advertising. Based in Calicut, serving Kerala, Middle East, and Europe.',
-    url: 'https://narratv.co/',
+    url: 'https://narratv.space/',
     siteName: 'Narratv Space',
     images: [
       {
-        url: 'https://narratv.co/og-image.jpg',
+        url: 'https://narratv.space/og-image.jpg',
         width: 1200,
         height: 630,
       },
@@ -41,10 +45,13 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Narratv Space | Advertising Agency Kerala',
     description: 'Transforming brands through strategy and storytelling. Narrative Space.',
-    images: ['https://narratv.co/og-image.jpg'],
+    images: ['https://narratv.space/og-image.jpg'],
   },
   icons: {
     icon: '/assets/favicon.webp',
+  },
+  verification: {
+    google: 'Yl6nBHARgb5Ltpdr80TZ_d3BZi06uR4bMJyLRiosSs8',
   },
 };
 
@@ -59,8 +66,8 @@ export default function RootLayout({
     "name": "Narratv Space",
     "alternateName": "Narrative Space",
     "description": "Strategic Advertising and Digital Marketing Agency based in Kerala.",
-    "url": "https://narratv.co",
-    "logo": "https://narratv.co/logo.png",
+    "url": "https://narratv.space",
+    "logo": "https://narratv.space/logo.png",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Calicut",

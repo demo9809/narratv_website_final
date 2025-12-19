@@ -43,7 +43,7 @@ export default function InsightDetail({ params }: { params: { slug: string } }) 
       "name": "Narratv Space",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://narratv.co/logo.png"
+        "url": "https://narratv.space/logo.png"
       }
     },
     "datePublished": post.date,

@@ -291,7 +291,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* 3. LOCKED WORK SECTION */}
-      <section className="bg-brand-cream min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
+      <section className="bg-gradient-to-b from-white via-brand-cream to-gray-50 min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
 
         {/* Scrolling Portfolio Background - 3 Row Horizontal Marquee */}
         <div className="absolute inset-0 z-0 opacity-100 flex flex-col justify-center gap-8 -rotate-3 scale-110">
@@ -337,9 +337,13 @@ const Home: React.FC = () => {
 
         </div>
 
-        {/* Gradient Overlay - White/Cream for Light Theme */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-cream/95 via-brand-cream/40 to-brand-cream/95 pointer-events-none"></div>
-        <div className="absolute inset-0 z-0 bg-white/10 backdrop-blur-sm pointer-events-none"></div>
+        {/* Gradient Overlay - Blending with Top (White) and Bottom (Gray-50) */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-white/90 via-transparent to-gray-50/90 pointer-events-none"></div>
+
+        {/* Subtle Blur only near content */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
+          <div className="w-full h-1/2 bg-white/30 backdrop-blur-sm blur-3xl rounded-full"></div>
+        </div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <motion.div
@@ -347,23 +351,23 @@ const Home: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-white/70 backdrop-blur-xl p-8 md:p-14 rounded-[2rem] shadow-2xl border border-white/50"
+            className="bg-white/80 backdrop-blur-xl p-8 md:p-14 rounded-[2rem] shadow-2xl border border-white/60"
           >
             <div className="inline-flex items-center gap-3 mb-8 border border-brand-black/5 rounded-full px-5 py-2 bg-white shadow-sm">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
               </span>
-              <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-brand-black">Curated Access</span>
+              <span className="text-xs font-mono font-bold tracking-[0.2em] uppercase text-brand-black">Case Studies</span>
             </div>
 
             <h2 className="text-4xl md:text-7xl font-black text-brand-black tracking-tighter mb-8 leading-[0.95]">
-              Public Results. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-black to-gray-500">Private Strategies.</span>
+              Selected Works. <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-black to-gray-500">Real Impact.</span>
             </h2>
 
             <p className="text-lg md:text-xl text-gray-700 max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
-              In a world of oversharing, we value discretion. Our most transformative work protects our partners' competitive edge.
+              Explore our latest campaigns and digital experiences. From rapid-growth startups to established global brands.
             </p>
 
             <Button
@@ -373,7 +377,7 @@ const Home: React.FC = () => {
               onClick={() => setIsPortfolioModalOpen(true)}
               icon
             >
-              Request Access
+              View Full Portfolio
             </Button>
           </motion.div>
         </div>

@@ -1032,6 +1032,7 @@ export const BLOG_POSTS: BlogPost[] = [
     imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop',
     author: 'Elena Rostova',
     authorRole: 'Chief Strategist',
+    authorImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=688&auto=format&fit=crop',
     tags: ['Marketing Strategy', 'Kerala Business', 'Digital Trends', 'Branding']
   },
   {
@@ -1066,6 +1067,7 @@ export const BLOG_POSTS: BlogPost[] = [
     imageUrl: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop',
     author: 'Marcus Chen',
     authorRole: 'Executive Creative Director',
+    authorImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1170&auto=format&fit=crop',
     tags: ['AI Marketing', 'Future Trends', 'Innovation', 'Technology']
   },
   {

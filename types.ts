@@ -97,6 +97,7 @@ export interface BlogPost {
   readTime: string;
   author: string;
   authorRole: string;
+  authorImage?: string; // URL to author headshot
   tags: string[];
 }
 

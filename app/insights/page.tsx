@@ -26,34 +26,52 @@ export default function Insights() {
       </section>
 
       <Section>
-        <div className="grid grid-cols-1 gap-12 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16 max-w-6xl mx-auto">
           {posts.map((post, idx) => (
             <article
               key={post.id}
-              className="group flex flex-col md:flex-row gap-8 items-start border-b border-gray-100 pb-12 last:border-0"
+              className="group flex flex-col gap-6"
             >
-              <Link href={`/insights/${post.slug}`} className="w-full md:w-1/3 aspect-[3/2] overflow-hidden rounded-sm bg-gray-200 block">
+              <Link href={`/insights/${post.slug}`} className="w-full aspect-[16/9] overflow-hidden rounded-lg bg-gray-100 block relative">
                 <img
                   src={post.imageUrl}
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
               </Link>
-              <div className="flex-1">
-                <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                  <span className="font-semibold text-brand-accent uppercase tracking-widest text-xs">{post.category}</span>
-                  <span>•</span>
-                  <span>{post.date}</span>
-                  <span>•</span>
-                  <span>{post.readTime}</span>
+              <div className="flex flex-col flex-1">
+                <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-brand-accent mb-4 uppercase">
+                  <span>{post.category}</span>
+                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-500">{post.date}</span>
+                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-500">{post.readTime}</span>
                 </div>
                 <Link href={`/insights/${post.slug}`}>
-                  <h2 className="text-3xl font-bold mb-3 group-hover:text-brand-accent transition-colors cursor-pointer">{post.title}</h2>
+                  <h2 className="text-3xl font-bold mb-4 leading-tight group-hover:text-brand-accent transition-colors cursor-pointer text-gray-900">
+                    {post.title}
+                  </h2>
                 </Link>
-                <p className="text-gray-600 leading-relaxed mb-6">{post.excerpt}</p>
-                <Link href={`/insights/${post.slug}`}>
-                  <Button variant="text" className="group-hover:translate-x-2 transition-transform">Read Article</Button>
-                </Link>
+                <p className="text-gray-600 leading-relaxed mb-6 line-clamp-3">
+                  {post.excerpt}
+                </p>
+                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {post.authorImage && (
+                      <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200">
+                        <img src={post.authorImage} alt={post.author} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="text-xs">
+                      <p className="font-bold text-gray-900">{post.author}</p>
+                      <p className="text-gray-500">{post.authorRole}</p>
+                    </div>
+                  </div>
+                  <Link href={`/insights/${post.slug}`} className="font-bold text-sm text-brand-black hover:text-brand-accent transition-colors flex items-center gap-2">
+                    READ ARTICLE <span className="text-lg">→</span>
+                  </Link>
+                </div>
               </div>
             </article>
           ))}

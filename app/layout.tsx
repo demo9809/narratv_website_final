@@ -84,19 +84,20 @@ export default function RootLayout({
     },
     "sameAs": [
       "https://www.instagram.com/narratvspace",
-      "https://www.linkedin.com/company/narratvspace"
+      "https://www.facebook.com/narratvspace",
+      "https://www.linkedin.com/company/narratvspace",
+      "https://x.com/narratvspace",
+      "https://www.behance.net/narratvspace"
     ]
   };
 
   return (
     <html lang="en">
-      <head>
+      <body className={`${inter.className} min-h-screen flex flex-col bg-white text-brand-black selection:bg-brand-accent selection:text-white`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body className={`${inter.className} min-h-screen flex flex-col bg-white text-brand-black selection:bg-brand-accent selection:text-white`}>
         <Navbar />
         <main className="flex-grow">
           {children}

@@ -137,17 +137,19 @@ const Home: React.FC = () => {
               </span>
             </div>
 
-            <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.85] mb-12 mix-blend-normal relative">
-              <span
-                className="block"
-              >
-                Narrative
-              </span>
-              <span
-                className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500"
-              >
-                Space.
-              </span>
+            <div className="relative mb-12 w-fit">
+              <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.85] mix-blend-normal">
+                <span
+                  className="block"
+                >
+                  Narrative
+                </span>
+                <span
+                  className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500"
+                >
+                  Space.
+                </span>
+              </h1>
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -155,7 +157,7 @@ const Home: React.FC = () => {
               >
                 <div className="w-2 h-2 bg-brand-accent rounded-full absolute top-0 left-1/2 -translate-x-1/2" />
               </motion.div>
-            </h1>
+            </div>
 
             <div className="flex flex-col md:flex-row gap-12 items-start md:items-end">
               <motion.div

@@ -1,0 +1,32 @@
+public/assets/portfolio/portfolio-16.webp
+public/assets/portfolio/portfolio-01.webp
+public/assets/portfolio/portfolio-17.webp
+public/assets/portfolio/portfolio-10.webp
+public/assets/portfolio/portfolio-06.webp
+public/assets/portfolio/portfolio-07.webp
+public/assets/portfolio/Moment Marketing/tg_image_3896945327.jpeg
+public/assets/portfolio/Moment Marketing/13 (1).jpeg
+public/assets/portfolio/Moment Marketing/12 (1).jpeg
+public/assets/portfolio/Moment Marketing/1 (1).jpeg
+public/assets/portfolio/Moment Marketing/14 (1).jpeg
+public/assets/portfolio/Moment Marketing/15 (1).jpeg
+public/assets/portfolio/Moment Marketing/7 (1).jpeg
+public/assets/portfolio/Moment Marketing/2 (1).jpeg
+public/assets/portfolio/Moment Marketing/3 (1).jpeg
+public/assets/portfolio/Moment Marketing/9 (1).jpeg
+public/assets/portfolio/Moment Marketing/10 (1).jpeg
+public/assets/portfolio/Moment Marketing/11 (1).jpeg
+public/assets/portfolio/Moment Marketing/4 (1).jpeg
+public/assets/portfolio/Moment Marketing/17 (1).jpeg
+public/assets/portfolio/Moment Marketing/16 (1).jpeg
+public/assets/portfolio/portfolio-08.webp
+public/assets/portfolio/portfolio-09.webp
+public/assets/portfolio/Campaign/Anum Plywoods/portfolio-02.webp
+public/assets/portfolio/Campaign/Anum Plywoods/portfolio-03.webp
+public/assets/portfolio/Campaign/Back to School/portfolio-12.webp
+public/assets/portfolio/Campaign/Back to School/portfolio-13.webp
+public/assets/portfolio/Campaign/Back to School/portfolio-14.webp
+public/assets/portfolio/portfolio-05.webp
+public/assets/portfolio/portfolio-18.webp
+public/assets/portfolio/telegram-cloud-document-5-6204185120698538698.jpg
+public/assets/portfolio/portfolio-15.webp

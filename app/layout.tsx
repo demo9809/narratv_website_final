@@ -95,7 +95,6 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <link rel="preconnect" href="https://grainy-gradients.vercel.app" />
       </head>
       <body className={`${inter.className} min-h-screen flex flex-col bg-white text-brand-black selection:bg-brand-accent selection:text-white`}>
         <Navbar />

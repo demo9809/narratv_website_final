@@ -195,7 +195,7 @@ const Home: React.FC = () => {
         </div>
 
         {/* Ambient Noise Texture */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-15 pointer-events-none mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-[url('/assets/noise.svg')] opacity-15 pointer-events-none mix-blend-overlay"></div>
 
         {/* Floating Abstract Element */}
         <motion.div

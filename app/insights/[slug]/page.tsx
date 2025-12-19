@@ -72,19 +72,8 @@ export default function InsightDetail({ params }: { params: { slug: string } }) 
               {post.title}
             </h1>
             <div className="flex items-center gap-4 border-t border-white/10 pt-8 mt-8">
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-brand-accent/50">
-                {post.authorImage ? (
-                  <img src={post.authorImage} alt={post.author} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-brand-accent to-purple-600" />
-                )}
-              </div>
-              <div>
-                <p className="font-bold text-white text-lg">{post.author}</p>
-                <p className="text-brand-accent text-xs uppercase tracking-widest">{post.authorRole}</p>
-              </div>
-              <div className="ml-auto flex gap-4 text-gray-400">
-                <p className="hidden md:block">{post.date}</p>
+              <div className="flex gap-4 text-gray-400">
+                <p>{post.date}</p>
               </div>
             </div>
           </div>

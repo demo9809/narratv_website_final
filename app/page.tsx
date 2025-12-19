@@ -294,7 +294,7 @@ const Home: React.FC = () => {
       <section className="bg-brand-black min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
 
         {/* Scrolling Portfolio Background - 3 Row Horizontal Marquee */}
-        <div className="absolute inset-0 z-0 opacity-60 flex flex-col justify-center gap-8 -rotate-3 scale-110">
+        <div className="absolute inset-0 z-0 opacity-80 flex flex-col justify-center gap-8 -rotate-3 scale-110">
 
           {/* Row 1 - Left */}
           <motion.div
@@ -337,9 +337,9 @@ const Home: React.FC = () => {
 
         </div>
 
-        {/* Gradient Overlay - Increased Density */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-black/90 via-brand-black/70 to-brand-black/90 pointer-events-none"></div>
-        <div className="absolute inset-0 z-0 bg-brand-black/30 backdrop-blur-[2px] pointer-events-none"></div>
+        {/* Gradient Overlay - Reduced Density for Visibility */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-brand-black/90 via-brand-black/20 to-brand-black/90 pointer-events-none"></div>
+        <div className="absolute inset-0 z-0 bg-brand-black/10 backdrop-blur-sm pointer-events-none"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-3 mb-8 border border-white/10 rounded-full px-5 py-2 bg-black/40 backdrop-blur-md shadow-lg">

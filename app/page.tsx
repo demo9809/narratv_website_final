@@ -159,9 +159,6 @@ const Home: React.FC = () => {
 
             <div className="flex flex-col md:flex-row gap-12 items-start md:items-end">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
                 className="text-lg md:text-3xl text-gray-400 max-w-3xl font-light leading-relaxed"
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-2">

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, MessageCircle, Headphones } from 'lucide-react';
 import { NAV_LINKS } from '../constants';
@@ -62,10 +63,13 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <Link href="/" className="z-50 relative group">
             <div className="relative w-32 h-8 md:w-40 md:h-10">
-              <img
+              <Image
                 src="/assets/logo-white.png"
                 alt="Narratv Space"
-                className="object-contain w-full h-full"
+                fill
+                className="object-contain"
+                priority
+                sizes="(max-width: 768px) 128px, 160px"
               />
             </div>
           </Link>

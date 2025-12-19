@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 const CLIENTS = [
@@ -53,10 +54,12 @@ const ClientMarquee = () => {
                                     key={index}
                                     className="relative w-32 h-16 md:w-40 md:h-24 flex-shrink-0 mx-4 md:mx-6 flex items-center justify-center transition-all duration-500 cursor-pointer hover:scale-110"
                                 >
-                                    <img
+                                    <Image
                                         src={logo}
                                         alt={`Client Logo`}
-                                        className="max-w-full max-h-full object-contain"
+                                        className="object-contain"
+                                        fill
+                                        sizes="(max-width: 768px) 128px, 160px"
                                     />
                                 </div>
                             ))}

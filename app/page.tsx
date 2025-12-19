@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { ArrowRight, Globe, Layers, Zap, Users, ArrowUpRight, Play, Star } from 'lucide-react';
 import { Section, Button } from '../components/ui';
@@ -124,46 +125,29 @@ const Home: React.FC = () => {
         />
 
         <div className="container mx-auto px-6 md:px-12 max-w-7xl z-10 relative">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="max-w-6xl"
-          >
+          <div className="max-w-6xl">
             <div className="flex items-center gap-4 mb-8 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: '3rem' }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="h-[1px] bg-brand-accent"
+              <div
+                className="h-[1px] bg-brand-accent w-12"
               />
-              <motion.span
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
+              <span
                 className="text-brand-accent font-mono text-xs md:text-sm tracking-[0.2em] uppercase"
               >
                 Advertising Agency in Kerala
-              </motion.span>
+              </span>
             </div>
 
             <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.85] mb-12 mix-blend-normal relative">
-              <motion.span
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+              <span
                 className="block"
               >
                 Narrative
-              </motion.span>
-              <motion.span
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+              </span>
+              <span
                 className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500"
               >
                 Space.
-              </motion.span>
+              </span>
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -210,7 +194,7 @@ const Home: React.FC = () => {
                 </Button>
               </motion.div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Ambient Noise Texture */}
@@ -304,57 +288,84 @@ const Home: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* 3. LOCKED WORK SECTION */}
-      <section className="bg-gradient-to-b from-white via-brand-cream to-gray-50 min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
+      < section className="bg-gradient-to-b from-white via-brand-cream to-gray-50 min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6" >
 
         {/* Scrolling Portfolio Background - 3 Row Horizontal Marquee */}
-        <div className="absolute inset-0 z-0 opacity-100 flex flex-col justify-center gap-8 -rotate-3 scale-110">
+        < div className="absolute inset-0 z-0 opacity-100 flex flex-col justify-center gap-8 -rotate-3 scale-110" >
 
           {/* Row 1 - Left */}
-          <motion.div
+          < motion.div
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 120, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
-            {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].map((src, i) => (
-              <div key={`row1-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
-                <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
-              </div>
-            ))}
-          </motion.div>
+            {
+              [...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].map((src, i) => (
+                <div key={`row1-${i}`} className="h-[35vh] w-auto aspect-[4/3] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
+                  <Image
+                    src={src}
+                    alt="Portfolio"
+                    width={400}
+                    height={300}
+                    className="h-full w-auto object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ))
+            }
+          </motion.div >
 
           {/* Row 2 - Right (Opposite) */}
-          <motion.div
+          < motion.div
             animate={{ x: ["-50%", "0%"] }}
             transition={{ repeat: Infinity, duration: 140, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
-            {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].reverse().map((src, i) => (
-              <div key={`row2-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
-                <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
-              </div>
-            ))}
-          </motion.div>
+            {
+              [...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].reverse().map((src, i) => (
+                <div key={`row2-${i}`} className="h-[35vh] w-auto aspect-[4/3] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
+                  <Image
+                    src={src}
+                    alt="Portfolio"
+                    width={400}
+                    height={300}
+                    className="h-full w-auto object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ))
+            }
+          </motion.div >
 
           {/* Row 3 - Left */}
-          <motion.div
+          < motion.div
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 130, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
           >
-            {[...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].slice(5).map((src, i) => (
-              <div key={`row3-${i}`} className="h-[35vh] w-auto aspect-[auto] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
-                <img src={src} alt="Portfolio" className="h-full w-auto object-contain" />
-              </div>
-            ))}
-          </motion.div>
+            {
+              [...PORTFOLIO_IMAGES, ...PORTFOLIO_IMAGES].slice(5).map((src, i) => (
+                <div key={`row3-${i}`} className="h-[35vh] w-auto aspect-[4/3] relative rounded-lg overflow-hidden transition-all duration-700 shrink-0 shadow-sm">
+                  <Image
+                    src={src}
+                    alt="Portfolio"
+                    width={400}
+                    height={300}
+                    className="h-full w-auto object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              ))
+            }
+          </motion.div >
 
-        </div>
+        </div >
 
         {/* Full Section Blur Overlay */}
-        <div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-[6px] pointer-events-none"></div>
+        < div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-[6px] pointer-events-none" ></div >
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <motion.div
@@ -392,10 +403,10 @@ const Home: React.FC = () => {
             </Button>
           </motion.div>
         </div>
-      </section>
+      </section >
 
       {/* 4. SERVICES - ELEGANT GRID */}
-      <Section bgColor="gray" className="py-32">
+      < Section bgColor="gray" className="py-32" >
         <div className="flex flex-col md:flex-row justify-between items-end mb-20">
           <div className="max-w-3xl">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-6">Expertise</h2>
@@ -429,12 +440,12 @@ const Home: React.FC = () => {
             </Link>
           ))}
         </div>
-      </Section>
+      </Section >
 
       {/* 5. STRATEGIC PROCESS (Premium Dark Mode) */}
-      <section className="bg-brand-black py-32 relative overflow-hidden text-white">
+      < section className="bg-brand-black py-32 relative overflow-hidden text-white" >
         {/* Background Texture */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+        < div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay" ></div >
 
         <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
           <div className="text-center mb-24">
@@ -465,10 +476,10 @@ const Home: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* 6. FAQ SECTION (SEO Rich) */}
-      <section className="bg-brand-cream py-32">
+      < section className="bg-brand-cream py-32" >
         <div className="container mx-auto px-6 md:px-12 max-w-4xl">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-brand-black mb-6 tracking-tight">Frequently Asked Questions</h2>
@@ -497,7 +508,7 @@ const Home: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section >
     </>
   );
 };

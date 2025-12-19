@@ -346,7 +346,7 @@ const Home: React.FC = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-white/80 backdrop-blur-xl p-8 md:p-14 rounded-[2rem] shadow-2xl border border-white/60"
+            className="bg-white/10 backdrop-blur-md p-8 md:p-14 rounded-[2rem] border border-white/20"
           >
             <div className="inline-flex items-center gap-3 mb-8 border border-brand-black/5 rounded-full px-5 py-2 bg-white shadow-sm">
               <span className="relative flex h-2 w-2">

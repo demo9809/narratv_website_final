@@ -118,22 +118,26 @@ const Footer: React.FC = () => {
           <p>&copy; {new Date().getFullYear()} Narratv Space. All rights reserved.</p>
           <div className="flex gap-8 mt-4 md:mt-0">
             <div className="flex gap-6 items-center">
-              <a href="https://www.instagram.com/narratvspace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="Instagram">
+              <a href="https://www.instagram.com/narratvespace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="Instagram">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://www.facebook.com/narratvspace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="Facebook">
+              <a href="https://www.facebook.com/narratvespace/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="Facebook">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               </a>
-              <a href="https://www.linkedin.com/company/narratvspace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="LinkedIn">
+              <a href="https://www.linkedin.com/company/narratvespace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="LinkedIn">
                 <Linkedin className="w-5 h-5" />
               </a>
-              <a href="https://x.com/narratvspace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="X (Twitter)">
+              <a href="https://x.com/NarratveSpace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="X (Twitter)">
                 {/* X Logo */}
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M4 4l11.733 16h4.267l-11.733 -16z" /><path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" /></svg>
               </a>
-              <a href="https://www.behance.net/narratvspace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="Behance">
+              <a href="https://www.behance.net/narratvespace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="Behance">
                 {/* Behance Logo */}
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M8 11h7" /><path d="M13.525 16.5a4.3 4.3 0 0 1-2.95 2 7 7 0 0 1 0-14 3.5 3.5 0 0 1 2.308 1.006L15.5 8" /><path d="M3.5 13.5h7" /><path d="M8 8H3.5a2.5 2.5 0 0 0 0 5H8" /></svg>
+              </a>
+              <a href="https://www.youtube.com/@NarratveSpace" target="_blank" rel="noopener noreferrer" className="hover:text-brand-accent transition-colors" aria-label="YouTube">
+                {/* YouTube Logo */}
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></svg>
               </a>
             </div>
           </div>

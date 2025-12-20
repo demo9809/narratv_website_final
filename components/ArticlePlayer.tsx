@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, RotateCw, Volume2, X } from 'lucide-react';
+import { Play, Pause, RotateCcw, RotateCw, Settings2, X, Volume2 } from 'lucide-react';
 
 interface ArticlePlayerProps {
     title: string;
@@ -22,14 +22,12 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
     const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
     const chunksRef = useRef<string[]>([]);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const isPlayingRef = useRef(false); // Ref to track playing state without closure issues
+    const isPlayingRef = useRef(false);
 
-    // Sync ref with state
     useEffect(() => {
         isPlayingRef.current = isPlaying;
     }, [isPlaying]);
 
-    // Initialize & Chunk Text
     useEffect(() => {
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
             setSupported(true);
@@ -43,12 +41,13 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             ];
             chunksRef.current = chunks;
 
+            // Roughly 14 chars per second at 0.9 rate
             const totalChars = chunks.join('').length;
-            setDurationEstimate(Math.ceil(totalChars / 15));
+            setDurationEstimate(Math.ceil(totalChars / 14));
         }
     }, [title, textToRead]);
 
-    // Load Voices (Reverted to US Priority)
+    // Load Voices (Premium US)
     useEffect(() => {
         if (!supported) return;
 
@@ -56,7 +55,6 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             const available = window.speechSynthesis.getVoices();
             setVoices(available);
 
-            // Priority: Google US -> Samantha -> Generic US -> Default
             const preferred = available.find(v => v.name === 'Google US English') ||
                 available.find(v => v.name === 'Samantha') ||
                 available.find(v => v.lang === 'en-US') ||
@@ -73,7 +71,6 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
         };
     }, [supported]);
 
-    // Clean up
     useEffect(() => {
         return () => {
             if (supported) {
@@ -93,7 +90,6 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             return;
         }
 
-        // Cancel existing
         window.speechSynthesis.cancel();
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
@@ -104,28 +100,27 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             utterance.voice = selectedVoice;
         }
 
-        utterance.rate = rate;
-        utterance.pitch = 1.0;
+        // Tuned for less robotic feel
+        utterance.rate = 0.9 * rate; // Base 0.9, multiplied by user preference
+        utterance.pitch = 1.05; // Slightly higher pitch often sounds clearer
         utterance.volume = 1;
 
         utterance.onend = () => {
-            // Logic moved OUT of state setter to prevent double-fire
             timeoutRef.current = setTimeout(() => {
-                if (isPlayingRef.current) { // Check ref for latest state
+                if (isPlayingRef.current) {
                     const nextIndex = index + 1;
                     setCurrentChunkIndex(nextIndex);
                     speakChunk(nextIndex);
                 }
-            }, 300); // 300ms natural pause
+            }, 400);
         };
 
-        // Update Progress UI
         const total = chunksRef.current.length;
         setProgress((index / total) * 100);
 
         speechRef.current = utterance;
         window.speechSynthesis.speak(utterance);
-    }, [supported, selectedVoice, rate]); // Removed isPlaying dependency to avoid loops
+    }, [supported, selectedVoice, rate]);
 
     const handlePlay = () => {
         if (!supported) return;
@@ -145,7 +140,6 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             return;
         }
 
-        // Start
         setIsPlaying(true);
         setIsPaused(false);
         speakChunk(currentChunkIndex);
@@ -175,69 +169,48 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
         }
     };
 
-    const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
-
     if (!supported) return null;
 
     return (
-        <div className="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
-            <div className="flex items-center justify-between gap-4">
+        // Compact Dark Pill Design
+        <div className="inline-flex items-center gap-3 bg-brand-black text-white rounded-full px-4 py-2 border border-white/10 shadow-xl backdrop-blur-md mb-8 animate-fade-in-up">
 
-                {/* Controls */}
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={handleRewind}
-                        className="text-gray-500 hover:text-brand-black transition-colors"
-                        title="Rewind"
-                    >
-                        <RotateCcw className="w-5 h-5" />
-                    </button>
+            {/* Play/Pause (Primary) */}
+            <button
+                onClick={handlePlay}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-brand-black hover:scale-105 transition-all"
+                aria-label={isPlaying ? "Pause" : "Play"}
+            >
+                {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+            </button>
 
-                    <button
-                        onClick={handlePlay}
-                        className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-brand-black text-brand-black hover:bg-brand-black hover:text-white transition-all"
-                    >
-                        {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
-                    </button>
-
-                    <button
-                        onClick={handleForward}
-                        className="text-gray-500 hover:text-brand-black transition-colors"
-                        title="Forward"
-                    >
-                        <RotateCw className="w-5 h-5" />
-                    </button>
+            {/* Progress & Label */}
+            <div className="flex flex-col w-32 md:w-48 gap-1">
+                <div className="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase text-gray-400">
+                    <span>{isPlaying ? 'Now Playing' : 'Listen to Article'}</span>
+                    <span>{Math.round((progress / 100) * durationEstimate / 60)}m left</span>
                 </div>
-
-                {/* Progress */}
-                <div className="flex-1 flex flex-col gap-1">
-                    <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div
-                            className="absolute top-0 left-0 h-full bg-brand-black transition-all duration-300 ease-linear w-full origin-left"
-                            style={{ transform: `scaleX(${progress / 100})` }}
-                        />
-                    </div>
-                    <div className="flex justify-between text-[10px] text-gray-400 font-medium font-mono">
-                        <span>{formatTime((progress / 100) * durationEstimate)}</span>
-                        <span>{formatTime(durationEstimate)}</span>
-                    </div>
-                </div>
-
-                {/* Speed */}
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={toggleSpeed}
-                        className="text-xs font-bold text-gray-500 hover:text-brand-black w-6 text-right"
-                    >
-                        {rate}x
-                    </button>
-                    <Volume2 className="w-4 h-4 text-gray-500" />
+                <div className="relative w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                    <div
+                        className="absolute top-0 left-0 h-full bg-brand-accent transition-all duration-300 ease-linear w-full origin-left"
+                        style={{ transform: `scaleX(${progress / 100})` }}
+                    />
                 </div>
             </div>
+
+            {/* Secondary Controls (Hidden on very small screens if needed, but useful) */}
+            <div className="flex items-center gap-1 border-l border-white/10 pl-3">
+                <button onClick={handleRewind} className="p-1.5 hover:text-brand-accent transition-colors" title="-10s">
+                    <RotateCcw className="w-4 h-4" />
+                </button>
+                <button onClick={handleForward} className="p-1.5 hover:text-brand-accent transition-colors" title="+10s">
+                    <RotateCw className="w-4 h-4" />
+                </button>
+                <button onClick={toggleSpeed} className="ml-1 text-[10px] font-bold bg-white/10 px-1.5 py-0.5 rounded hover:bg-white/20 transition-colors w-8 text-center">
+                    {rate}x
+                </button>
+            </div>
+
         </div>
     );
 };

@@ -1,10 +1,8 @@
-import React from 'react';
 import Link from 'next/link';
 import { BLOG_POSTS } from '../../../constants';
 import { Section, Button } from '../../../components/ui';
 import { ArrowLeft, Bookmark, Share2, ArrowRight, Quote } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import ArticlePlayer from '../../../components/ArticlePlayer';
 
 // SEO: Generate Static Params for Export
 export async function generateStaticParams() {
@@ -28,14 +26,6 @@ export default function InsightDetail({ params }: { params: { slug: string } }) 
   const post = BLOG_POSTS.find((p) => p.slug === slug);
 
   if (!post) return notFound();
-
-  // Prepare text for Audio Player
-  const combinedText = `
-    ${post.introHeadline}. 
-    ${post.introContent}
-    ${post.articleSections.map(s => `${s.heading}. ${s.content}`).join(' ')}
-    ${post.keyTakeaways ? `Key Takeaways: ${post.keyTakeaways.join('. ')}` : ''}
-  `.replace(/<[^>]*>/g, ' '); // Strip HTML properly
 
   // Article Schema
   const articleSchema = {

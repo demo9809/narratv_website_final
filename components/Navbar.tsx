@@ -167,7 +167,7 @@ const Navbar: React.FC = () => {
         }`}>
         <div className="flex flex-col gap-6">
           {NAV_LINKS.map((link) => {
-            const isActive = pathname === link.path;
+            const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
             return (
               <Link
                 key={link.path}

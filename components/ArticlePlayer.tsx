@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, Square, Volume2, Settings2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, RotateCw, Volume2, X } from 'lucide-react';
 
 interface ArticlePlayerProps {
     title: string;
@@ -13,33 +13,40 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
     const [isPaused, setIsPaused] = useState(false);
     const [supported, setSupported] = useState(false);
     const [progress, setProgress] = useState(0);
-    const [currentChunk, setCurrentChunk] = useState(0);
+    const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
     const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
     const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+    const [rate, setRate] = useState(1);
+    const [durationEstimate, setDurationEstimate] = useState(0);
 
     const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
     const chunksRef = useRef<string[]>([]);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Initialize Support & Parse Text
+    // Initialize & Chunk Text
     useEffect(() => {
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
             setSupported(true);
 
-            // Prepare chunks (split by punctuation for natural pauses)
-            // We explicitly look for periods, question marks, exclamation marks followed by space or newline
             const cleanText = textToRead.replace(/<[^>]*>/g, '');
+            // Split by common sentence delimiters
             const rawChunks = cleanText.match(/[^.!?]+[.!?]+["']?|[^.!?]+$/g) || [cleanText];
 
-            // Clean up chunks and add the title as the first chunk
-            chunksRef.current = [
-                `Title: ${title}.`,
+            // Add Title as first chunk, naturally
+            const chunks = [
+                `${title}.`,
                 ...rawChunks.map(c => c.trim()).filter(c => c.length > 0)
             ];
+            chunksRef.current = chunks;
+
+            // Rough estimate: 150 words per minute. average 5 chars per word ? ~12 chars per second
+            // More simple: chars / 15 (very rough)
+            const totalChars = chunks.join('').length;
+            setDurationEstimate(Math.ceil(totalChars / 15));
         }
     }, [title, textToRead]);
 
-    // Load Voices
+    // Load Voices (Prioritize Indian English)
     useEffect(() => {
         if (!supported) return;
 
@@ -47,11 +54,10 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             const available = window.speechSynthesis.getVoices();
             setVoices(available);
 
-            // Smart Voice Selection (Priority: Google US -> Samantha -> Microsoft Zira -> First English)
-            const preferred = available.find(v => v.name === 'Google US English') ||
+            // Priority: Indian English -> Google US -> Samantha -> Default
+            const preferred = available.find(v => v.lang === 'en-IN' || v.name.includes('India')) ||
+                available.find(v => v.name === 'Google US English') ||
                 available.find(v => v.name === 'Samantha') ||
-                available.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
-                available.find(v => v.lang === 'en-US') ||
                 available[0];
 
             if (preferred) setSelectedVoice(preferred);
@@ -65,7 +71,7 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
         };
     }, [supported]);
 
-    // Cleanup
+    // Clean up
     useEffect(() => {
         return () => {
             if (supported) {
@@ -80,7 +86,7 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             setIsPlaying(false);
             setIsPaused(false);
             setProgress(100);
-            setCurrentChunk(0);
+            setCurrentChunkIndex(0);
             return;
         }
 
@@ -91,125 +97,160 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             utterance.voice = selectedVoice;
         }
 
-        // "Article" feel settings
-        utterance.rate = 0.95; // Slightly slower for comprehension
+        utterance.rate = rate; // User controlled speed
         utterance.pitch = 1.0;
         utterance.volume = 1;
 
         utterance.onend = () => {
-            // Natural pause between chunks (sentences)
+            // Small natural pause between sentences
             timeoutRef.current = setTimeout(() => {
-                if (isPlaying) { // Only continue if still playing
-                    setCurrentChunk(prev => prev + 1);
-                    speakChunk(index + 1);
+                if (isPlaying || (!isPaused && speechRef.current === utterance)) { // Double check state
+                    setCurrentChunkIndex(prev => {
+                        const next = prev + 1;
+                        speakChunk(next);
+                        return next;
+                    });
                 }
-            }, 400); // 400ms pause
+            }, 300);
         };
 
-        // Update Progress
+        // Note: Progress is based on Chunk Index for stability
         const total = chunksRef.current.length;
+        // Calculate progress based on characters processed so far would be better but chunk index is safer for now
         setProgress((index / total) * 100);
 
         speechRef.current = utterance;
         window.speechSynthesis.speak(utterance);
-    }, [supported, selectedVoice, isPlaying]);
+    }, [supported, selectedVoice, isPlaying, rate, isPaused]); // Added rate and isPaused
 
     const handlePlay = () => {
         if (!supported) return;
 
         if (isPaused) {
-            // If paused, we actually just resume processing from current chunk
+            // Resume logic: re-speak current chunk
             setIsPaused(false);
             setIsPlaying(true);
-            speakChunk(currentChunk);
+            speakChunk(currentChunkIndex);
             return;
         }
 
         if (isPlaying) {
-            // Pause behavior: Cancel current speech but keep index
+            // Pause logic
             window.speechSynthesis.cancel();
-            if (timeoutRef.current) clearTimeout(timeoutRef.current);
-            setIsPlaying(false);
+            clearTimeout(timeoutRef.current!);
             setIsPaused(true);
+            setIsPlaying(false);
             return;
         }
 
-        // Start fresh
+        // Start
         setIsPlaying(true);
         setIsPaused(false);
-        setCurrentChunk(0);
-        speakChunk(0);
+        speakChunk(currentChunkIndex);
     };
 
-    const handleStop = () => {
-        if (!supported) return;
+    const handleRewind = () => {
+        // Go back ~1-2 chunks (approx 10s usually)
         window.speechSynthesis.cancel();
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        setIsPlaying(false);
-        setIsPaused(false);
-        setProgress(0);
-        setCurrentChunk(0);
-    };
+        clearTimeout(timeoutRef.current!);
 
-    const changeVoice = () => {
-        // Loop through available English voices for simplicity if user clicks (hidden feature for now)
-        const enVoices = voices.filter(v => v.lang.startsWith('en'));
-        const idx = enVoices.findIndex(v => v === selectedVoice);
-        const next = enVoices[(idx + 1) % enVoices.length];
-        setSelectedVoice(next);
+        const newIndex = Math.max(0, currentChunkIndex - 1);
+        setCurrentChunkIndex(newIndex);
 
-        // Feedback
-        window.speechSynthesis.cancel();
         if (isPlaying) {
-            // Restart current chunk with new voice
-            speakChunk(currentChunk);
+            speakChunk(newIndex);
         }
+    };
+
+    const handleForward = () => {
+        // Skip ahead
+        window.speechSynthesis.cancel();
+        clearTimeout(timeoutRef.current!);
+
+        const newIndex = Math.min(chunksRef.current.length - 1, currentChunkIndex + 1);
+        setCurrentChunkIndex(newIndex);
+
+        if (isPlaying) {
+            speakChunk(newIndex);
+        }
+    };
+
+    const toggleSpeed = () => {
+        const newRate = rate === 1 ? 1.5 : (rate === 1.5 ? 2 : 1);
+        setRate(newRate);
+        // If playing, we need to restart current chunk to apply rate change
+        if (isPlaying) {
+            window.speechSynthesis.cancel();
+            clearTimeout(timeoutRef.current!);
+            speakChunk(currentChunkIndex);
+        }
+    };
+
+    const formatTime = (seconds: number) => {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
     if (!supported) return null;
 
     return (
-        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20 w-fit">
-            <div className="flex items-center gap-2">
-                <button
-                    onClick={handlePlay}
-                    className="w-8 h-8 flex items-center justify-center rounded-full bg-brand-accent text-brand-black hover:scale-105 transition-transform"
-                    aria-label={isPlaying ? "Pause Article" : "Listen to Article"}
-                >
-                    {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
-                </button>
-                {(isPlaying || isPaused) && (
-                    <button
-                        onClick={handleStop}
-                        className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors"
-                        aria-label="Stop Article"
-                    >
-                        <Square className="w-3 h-3 fill-current" />
-                    </button>
-                )}
-            </div>
+        <div className="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
+            <div className="flex items-center justify-between gap-4">
 
-            <div className="flex flex-col min-w-[120px]">
-                <div className="flex items-center justify-between gap-4">
-                    <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">
-                        <Volume2 className="w-3 h-3" />
-                        {isPlaying ? 'Now Playing' : isPaused ? 'Paused' : 'Listen'}
-                    </span>
-                    {voices.length > 0 && (isPlaying || isPaused) && (
-                        <button onClick={changeVoice} className="text-[10px] text-brand-accent/80 hover:text-brand-accent uppercase tracking-widest truncate max-w-[80px]" title="Change Voice">
-                            {selectedVoice?.name.slice(0, 10)}...
-                        </button>
-                    )}
+                {/* Controls: Rewind | Play | Forward */}
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={handleRewind}
+                        className="text-gray-500 hover:text-brand-black transition-colors"
+                        title="Rewind (Previous Sentence)"
+                    >
+                        <RotateCcw className="w-5 h-5" />
+                        <span className="sr-only">-10s</span>
+                    </button>
+
+                    <button
+                        onClick={handlePlay}
+                        className="w-10 h-10 flex items-center justify-center rounded-full border-2 border-brand-black text-brand-black hover:bg-brand-black hover:text-white transition-all"
+                    >
+                        {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+                    </button>
+
+                    <button
+                        onClick={handleForward}
+                        className="text-gray-500 hover:text-brand-black transition-colors"
+                        title="Forward (Next Sentence)"
+                    >
+                        <RotateCw className="w-5 h-5" />
+                        <span className="sr-only">+10s</span>
+                    </button>
                 </div>
 
-                {(isPlaying || isPaused) && (
-                    <div className="w-full h-1 bg-white/20 rounded-full mt-1 overflow-hidden">
+                {/* Progress Bar */}
+                <div className="flex-1 flex flex-col gap-1">
+                    <div className="relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-brand-accent transition-all duration-300 ease-linear"
-                            style={{ width: `${progress}%` }}
+                            className="absolute top-0 left-0 h-full bg-brand-black transition-all duration-300 ease-linear w-full origin-left"
+                            style={{ transform: `scaleX(${progress / 100})` }}
                         />
                     </div>
-                )}
+                    <div className="flex justify-between text-[10px] text-gray-400 font-medium font-mono">
+                        {/* Simulated time based on progress % of estimate */}
+                        <span>{formatTime((progress / 100) * durationEstimate)}</span>
+                        <span>{formatTime(durationEstimate)}</span>
+                    </div>
+                </div>
+
+                {/* Extra: Speed & Volume Icon */}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={toggleSpeed}
+                        className="text-xs font-bold text-gray-500 hover:text-brand-black w-6 text-right"
+                    >
+                        {rate}x
+                    </button>
+                    <Volume2 className="w-4 h-4 text-gray-500" />
+                </div>
             </div>
         </div>
     );

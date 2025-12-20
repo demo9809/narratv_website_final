@@ -165,7 +165,7 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu Overlay */}
       <div className={`fixed inset-0 bg-black/95 backdrop-blur-xl z-40 flex flex-col justify-center px-8 transition-transform duration-500 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}>
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {NAV_LINKS.map((link) => {
             const isActive = pathname === link.path;
             return (
@@ -173,16 +173,16 @@ const Navbar: React.FC = () => {
                 key={link.path}
                 href={link.path}
                 onClick={(e) => handleLinkClick(e, link.path)}
-                className={`text-5xl font-bold tracking-tighter ${isActive ? 'text-brand-accent' : 'text-white'
+                className={`text-3xl md:text-4xl font-bold tracking-tight ${isActive ? 'text-brand-accent' : 'text-white hover:text-gray-300 transition-colors'
                   }`}
               >
                 {link.label}
               </Link>
             );
           })}
-          <div className="pt-8">
+          <div className="pt-6">
             <Link href="/contact" onClick={() => setIsOpen(false)}>
-              <Button variant="primary" mode="dark" className="w-full text-xl py-6">Start a Project</Button>
+              <Button variant="primary" mode="dark" className="w-full text-lg py-4">Start a Project</Button>
             </Link>
           </div>
         </div>

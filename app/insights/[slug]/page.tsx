@@ -1,48 +1,10 @@
+import React from 'react';
+import Link from 'next/link';
+import { BLOG_POSTS } from '../../../constants';
+import { Section, Button } from '../../../components/ui';
+import { ArrowLeft, Bookmark, Share2, ArrowRight, Quote } from 'lucide-react';
+import { notFound } from 'next/navigation';
 import ArticlePlayer from '../../../components/ArticlePlayer';
-
-/* ... imports ... */
-
-export default function InsightDetail({ params }: { params: { slug: string } }) {
-  /* ... existing code ... */
-
-  // Combine text for player
-  const combinedText = `
-    ${post.introContent}
-    ${post.articleSections.map(s => `${s.heading}. ${s.content}`).join(' ')}
-    ${post.keyTakeaways ? `Key Takeaways: ${post.keyTakeaways.join('. ')}` : ''}
-  `.replace(/<[^>]*>/g, ' '); // Strip HTML properly
-
-  return (
-    <>
-      {/* ... existing code ... */}
-
-      {/* 1. HERO SECTION */}
-      <section className="relative min-h-[60vh] flex items-end pb-20 bg-brand-black text-white pt-32">
-        <div className="container mx-auto px-6 md:px-12 max-w-7xl z-10 relative">
-          {/* ... existing back link ... */}
-
-          <div className="max-w-4xl animate-fade-in-up">
-            <div className="flex items-center gap-4 mb-6">
-              {/* ... category/readTime ... */}
-            </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-8">
-              {post.title}
-            </h1>
-
-            <ArticlePlayer title={post.title} textToRead={combinedText} />
-
-            <div className="flex items-center gap-4 border-t border-white/10 pt-8 mt-8">
-              {/* ... date ... */}
-            </div>
-          </div>
-        </div>
-        {/* ... bg ... */}
-      </section>
-
-      {/* ... rest ... */}
-    </>
-  );
-}
 
 // SEO: Generate Static Params for Export
 export async function generateStaticParams() {
@@ -73,7 +35,7 @@ export default function InsightDetail({ params }: { params: { slug: string } }) 
     ${post.introContent}
     ${post.articleSections.map(s => `${s.heading}. ${s.content}`).join(' ')}
     ${post.keyTakeaways ? `Key Takeaways: ${post.keyTakeaways.join('. ')}` : ''}
-  `;
+  `.replace(/<[^>]*>/g, ' '); // Strip HTML properly
 
   // Article Schema
   const articleSchema = {
@@ -118,6 +80,12 @@ export default function InsightDetail({ params }: { params: { slug: string } }) 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-8">
               {post.title}
             </h1>
+
+            {/* Audio Player */}
+            <div className="mb-8">
+              <ArticlePlayer title={post.title} textToRead={combinedText} />
+            </div>
+
             <div className="flex items-center gap-4 border-t border-white/10 pt-8 mt-8">
               <div className="flex gap-4 text-gray-400">
                 <p>{post.date}</p>

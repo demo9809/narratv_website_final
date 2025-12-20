@@ -71,10 +71,7 @@ export default function InsightDetail({ params }: { params: { slug: string } }) 
               {post.title}
             </h1>
 
-            {/* Audio Player */}
-            <div className="mb-8">
-              <ArticlePlayer title={post.title} textToRead={combinedText} />
-            </div>
+
 
             <div className="flex items-center gap-4 border-t border-white/10 pt-8 mt-8">
               <div className="flex gap-4 text-gray-400">

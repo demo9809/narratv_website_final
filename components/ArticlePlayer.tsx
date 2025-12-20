@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, RotateCw, Settings2, X, Volume2 } from 'lucide-react';
+import { Play, Pause, RotateCcw, RotateCw, Settings2, X, Volume2, Check } from 'lucide-react';
 
 interface ArticlePlayerProps {
     title: string;
@@ -14,8 +14,12 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
     const [supported, setSupported] = useState(false);
     const [progress, setProgress] = useState(0);
     const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
+
+    // Voice State
     const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
     const [selectedVoice, setSelectedVoice] = useState<SpeechSynthesisVoice | null>(null);
+    const [showSettings, setShowSettings] = useState(false);
+
     const [rate, setRate] = useState(1);
     const [durationEstimate, setDurationEstimate] = useState(0);
 
@@ -41,20 +45,36 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             ];
             chunksRef.current = chunks;
 
-            // Roughly 14 chars per second at 0.9 rate
             const totalChars = chunks.join('').length;
             setDurationEstimate(Math.ceil(totalChars / 14));
         }
     }, [title, textToRead]);
 
-    // Load Voices (Premium US)
+    // Load Voices & Persist
     useEffect(() => {
         if (!supported) return;
 
         const loadVoices = () => {
-            const available = window.speechSynthesis.getVoices();
+            const available = window.speechSynthesis.getVoices().sort((a, b) => {
+                const aName = a.name.toLowerCase();
+                const bName = b.name.toLowerCase();
+                if (a.lang.startsWith('en') && !b.lang.startsWith('en')) return -1;
+                if (!a.lang.startsWith('en') && b.lang.startsWith('en')) return 1;
+                return aName.localeCompare(bName);
+            });
             setVoices(available);
 
+            // 1. Try saved voice
+            const savedName = localStorage.getItem('narratv_voice_name');
+            if (savedName) {
+                const saved = available.find(v => v.name === savedName);
+                if (saved) {
+                    setSelectedVoice(saved);
+                    return;
+                }
+            }
+
+            // 2. Default Priority
             const preferred = available.find(v => v.name === 'Google US English') ||
                 available.find(v => v.name === 'Samantha') ||
                 available.find(v => v.lang === 'en-US') ||
@@ -80,6 +100,19 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
         };
     }, [supported]);
 
+    const handleVoiceSelect = (voice: SpeechSynthesisVoice) => {
+        setSelectedVoice(voice);
+        localStorage.setItem('narratv_voice_name', voice.name);
+        setShowSettings(false); // Close menu
+
+        // Feedback: Speak logic with new voice if playing
+        if (isPlaying || isPaused) {
+            window.speechSynthesis.cancel();
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+            speakChunk(currentChunkIndex);
+        }
+    };
+
     const speakChunk = useCallback((index: number) => {
         if (index >= chunksRef.current.length || !supported) {
             setIsPlaying(false);
@@ -100,9 +133,8 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
             utterance.voice = selectedVoice;
         }
 
-        // Tuned for less robotic feel
-        utterance.rate = 0.9 * rate; // Base 0.9, multiplied by user preference
-        utterance.pitch = 1.05; // Slightly higher pitch often sounds clearer
+        utterance.rate = 0.9 * rate;
+        utterance.pitch = 1.05;
         utterance.volume = 1;
 
         utterance.onend = () => {
@@ -172,45 +204,86 @@ const ArticlePlayer: React.FC<ArticlePlayerProps> = ({ title, textToRead }) => {
     if (!supported) return null;
 
     return (
-        // Compact Dark Pill Design
-        <div className="inline-flex items-center gap-3 bg-brand-black text-white rounded-full px-4 py-2 border border-white/10 shadow-xl backdrop-blur-md mb-8 animate-fade-in-up">
+        <div className="relative mb-8 animate-fade-in-up">
+            {/* Main Player Pill */}
+            <div className="inline-flex items-center gap-3 bg-brand-black text-white rounded-full px-4 py-2 border border-white/10 shadow-xl backdrop-blur-md relative z-20">
 
-            {/* Play/Pause (Primary) */}
-            <button
-                onClick={handlePlay}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-brand-black hover:scale-105 transition-all"
-                aria-label={isPlaying ? "Pause" : "Play"}
-            >
-                {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
-            </button>
+                {/* Play/Pause */}
+                <button
+                    onClick={handlePlay}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-brand-black hover:scale-105 transition-all"
+                    aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                    {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+                </button>
 
-            {/* Progress & Label */}
-            <div className="flex flex-col w-32 md:w-48 gap-1">
-                <div className="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase text-gray-400">
-                    <span>{isPlaying ? 'Now Playing' : 'Listen to Article'}</span>
-                    <span>{Math.round((progress / 100) * durationEstimate / 60)}m left</span>
+                {/* Info */}
+                <div className="flex flex-col w-32 md:w-48 gap-1">
+                    <div className="flex justify-between items-center text-[10px] font-bold tracking-widest uppercase text-gray-400">
+                        <span className="truncate max-w-[80px]">{selectedVoice ? selectedVoice.name.replace('Google', '').replace('English', '') : 'Loading...'}</span>
+                        <span>{Math.round((progress / 100) * durationEstimate / 60)}m left</span>
+                    </div>
+                    <div className="relative w-full h-1 bg-white/20 rounded-full overflow-hidden">
+                        <div
+                            className="absolute top-0 left-0 h-full bg-brand-accent transition-all duration-300 ease-linear w-full origin-left"
+                            style={{ transform: `scaleX(${progress / 100})` }}
+                        />
+                    </div>
                 </div>
-                <div className="relative w-full h-1 bg-white/20 rounded-full overflow-hidden">
-                    <div
-                        className="absolute top-0 left-0 h-full bg-brand-accent transition-all duration-300 ease-linear w-full origin-left"
-                        style={{ transform: `scaleX(${progress / 100})` }}
-                    />
+
+                {/* Controls */}
+                <div className="flex items-center gap-1 border-l border-white/10 pl-3">
+                    <button onClick={handleRewind} className="p-1.5 hover:text-brand-accent transition-colors">
+                        <RotateCcw className="w-4 h-4" />
+                    </button>
+                    <button onClick={handleForward} className="p-1.5 hover:text-brand-accent transition-colors">
+                        <RotateCw className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={() => setShowSettings(!showSettings)}
+                        className={`p-1.5 transition-colors ${showSettings ? 'text-brand-accent' : 'hover:text-brand-accent'}`}
+                    >
+                        <Settings2 className="w-4 h-4" />
+                    </button>
                 </div>
             </div>
 
-            {/* Secondary Controls (Hidden on very small screens if needed, but useful) */}
-            <div className="flex items-center gap-1 border-l border-white/10 pl-3">
-                <button onClick={handleRewind} className="p-1.5 hover:text-brand-accent transition-colors" title="-10s">
-                    <RotateCcw className="w-4 h-4" />
-                </button>
-                <button onClick={handleForward} className="p-1.5 hover:text-brand-accent transition-colors" title="+10s">
-                    <RotateCw className="w-4 h-4" />
-                </button>
-                <button onClick={toggleSpeed} className="ml-1 text-[10px] font-bold bg-white/10 px-1.5 py-0.5 rounded hover:bg-white/20 transition-colors w-8 text-center">
-                    {rate}x
-                </button>
-            </div>
-
+            {/* Voice Selector Dropdown (Absolute) */}
+            {showSettings && (
+                <div className="absolute top-full left-0 mt-2 w-72 max-h-80 overflow-y-auto bg-brand-black border border-white/20 rounded-xl shadow-2xl p-2 z-30 custom-scrollbar">
+                    <div className="flex justify-between items-center px-3 py-2 border-b border-white/10 mb-2 sticky top-0 bg-brand-black/95 backdrop-blur z-10">
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Select Voice</span>
+                        <button onClick={() => setShowSettings(false)} className="text-gray-500 hover:text-white">
+                            <X className="w-3 h-3" />
+                        </button>
+                    </div>
+                    <div className="space-y-1">
+                        {voices.map((voice) => (
+                            <button
+                                key={voice.name}
+                                onClick={() => handleVoiceSelect(voice)}
+                                className={`w-full text-left px-3 py-2 rounded-lg text-xs flex items-center justify-between group transition-colors ${selectedVoice?.name === voice.name
+                                        ? 'bg-brand-accent text-brand-black font-bold'
+                                        : 'text-gray-300 hover:bg-white/10'
+                                    }`}
+                            >
+                                <div className="truncate pr-2">
+                                    <span className="block truncate">{voice.name}</span>
+                                    <span className={`text-[9px] uppercase tracking-wider ${selectedVoice?.name === voice.name ? 'text-brand-black/70' : 'text-gray-500 group-hover:text-gray-400'}`}>
+                                        {voice.lang}
+                                    </span>
+                                </div>
+                                {selectedVoice?.name === voice.name && <Check className="w-3 h-3 flex-shrink-0" />}
+                            </button>
+                        ))}
+                        {voices.length === 0 && (
+                            <div className="text-center py-4 text-gray-500 text-xs">
+                                Loading voices...
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

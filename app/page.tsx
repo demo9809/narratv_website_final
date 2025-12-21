@@ -49,17 +49,14 @@ const Home: React.FC = () => {
     "/assets/portfolio/telegram-cloud-document-5-6204185120698538698.jpg",
     "/assets/portfolio/portfolio-15.webp"
   ];
-  const containerRef = useRef(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+      if (containerRef.current) {
+        containerRef.current.style.setProperty('--mouse-x', `${e.clientX}px`);
+        containerRef.current.style.setProperty('--mouse-y', `${e.clientY}px`);
+      }
     };
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
@@ -103,7 +100,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <>
+    <div ref={containerRef}>
       <PortfolioRequestModal
         isOpen={isPortfolioModalOpen}
         onClose={() => setIsPortfolioModalOpen(false)}
@@ -120,7 +117,7 @@ const Home: React.FC = () => {
         <div
           className="absolute inset-0 pointer-events-none z-0"
           style={{
-            background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(243, 121, 93, 0.08), transparent 40%)`
+            background: `radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(243, 121, 93, 0.08), transparent 40%)`
           }}
         />
 
@@ -259,8 +256,8 @@ const Home: React.FC = () => {
                     <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">Countries Served</span>
                   </div>
                   <div>
-                    <span className="block text-5xl font-bold mb-2 tracking-tighter">50+</span>
-                    <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">Premium Projects</span>
+                    <span className="block text-5xl font-bold mb-2 tracking-tighter">100+</span>
+                    <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">Successful Campaigns</span>
                   </div>
                 </div>
               </div>
@@ -316,6 +313,7 @@ const Home: React.FC = () => {
                     height={300}
                     className="h-full w-auto object-contain"
                     loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 500px"
                   />
                 </div>
               ))
@@ -515,7 +513,7 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section >
-    </>
+    </div>
   );
 };
 

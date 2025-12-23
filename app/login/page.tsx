@@ -24,6 +24,8 @@ export default function LoginPage() {
 
             if (error) throw error;
 
+            // Force refresh to update auth state in other components
+            router.refresh();
             router.push('/admin');
         } catch (error: any) {
             alert('Login Failed: ' + error.message);

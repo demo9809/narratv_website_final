@@ -10,7 +10,7 @@ import { Button } from './ui';
 
 const Footer: React.FC = () => {
   const pathname = usePathname();
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/login')) return null;
 
   return (
     <footer className="bg-brand-black text-white pt-32 pb-12 border-t border-gray-900">

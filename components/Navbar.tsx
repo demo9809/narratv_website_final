@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
     setIsOpen(false);
   }, [pathname]);
 
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/login')) return null;
 
   // Lock body scroll when menu is open
   useEffect(() => {

@@ -4,6 +4,12 @@ import React, { useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import { Section, Button } from '../../../components/ui';
 import { useRouter } from 'next/navigation';
+import RichTextEditor from '../../../components/admin/RichTextEditor';
+
+interface ArticleSection {
+    heading: string;
+    content: string;
+}
 
 export default function CreateBlogPost() {
     const router = useRouter();
@@ -25,6 +31,10 @@ export default function CreateBlogPost() {
         tags: '' // Comma separated
     });
 
+    // Complex state for dynamic sections
+    const [articleSections, setArticleSections] = useState<ArticleSection[]>([]);
+    const [keyTakeaways, setKeyTakeaways] = useState<string[]>(['']); // Start with one empty takeaway
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -35,7 +45,7 @@ export default function CreateBlogPost() {
                 .replace(/[^a-z0-9\s-]/g, '')
                 .trim()
                 .replace(/\s+/g, '-');
-            setFormData(prev => ({ ...prev, slug: generatedSlug, title: value })); // Ensure title is also updated
+            setFormData(prev => ({ ...prev, slug: generatedSlug, title: value }));
         }
     };
 
@@ -44,6 +54,38 @@ export default function CreateBlogPost() {
             setImageFile(e.target.files[0]);
         }
     };
+
+    // --- Dynamic Sections Logic ---
+    const addSection = () => {
+        setArticleSections([...articleSections, { heading: '', content: '' }]);
+    };
+
+    const updateSection = (index: number, field: keyof ArticleSection, value: string) => {
+        const newSections = [...articleSections];
+        newSections[index][field] = value;
+        setArticleSections(newSections);
+    };
+
+    const removeSection = (index: number) => {
+        const newSections = [...articleSections];
+        newSections.splice(index, 1);
+        setArticleSections(newSections);
+    };
+
+    // --- Dynamic Key Takeaways Logic ---
+    const handleTakeawayChange = (index: number, value: string) => {
+        const newTakeways = [...keyTakeaways];
+        newTakeways[index] = value;
+        setKeyTakeaways(newTakeways);
+    };
+
+    const addTakeaway = () => setKeyTakeaways([...keyTakeaways, '']);
+    const removeTakeaway = (index: number) => {
+        const newTakeaways = [...keyTakeaways];
+        newTakeaways.splice(index, 1);
+        setKeyTakeaways(newTakeaways);
+    };
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -76,23 +118,24 @@ export default function CreateBlogPost() {
                 .insert([
                     {
                         title: formData.title,
-                        slug: formData.slug,
+                        slug: formData.slug || formData.title.toLowerCase().replace(/\s+/g, '-'),
                         seo_title: formData.seoTitle,
                         seo_description: formData.seoDescription,
                         category: formData.category,
                         excerpt: formData.excerpt,
                         intro_headline: formData.introHeadline,
-                        intro_content: formData.introContent,
+                        intro_content: formData.introContent, // HTML from Rich Text
                         author: formData.author,
                         author_role: formData.authorRole,
                         read_time: formData.readTime,
                         image_url: imageUrl,
                         date: new Date().toISOString(), // Today
-                        tags: formData.tags.split(',').map(tag => tag.trim()), // Simple array
-                        // Defaults for complex fields for now to prevent errors
-                        key_takeaways: ["Takeaway 1 (Edit in DB)", "Takeaway 2"],
-                        article_sections: [],
-                        quote: { text: "Quote text placeholder", author: "Author" }
+                        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+
+                        // Complex Objects
+                        key_takeaways: keyTakeaways.filter(t => t.trim() !== ''),
+                        article_sections: articleSections,
+                        quote: { text: "", author: "" } // Optional placeholder for now
                     }
                 ]);
 
@@ -111,24 +154,24 @@ export default function CreateBlogPost() {
 
     return (
         <Section className="min-h-screen pt-32 pb-20">
-            <div className="container mx-auto px-6 max-w-3xl">
+            <div className="container mx-auto px-6 max-w-4xl">
                 <h1 className="text-4xl font-bold mb-8">Write New Blog Post</h1>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-8">
 
                     {/* Main Info */}
-                    <div className="space-y-4 bg-gray-50 p-6 rounded-xl">
-                        <h2 className="font-bold text-xl mb-4">Core Details</h2>
+                    <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h2 className="font-bold text-xl mb-4 text-brand-accent">1. Core Details</h2>
 
                         <div>
                             <label className="block text-sm font-bold mb-2">Title</label>
-                            <input required name="title" value={formData.title} onChange={handleChange} className="w-full p-3 border rounded-lg" placeholder="e.g. The Future of AI" />
+                            <input required name="title" value={formData.title} onChange={handleChange} className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-brand-accent focus:outline-none" placeholder="e.g. The Future of AI" />
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-bold mb-2">Slug (Auto-generated)</label>
-                                <input required name="slug" value={formData.slug} onChange={handleChange} className="w-full p-3 border rounded-lg bg-gray-100" />
+                                <label className="block text-sm font-bold mb-2">Slug</label>
+                                <input required name="slug" value={formData.slug} onChange={handleChange} className="w-full p-3 border rounded-lg bg-gray-100 font-mono text-sm" />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold mb-2">Category</label>
@@ -145,41 +188,126 @@ export default function CreateBlogPost() {
                             <label className="block text-sm font-bold mb-2">Banner Image</label>
                             <input type="file" onChange={handleImageChange} className="w-full p-3 border rounded-lg bg-white" accept="image/*" />
                         </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-bold mb-2">Author Name</label>
+                                <input name="author" value={formData.author} onChange={handleChange} className="w-full p-3 border rounded-lg" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold mb-2">Author Role</label>
+                                <input name="authorRole" value={formData.authorRole} onChange={handleChange} className="w-full p-3 border rounded-lg" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold mb-2">Tags (comma separated)</label>
+                            <input name="tags" value={formData.tags} onChange={handleChange} className="w-full p-3 border rounded-lg" placeholder="Marketing, Kerala, Trends" />
+                        </div>
                     </div>
 
                     {/* SEO */}
-                    <div className="space-y-4 bg-gray-50 p-6 rounded-xl">
-                        <h2 className="font-bold text-xl mb-4">SEO</h2>
+                    <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h2 className="font-bold text-xl mb-4 text-brand-accent">2. SEO</h2>
                         <div>
                             <label className="block text-sm font-bold mb-2">SEO Title</label>
-                            <input name="seoTitle" value={formData.seoTitle} onChange={handleChange} className="w-full p-3 border rounded-lg" />
+                            <input name="seoTitle" value={formData.seoTitle} onChange={handleChange} className="w-full p-3 border rounded-lg" placeholder="Defaults to main title if empty" />
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-2">SEO Description</label>
-                            <textarea name="seoDescription" value={formData.seoDescription} onChange={handleChange} className="w-full p-3 border rounded-lg h-24" />
+                            <textarea name="seoDescription" value={formData.seoDescription} onChange={handleChange} className="w-full p-3 border rounded-lg h-20" placeholder="Meta description for Google results..." />
                         </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="space-y-4 bg-gray-50 p-6 rounded-xl">
-                        <h2 className="font-bold text-xl mb-4">Content</h2>
+                    {/* Introduction */}
+                    <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                        <h2 className="font-bold text-xl mb-4 text-brand-accent">3. Introduction & Takeaways</h2>
                         <div>
-                            <label className="block text-sm font-bold mb-2">Excerpt</label>
-                            <textarea required name="excerpt" value={formData.excerpt} onChange={handleChange} className="w-full p-3 border rounded-lg h-24" placeholder="Short summary for the card..." />
+                            <label className="block text-sm font-bold mb-2">Excerpt (Summary)</label>
+                            <textarea required name="excerpt" value={formData.excerpt} onChange={handleChange} className="w-full p-3 border rounded-lg h-24" placeholder="Short summary displayed on the card..." />
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-2">Intro Headline (Hook)</label>
-                            <input required name="introHeadline" value={formData.introHeadline} onChange={handleChange} className="w-full p-3 border rounded-lg" />
+                            <input required name="introHeadline" value={formData.introHeadline} onChange={handleChange} className="w-full p-3 border rounded-lg" placeholder="e.g. The rules of the game have changed." />
                         </div>
+
                         <div>
-                            <label className="block text-sm font-bold mb-2">Intro Content (HTML allowed)</label>
-                            <textarea required name="introContent" value={formData.introContent} onChange={handleChange} className="w-full p-3 border rounded-lg h-40 font-mono text-sm" placeholder="<p>First paragraph...</p>" />
+                            <label className="block text-sm font-bold mb-2">Intro Content</label>
+                            <div className="prose max-w-none">
+                                <RichTextEditor
+                                    value={formData.introContent}
+                                    onChange={(val) => setFormData(prev => ({ ...prev, introContent: val }))}
+                                    placeholder="Write the introduction here..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pt-8">
+                            <label className="block text-sm font-bold mb-2">Key Takeaways</label>
+                            {keyTakeaways.map((takeaway, idx) => (
+                                <div key={idx} className="flex gap-2 mb-2">
+                                    <input
+                                        value={takeaway}
+                                        onChange={(e) => handleTakeawayChange(idx, e.target.value)}
+                                        className="flex-1 p-2 border rounded"
+                                        placeholder={`Takeaway ${idx + 1}`}
+                                    />
+                                    <button type="button" onClick={() => removeTakeaway(idx)} className="text-red-500 font-bold px-2">×</button>
+                                </div>
+                            ))}
+                            <button type="button" onClick={addTakeaway} className="text-sm text-brand-accent font-bold mt-2">+ Add Takeaway</button>
                         </div>
                     </div>
 
-                    <div className="pt-6">
-                        <Button type="submit" disabled={loading} className="w-full">
-                            {loading ? 'Publishing...' : 'Publish Blog Post'}
+                    {/* Dynamic Article Sections */}
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="font-bold text-2xl">4. Article Sections</h2>
+                            <Button type="button" onClick={addSection}>+ Add Section</Button>
+                        </div>
+
+                        {articleSections.map((section, index) => (
+                            <div key={index} className="bg-white p-6 rounded-xl border-2 border-gray-200 relative">
+                                <button
+                                    type="button"
+                                    onClick={() => removeSection(index)}
+                                    className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-bold"
+                                >
+                                    Remove Section
+                                </button>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">Section Heading</label>
+                                        <input
+                                            value={section.heading}
+                                            onChange={(e) => updateSection(index, 'heading', e.target.value)}
+                                            className="w-full p-3 border rounded-lg font-bold text-lg"
+                                            placeholder={`Section ${index + 1} Heading`}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">Section Content</label>
+                                        <RichTextEditor
+                                            value={section.content}
+                                            onChange={(val) => updateSection(index, 'content', val)}
+                                            placeholder="Write this section's content..."
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        {articleSections.length === 0 && (
+                            <div className="text-center py-10 bg-gray-50 rounded-xl border border-dashed border-gray-300 text-gray-400">
+                                No sections added yet. Click "+ Add Section" to start writing the body.
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="pt-6 sticky bottom-6 bg-white/80 backdrop-blur-sm p-4 border-t shadow-2xl rounded-xl z-50">
+                        <Button type="submit" disabled={loading} className="w-full text-lg py-4">
+                            {loading ? 'Publishing...' : '🚀 Publish Blog Post'}
                         </Button>
                     </div>
 

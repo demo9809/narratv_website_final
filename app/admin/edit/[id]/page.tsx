@@ -5,7 +5,8 @@ import { supabase } from '../../../../lib/supabaseClient';
 import { Section, Button } from '../../../../components/ui';
 import { useRouter } from 'next/navigation';
 import RichTextEditor from '../../../../components/admin/RichTextEditor';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Save, Plus, ArrowLeft } from 'lucide-react';
+import Toast from '../../../../components/ui/Toast';
 
 interface ArticleSection {
     heading: string;
@@ -18,6 +19,7 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [toast, setToast] = useState<{ show: boolean, message: string, type: 'success' | 'error' }>({ show: false, message: '', type: 'success' });
 
     const [formData, setFormData] = useState({
         title: '',
@@ -72,7 +74,7 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
             }
         } catch (error) {
             console.error('Error fetching post:', error);
-            alert('Could not fetch post details.');
+            setToast({ show: true, message: 'Could not fetch post details.', type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -169,12 +171,16 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
 
             if (updateError) throw updateError;
 
-            alert('Blog Post Updated Successfully!');
-            router.push('/admin');
+            setToast({ show: true, message: 'Blog Post Updated Successfully!', type: 'success' });
+
+            // Redirect after success
+            setTimeout(() => {
+                router.push('/admin');
+            }, 1000);
 
         } catch (error: any) {
             console.error('Error updating post:', error);
-            alert(`Error: ${error.message}`);
+            setToast({ show: true, message: `Error: ${error.message}`, type: 'error' });
         } finally {
             setSubmitting(false);
         }
@@ -184,9 +190,16 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
 
     return (
         <div className="p-10 max-w-5xl mx-auto">
+            <Toast
+                message={toast.message}
+                type={toast.type}
+                isVisible={toast.show}
+                onClose={() => setToast(prev => ({ ...prev, show: false }))}
+            />
+
             <div className="mb-6">
-                <button onClick={() => router.back()} className="text-sm font-bold text-gray-400 hover:text-brand-black transition-colors">
-                    &larr; Back to Dashboard
+                <button onClick={() => router.back()} className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-brand-black transition-colors">
+                    <ArrowLeft className="w-4 h-4" /> Back to Dashboard
                 </button>
             </div>
 
@@ -290,7 +303,9 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                                 <button type="button" onClick={() => removeTakeaway(idx)} className="text-red-400 hover:text-red-600 font-bold px-3 bg-red-50 rounded-xl transition-colors">×</button>
                             </div>
                         ))}
-                        <button type="button" onClick={addTakeaway} className="text-xs font-bold text-brand-black bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">+ Add Takeaway</button>
+                        <button type="button" onClick={addTakeaway} className="flex items-center gap-2 text-xs font-bold text-brand-black bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors">
+                            <Plus className="w-3 h-3" /> Add Takeaway
+                        </button>
                     </div>
                 </div>
 
@@ -298,7 +313,9 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                 <div className="space-y-6">
                     <div className="flex justify-between items-center">
                         <h2 className="font-bold text-lg uppercase tracking-widest text-gray-400">4. Article Sections</h2>
-                        <button type="button" onClick={addSection} className="bg-brand-black text-white px-5 py-2 rounded-lg font-bold hover:bg-gray-800 transition-colors text-sm">+ Add Section</button>
+                        <button type="button" onClick={addSection} className="flex items-center gap-2 bg-brand-black text-white px-5 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors text-sm">
+                            <Plus className="w-4 h-4" /> Add Section
+                        </button>
                     </div>
 
                     {articleSections.map((section, index) => (
@@ -339,8 +356,8 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                         <span className="text-xs font-bold text-gray-400 pl-2">
                             {submitting ? 'Updating Database...' : 'Ready to Save'}
                         </span>
-                        <Button type="submit" disabled={submitting} className="!px-10 !py-3 !text-base !bg-brand-accent !text-brand-black hover:!bg-white hover:!text-brand-black border border-transparent hover:border-brand-black">
-                            {submitting ? 'Updating...' : '💾 Save Changes'}
+                        <Button type="submit" disabled={submitting} className="flex items-center gap-2 !px-10 !py-3 !text-base !bg-brand-accent !text-brand-black hover:!bg-white hover:!text-brand-black border border-transparent hover:border-brand-black">
+                            {submitting ? 'Updating...' : <><Save className="w-4 h-4" /> Save Changes</>}
                         </Button>
                     </div>
                 </div>

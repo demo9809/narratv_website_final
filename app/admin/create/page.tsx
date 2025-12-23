@@ -89,6 +89,14 @@ export default function CreateBlogPost() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Check for Supabase Configuration
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        if (!supabaseUrl || supabaseUrl.includes('placeholder')) {
+            alert('CONFIGURATION ERROR: Supabase Credentials are missing.\n\nIf you are running locally: Make sure .env.local exists and restart your server.\nIf you are on Vercel: Go to Project Settings > Environment Variables and add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+            return;
+        }
+
         setLoading(true);
 
         try {

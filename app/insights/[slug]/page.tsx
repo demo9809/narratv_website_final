@@ -1,18 +1,15 @@
 import Link from 'next/link';
-import { BLOG_POSTS } from '../../../constants';
 import { Section, Button } from '../../../components/ui';
-import { ArrowLeft, Bookmark, Share2, ArrowRight, Quote } from 'lucide-react';
+import { ArrowLeft, Bookmark, ArrowRight, Quote } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import { getPostBySlug } from '../../../lib/blogService';
 
-// SEO: Generate Static Params for Export
-export async function generateStaticParams() {
-  return BLOG_POSTS.map((post) => ({
-    slug: post.slug,
-  }));
-}
+// Force dynamic rendering for fresh content
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = BLOG_POSTS.find((p) => p.slug === params.slug);
+  const post = await getPostBySlug(params.slug);
   if (!post) return { title: 'Post Not Found' };
 
   return {
@@ -21,9 +18,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function InsightDetail({ params }: { params: { slug: string } }) {
+export default async function InsightDetail({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const post = BLOG_POSTS.find((p) => p.slug === slug);
+  const post = await getPostBySlug(slug);
 
   if (!post) return notFound();
 

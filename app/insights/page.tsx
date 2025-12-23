@@ -1,16 +1,18 @@
 import React from 'react';
-import { Section, Button } from '../../components/ui';
-import { BLOG_POSTS } from '../../constants';
+import { Section } from '../../components/ui';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import { getAllPosts } from '../../lib/blogService';
 
 export const metadata: Metadata = {
   title: 'Insights | Narratv Space | Branding & Marketing Strategy',
   description: 'Deep dives into branding, performance marketing, and video production trends in Kerala and the Middle East.',
 };
 
-export default function Insights() {
-  const posts = [...BLOG_POSTS].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+export const revalidate = 0; // Disable cache to show new posts immediately
+
+export default async function Insights() {
+  const posts = await getAllPosts();
 
   return (
     <>
@@ -27,7 +29,7 @@ export default function Insights() {
 
       <Section>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-16 max-w-6xl mx-auto">
-          {posts.map((post, idx) => (
+          {posts.map((post) => (
             <article
               key={post.id}
               className="group flex flex-col gap-6"

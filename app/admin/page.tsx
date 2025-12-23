@@ -23,11 +23,25 @@ export default function AdminDashboard() {
                 .order('date', { ascending: false });
 
             if (error) throw error;
-            if (data) setPosts(data as any); // Cast for now as Supabase types might vary slightly
+            if (data) setPosts(data as any);
         } catch (error) {
             console.error('Error fetching posts:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const deletePost = async (id: string) => {
+        if (!window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) return;
+
+        try {
+            const { error } = await supabase.from('blogs').delete().eq('id', id);
+            if (error) throw error;
+            // Remove from state immediately
+            setPosts(posts.filter(p => p.id !== id));
+        } catch (error: any) {
+            console.error('Error deleting post:', error);
+            alert('Error deleting post: ' + error.message);
         }
     };
 
@@ -70,8 +84,16 @@ export default function AdminDashboard() {
                                             <td className="p-4 font-medium">{post.title}</td>
                                             <td className="p-4 text-sm text-gray-500">{post.category}</td>
                                             <td className="p-4 text-sm text-gray-500">{post.date}</td>
-                                            <td className="p-4 text-right">
-                                                <span className="text-xs text-brand-accent cursor-not-allowed opacity-50">Edit (Coming Soon)</span>
+                                            <td className="p-4 text-right flex gap-3 justify-end items-center">
+                                                <Link href={`/admin/edit/${post.id}`} className="text-sm font-bold text-brand-black hover:text-brand-accent">
+                                                    Edit
+                                                </Link>
+                                                <button
+                                                    onClick={() => deletePost(post.id)}
+                                                    className="text-sm font-bold text-red-500 hover:text-red-700"
+                                                >
+                                                    Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     ))

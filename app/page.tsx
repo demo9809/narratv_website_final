@@ -292,13 +292,13 @@ const Home: React.FC = () => {
       </section >
 
       {/* 3. LOCKED WORK SECTION */}
-      < section className="bg-gradient-to-b from-white via-brand-cream to-gray-50 min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6" >
+      <section className="bg-gradient-to-b from-white via-brand-cream to-gray-50 min-h-[85vh] py-32 flex flex-col justify-center items-center relative overflow-hidden text-center px-6">
 
         {/* Scrolling Portfolio Background - 3 Row Horizontal Marquee */}
-        < div className="absolute inset-0 z-0 opacity-100 flex flex-col justify-center gap-8 -rotate-3 scale-110" >
+        <div className="absolute inset-0 z-0 opacity-100 flex flex-col justify-center gap-8 -rotate-3 scale-110">
 
           {/* Row 1 - Left */}
-          < motion.div
+          <motion.div
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 120, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
@@ -321,7 +321,7 @@ const Home: React.FC = () => {
           </motion.div >
 
           {/* Row 2 - Right (Opposite) */}
-          < motion.div
+          <motion.div
             animate={{ x: ["-50%", "0%"] }}
             transition={{ repeat: Infinity, duration: 140, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
@@ -344,7 +344,7 @@ const Home: React.FC = () => {
           </motion.div >
 
           {/* Row 3 - Left */}
-          < motion.div
+          <motion.div
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 130, ease: "linear" }}
             className="flex gap-8 whitespace-nowrap w-max pl-6"
@@ -369,7 +369,7 @@ const Home: React.FC = () => {
         </div >
 
         {/* Full Section Blur Overlay */}
-        < div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-[6px] pointer-events-none" ></div >
+        <div className="absolute inset-0 z-0 bg-white/40 backdrop-blur-[6px] pointer-events-none"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-6">
           <motion.div
@@ -410,7 +410,7 @@ const Home: React.FC = () => {
       </section >
 
       {/* 4. SERVICES - ELEGANT GRID */}
-      < Section bgColor="gray" className="py-32" >
+      <Section bgColor="gray" className="py-32">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20">
           <div className="max-w-3xl">
             <h2 className="text-xs font-bold uppercase tracking-widest text-brand-accent mb-6">Expertise</h2>
@@ -444,12 +444,12 @@ const Home: React.FC = () => {
             </Link>
           ))}
         </div>
-      </Section >
+      </Section>
 
       {/* 5. STRATEGIC PROCESS (Premium Dark Mode) */}
-      < section className="bg-brand-black py-32 relative overflow-hidden text-white" >
+      <section className="bg-brand-black py-32 relative overflow-hidden text-white">
         {/* Background Texture */}
-        < div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay" ></div >
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none mix-blend-overlay"></div>
 
         <div className="container mx-auto px-6 md:px-12 max-w-7xl relative z-10">
           <div className="text-center mb-24">
@@ -483,7 +483,7 @@ const Home: React.FC = () => {
       </section >
 
       {/* 6. FAQ SECTION (SEO Rich) */}
-      < section className="bg-brand-cream py-32" >
+      <section className="bg-brand-cream py-32">
         <div className="container mx-auto px-6 md:px-12 max-w-4xl">
           <div className="text-center mb-20">
             <h2 className="text-4xl md:text-5xl font-bold text-brand-black mb-6 tracking-tight">Frequently Asked Questions</h2>
@@ -512,7 +512,7 @@ const Home: React.FC = () => {
             ))}
           </div>
         </div>
-      </section >
+      </section>
     </div>
   );
 };

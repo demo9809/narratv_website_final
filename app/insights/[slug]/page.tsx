@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { getPostBySlug } from '../../../lib/blogService';
 import type { ContentBlock } from '../../../components/admin/BlockEditor';
 import { SocialEmbed } from '../../../components/SocialEmbeds';
+import VideoPlayer from '../../../components/VideoPlayer';
 
 // Force dynamic rendering for fresh content
 export const dynamic = 'force-dynamic';
@@ -18,29 +19,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: post.seoTitle,
     description: post.seoDescription,
   };
-}
-
-// Helper to extract Embed URL
-const getEmbedUrl = (url: string | undefined) => {
-  if (!url) return '';
-  try {
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      let id = '';
-      if (url.includes('v=')) {
-        id = url.split('v=')[1].split('&')[0];
-      } else {
-        id = url.split('/').pop() || '';
-      }
-      return `https://www.youtube.com/embed/${id}`;
-    }
-    if (url.includes('vimeo.com')) {
-      const id = url.split('/').pop();
-      return `https://player.vimeo.com/video/${id}`;
-    }
-  } catch (e) {
-    return url;
-  }
-  return url;
 }
 
 export default async function InsightDetail({ params }: { params: { slug: string } }) {
@@ -176,7 +154,6 @@ export default async function InsightDetail({ params }: { params: { slug: string
               switch (block.type) {
                 case 'heading':
                   const Tag = block.level || 'h2' as keyof JSX.IntrinsicElements;
-                  // Map h1->h2 visually if needed, but keeping actual tag is good for SEO
                   const textSize = block.level === 'h1' ? 'text-4xl' : block.level === 'h2' ? 'text-3xl' : 'text-2xl';
                   return (
                     <Tag key={idx} className={`font-bold text-brand-black mt-12 mb-6 ${textSize}`}>
@@ -203,16 +180,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
 
                 case 'video':
                   return (
-                    <div key={idx} className="my-10">
-                      <div className="aspect-video rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-50">
-                        <iframe
-                          src={getEmbedUrl(block.url)}
-                          className="w-full h-full"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      </div>
-                    </div>
+                    <VideoPlayer key={idx} url={block.url || ''} />
                   );
 
                 case 'embed':

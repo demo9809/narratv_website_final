@@ -1,5 +1,4 @@
 import { supabase } from './supabaseClient';
-import { BLOG_POSTS } from '../constants';
 import { BlogPost } from '../types';
 
 // Helper to map DB result to BlogPost type
@@ -35,28 +34,18 @@ export const getAllPosts = async (): Promise<BlogPost[]> => {
 
         if (error) {
             console.error('Error fetching from Supabase:', error);
-            return BLOG_POSTS; // Fallback to static only
+            return []; // Return empty array on error instead of static data
         }
 
-        const dbPosts = (data || []).map(mapDbToPost);
-
-        // Merge DB posts with Static posts
-        // Filter out static posts if they have the same slug as a DB post (DB takes precedence)
-        const dbSlugs = new Set(dbPosts.map(p => p.slug));
-        const filteredStaticPosts = BLOG_POSTS.filter(p => !dbSlugs.has(p.slug));
-
-        return [...dbPosts, ...filteredStaticPosts].sort((a, b) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-        );
+        return (data || []).map(mapDbToPost);
 
     } catch (err) {
         console.error('Unexpected error fetching posts:', err);
-        return BLOG_POSTS;
+        return [];
     }
 };
 
 export const getPostBySlug = async (slug: string): Promise<BlogPost | undefined> => {
-    // 1. Try DB first
     const { data, error } = await supabase
         .from('blogs')
         .select('*')
@@ -67,6 +56,5 @@ export const getPostBySlug = async (slug: string): Promise<BlogPost | undefined>
         return mapDbToPost(data);
     }
 
-    // 2. Fallback to Static
-    return BLOG_POSTS.find(p => p.slug === slug);
+    return undefined;
 };

@@ -12,6 +12,7 @@
     "@portabletext/react": "^3.0.0",
     "@react-email/components": "^1.0.1",
     "@sanity/image-url": "^1.0.2",
+    "@supabase/supabase-js": "^2.89.0",
     "framer-motion": "^10.16.4",
     "libphonenumber-js": "^1.12.31",
     "lucide-react": "^0.292.0",

@@ -1,17 +1,49 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, FileText, Settings, ExternalLink, LogOut } from 'lucide-react';
+import { supabase } from '../../lib/supabaseClient';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                router.push('/login');
+            } else {
+                setLoading(false);
+            }
+        };
+
+        checkUser();
+    }, [router]);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        router.push('/login');
+    };
 
     const menuItems = [
         { label: 'Dashboard', path: '/admin', icon: LayoutDashboard },
         { label: 'Create Post', path: '/admin/create', icon: FileText },
     ];
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <div className="w-8 h-8 border-4 border-brand-black border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Verifying Access...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex min-h-screen bg-gray-50 text-gray-900 font-sans">
@@ -35,8 +67,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 key={item.path}
                                 href={item.path}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold transition-all ${isActive
-                                        ? 'bg-brand-black text-white shadow-lg shadow-brand-black/20'
-                                        : 'text-gray-500 hover:bg-gray-50 hover:text-brand-black'
+                                    ? 'bg-brand-black text-white shadow-lg shadow-brand-black/20'
+                                    : 'text-gray-500 hover:bg-gray-50 hover:text-brand-black'
                                     }`}
                             >
                                 <Icon className={`w-5 h-5 ${isActive ? 'text-brand-accent' : 'text-gray-400'}`} />
@@ -56,8 +88,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         View Website
                     </Link>
 
-                    {/* Placeholder for Logout logic if Auth is added later */}
-                    <button className="flex w-full items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-red-400 hover:bg-red-50 hover:text-red-500 transition-all">
+                    <button
+                        onClick={handleLogout}
+                        className="flex w-full items-center gap-3 px-4 py-3 rounded-lg text-sm font-bold text-red-400 hover:bg-red-50 hover:text-red-500 transition-all"
+                    >
                         <LogOut className="w-5 h-5" />
                         Log Out
                     </button>
@@ -71,3 +105,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
     );
 }
+

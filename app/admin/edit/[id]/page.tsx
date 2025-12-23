@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../../lib/supabaseClient';
-import { Section, Button } from '../../../../components/ui';
+import { Button } from '../../../../components/ui';
 import { useRouter } from 'next/navigation';
 import RichTextEditor from '../../../../components/admin/RichTextEditor';
-import { Trash2, Save, Plus, ArrowLeft } from 'lucide-react';
+import { Save, Plus, ArrowLeft } from 'lucide-react';
 import Toast from '../../../../components/ui/Toast';
+import BlockEditor, { ContentBlock } from '../../../../components/admin/BlockEditor';
 
 interface ArticleSection {
     heading: string;
@@ -38,7 +39,8 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
         imageUrl: ''
     });
 
-    const [articleSections, setArticleSections] = useState<ArticleSection[]>([]);
+    // Replaces articleSections
+    const [blocks, setBlocks] = useState<ContentBlock[]>([]);
     const [keyTakeaways, setKeyTakeaways] = useState<string[]>([]);
 
     useEffect(() => {
@@ -70,7 +72,7 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                     tags: (data.tags || []).join(', '),
                     imageUrl: data.image_url || ''
                 });
-                setArticleSections(data.article_sections || []);
+
                 setKeyTakeaways(data.key_takeaways || []);
 
                 // Check if category is custom
@@ -78,6 +80,41 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                 if (data.category && !standardCategories.includes(data.category)) {
                     setIsCustomCategory(true);
                 }
+
+                // Handle Blocks Migration
+                const loadedSections = data.article_sections || [];
+                const migratedBlocks: ContentBlock[] = [];
+
+                loadedSections.forEach((section: any) => {
+                    // Start of Migration Logic
+                    if (section.type) {
+                        // It is already a New Block
+                        migratedBlocks.push(section);
+                    } else {
+                        // It is a Legacy Section { heading, content }
+                        if (section.heading) {
+                            migratedBlocks.push({
+                                id: crypto.randomUUID(),
+                                type: 'heading',
+                                level: 'h2',
+                                content: section.heading
+                            });
+                        }
+                        if (section.content) {
+                            migratedBlocks.push({
+                                id: crypto.randomUUID(),
+                                type: 'text',
+                                content: section.content
+                            });
+                        }
+                    }
+                });
+
+                if (migratedBlocks.length === 0 && loadedSections.length === 0) {
+                    // Start with nothing? Or maybe a default block? Empty is fine.
+                }
+
+                setBlocks(migratedBlocks);
             }
         } catch (error) {
             console.error('Error fetching post:', error);
@@ -96,23 +133,6 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
         if (e.target.files && e.target.files[0]) {
             setImageFile(e.target.files[0]);
         }
-    };
-
-    // --- Dynamic Sections Logic ---
-    const addSection = () => {
-        setArticleSections([...articleSections, { heading: '', content: '' }]);
-    };
-
-    const updateSection = (index: number, field: keyof ArticleSection, value: string) => {
-        const newSections = [...articleSections];
-        newSections[index][field] = value;
-        setArticleSections(newSections);
-    };
-
-    const removeSection = (index: number) => {
-        const newSections = [...articleSections];
-        newSections.splice(index, 1);
-        setArticleSections(newSections);
     };
 
     // --- Dynamic Key Takeaways Logic ---
@@ -172,7 +192,7 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                     image_url: imageUrl,
                     tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
                     key_takeaways: keyTakeaways.filter(t => t.trim() !== ''),
-                    article_sections: articleSections,
+                    article_sections: blocks, // Save blocks
                 })
                 .eq('id', id);
 
@@ -340,46 +360,13 @@ export default function EditBlogPost({ params }: { params: { id: string } }) {
                     </div>
                 </div>
 
-                {/* Dynamic Article Sections */}
+                {/* Dynamic Block Editor */}
                 <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                        <h2 className="font-bold text-lg uppercase tracking-widest text-gray-400">4. Article Sections</h2>
-                        <button type="button" onClick={addSection} className="flex items-center gap-2 bg-brand-black text-white px-5 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors text-sm">
-                            <Plus className="w-4 h-4" /> Add Section
-                        </button>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-bold text-lg uppercase tracking-widest text-gray-400">4. Article Blocks</h2>
                     </div>
 
-                    {articleSections.map((section, index) => (
-                        <div key={index} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm relative group">
-                            <button
-                                type="button"
-                                onClick={() => removeSection(index)}
-                                className="absolute top-6 right-6 text-gray-300 hover:text-red-500 font-bold transition-colors"
-                            >
-                                <Trash2 className="w-5 h-5" />
-                            </button>
-
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Section Heading</label>
-                                    <input
-                                        value={section.heading}
-                                        onChange={(e) => updateSection(index, 'heading', e.target.value)}
-                                        className="w-full p-4 border-2 border-gray-100 rounded-xl font-bold text-xl focus:border-brand-black focus:outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Section Content</label>
-                                    <div className="prose max-w-none border-2 border-gray-100 rounded-xl overflow-hidden focus-within:border-brand-black transition-colors">
-                                        <RichTextEditor
-                                            value={section.content}
-                                            onChange={(val) => updateSection(index, 'content', val)}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                    <BlockEditor blocks={blocks} setBlocks={setBlocks} />
                 </div>
 
                 <div className="pt-6 sticky bottom-6 z-40">

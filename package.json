@@ -22,6 +22,8 @@
     "react-dom": "^18.2.0",
     "react-phone-number-input": "^3.4.14",
     "react-quill": "^2.0.0",
+    "react-social-media-embed": "^2.5.18",
+    "react-tweet": "^3.3.0",
     "resend": "^6.6.0",
     "sanity": "^3.0.0"
   },

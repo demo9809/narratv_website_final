@@ -2,16 +2,12 @@
 
 import React, { useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
-import { Section, Button } from '../../../components/ui';
+import { Button } from '../../../components/ui';
 import { useRouter } from 'next/navigation';
 import RichTextEditor from '../../../components/admin/RichTextEditor';
-import { Trash2, Save, Plus, ArrowLeft } from 'lucide-react';
+import { Save, Plus, ArrowLeft } from 'lucide-react';
 import Toast from '../../../components/ui/Toast';
-
-interface ArticleSection {
-    heading: string;
-    content: string;
-}
+import BlockEditor, { ContentBlock } from '../../../components/admin/BlockEditor';
 
 export default function CreateBlogPost() {
     const router = useRouter();
@@ -35,9 +31,9 @@ export default function CreateBlogPost() {
         tags: '' // Comma separated
     });
 
-    // Complex state for dynamic sections
-    const [articleSections, setArticleSections] = useState<ArticleSection[]>([]);
-    const [keyTakeaways, setKeyTakeaways] = useState<string[]>(['']); // Start with one empty takeaway
+    // Block-based content state
+    const [blocks, setBlocks] = useState<ContentBlock[]>([]);
+    const [keyTakeaways, setKeyTakeaways] = useState<string[]>(['']);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -57,23 +53,6 @@ export default function CreateBlogPost() {
         if (e.target.files && e.target.files[0]) {
             setImageFile(e.target.files[0]);
         }
-    };
-
-    // --- Dynamic Sections Logic ---
-    const addSection = () => {
-        setArticleSections([...articleSections, { heading: '', content: '' }]);
-    };
-
-    const updateSection = (index: number, field: keyof ArticleSection, value: string) => {
-        const newSections = [...articleSections];
-        newSections[index][field] = value;
-        setArticleSections(newSections);
-    };
-
-    const removeSection = (index: number) => {
-        const newSections = [...articleSections];
-        newSections.splice(index, 1);
-        setArticleSections(newSections);
     };
 
     // --- Dynamic Key Takeaways Logic ---
@@ -146,8 +125,7 @@ export default function CreateBlogPost() {
 
                         // Complex Objects
                         key_takeaways: keyTakeaways.filter(t => t.trim() !== ''),
-                        article_sections: articleSections,
-                        // Quote removed as per request
+                        article_sections: blocks, // Saving Blocks here!
                     }
                 ]);
 
@@ -313,55 +291,14 @@ export default function CreateBlogPost() {
                     </div>
                 </div>
 
-                {/* Dynamic Article Sections */}
+                {/* Dynamic Block Editor */}
                 <div className="space-y-6">
-                    <div className="flex justify-between items-center">
-                        <h2 className="font-bold text-lg uppercase tracking-widest text-gray-400">4. Article Sections</h2>
-                        <button type="button" onClick={addSection} className="flex items-center gap-2 bg-brand-black text-white px-5 py-3 rounded-lg font-bold hover:bg-gray-800 transition-colors text-sm">
-                            <Plus className="w-4 h-4" /> Add Section
-                        </button>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="font-bold text-lg uppercase tracking-widest text-gray-400">4. Article Blocks</h2>
                     </div>
 
-                    {articleSections.map((section, index) => (
-                        <div key={index} className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm relative group">
-                            <button
-                                type="button"
-                                onClick={() => removeSection(index)}
-                                className="absolute top-6 right-6 text-gray-300 hover:text-red-500 font-bold transition-colors"
-                            >
-                                <Trash2 className="w-5 h-5" />
-                            </button>
+                    <BlockEditor blocks={blocks} setBlocks={setBlocks} />
 
-                            <div className="space-y-6">
-                                <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Section Heading</label>
-                                    <input
-                                        value={section.heading}
-                                        onChange={(e) => updateSection(index, 'heading', e.target.value)}
-                                        className="w-full p-4 border-2 border-gray-100 rounded-xl font-bold text-xl focus:border-brand-black focus:outline-none"
-                                        placeholder={`Section ${index + 1} Heading`}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Section Content</label>
-                                    <div className="prose max-w-none border-2 border-gray-100 rounded-xl overflow-hidden focus-within:border-brand-black transition-colors">
-                                        <RichTextEditor
-                                            value={section.content}
-                                            onChange={(val) => updateSection(index, 'content', val)}
-                                            placeholder="Write this section's content..."
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    {articleSections.length === 0 && (
-                        <div className="text-center py-16 bg-white rounded-2xl border-2 border-dashed border-gray-200 text-gray-400">
-                            <p className="font-bold">No sections yet</p>
-                            <p className="text-sm">Click "+ Add Section" to start building your article.</p>
-                        </div>
-                    )}
                 </div>
 
                 <div className="pt-6 sticky bottom-6 z-40">

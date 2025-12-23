@@ -3,6 +3,8 @@ import { Section, Button } from '../../../components/ui';
 import { ArrowLeft, Bookmark, ArrowRight, Quote } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { getPostBySlug } from '../../../lib/blogService';
+import type { ContentBlock } from '../../../components/admin/BlockEditor';
+import { SocialEmbed } from '../../../components/SocialEmbeds';
 
 // Force dynamic rendering for fresh content
 export const dynamic = 'force-dynamic';
@@ -16,6 +18,29 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: post.seoTitle,
     description: post.seoDescription,
   };
+}
+
+// Helper to extract Embed URL
+const getEmbedUrl = (url: string | undefined) => {
+  if (!url) return '';
+  try {
+    if (url.includes('youtube.com') || url.includes('youtu.be')) {
+      let id = '';
+      if (url.includes('v=')) {
+        id = url.split('v=')[1].split('&')[0];
+      } else {
+        id = url.split('/').pop() || '';
+      }
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    if (url.includes('vimeo.com')) {
+      const id = url.split('/').pop();
+      return `https://player.vimeo.com/video/${id}`;
+    }
+  } catch (e) {
+    return url;
+  }
+  return url;
 }
 
 export default async function InsightDetail({ params }: { params: { slug: string } }) {
@@ -68,8 +93,6 @@ export default async function InsightDetail({ params }: { params: { slug: string
               {post.title}
             </h1>
 
-
-
             <div className="flex items-center gap-4 border-t border-white/10 pt-8 mt-8">
               <div className="flex gap-4 text-gray-400">
                 <p>{post.date}</p>
@@ -99,7 +122,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
                     <Bookmark className="w-5 h-5 text-brand-accent" /> Key Takeaways
                   </h3>
                   <ul className="space-y-4">
-                    {post.keyTakeaways.map((item, idx) => (
+                    {post.keyTakeaways.map((item: string, idx: number) => (
                       <li key={idx} className="flex gap-3 text-sm text-gray-700 leading-relaxed">
                         <span className="text-brand-accent font-bold">•</span>
                         {item}
@@ -132,23 +155,98 @@ export default async function InsightDetail({ params }: { params: { slug: string
               />
             </div>
 
-            {/* Dynamic Sections */}
-            {post.articleSections && post.articleSections.map((section, idx) => (
-              <div key={idx} className="mb-12">
-                <h3 className="text-2xl font-bold mb-6 text-brand-black mt-8">{section.heading}</h3>
-                <div
-                  className="prose prose-lg prose-neutral max-w-none text-gray-600 leading-relaxed rich-text"
-                  dangerouslySetInnerHTML={{ __html: section.content }}
-                />
-              </div>
-            ))}
+            {/* Dynamic Blocks Rendering */}
+            {post.articleSections && post.articleSections.map((block: any, idx: number) => {
+              // BACKWARD COMPATIBILITY: Classic Section { heading, content }
+              if (!block.type && (block.heading || block.content)) {
+                return (
+                  <div key={idx} className="mb-12">
+                    {block.heading && <h3 className="text-2xl font-bold mb-6 text-brand-black mt-8">{block.heading}</h3>}
+                    {block.content && (
+                      <div
+                        className="prose prose-lg prose-neutral max-w-none text-gray-600 leading-relaxed rich-text"
+                        dangerouslySetInnerHTML={{ __html: block.content }}
+                      />
+                    )}
+                  </div>
+                );
+              }
 
+              // NEW BLOCKS
+              switch (block.type) {
+                case 'heading':
+                  const Tag = block.level || 'h2' as keyof JSX.IntrinsicElements;
+                  // Map h1->h2 visually if needed, but keeping actual tag is good for SEO
+                  const textSize = block.level === 'h1' ? 'text-4xl' : block.level === 'h2' ? 'text-3xl' : 'text-2xl';
+                  return (
+                    <Tag key={idx} className={`font-bold text-brand-black mt-12 mb-6 ${textSize}`}>
+                      {block.content}
+                    </Tag>
+                  );
 
+                case 'text':
+                  return (
+                    <div
+                      key={idx}
+                      className="prose prose-lg prose-neutral max-w-none text-gray-600 leading-relaxed rich-text mb-8"
+                      dangerouslySetInnerHTML={{ __html: block.content }}
+                    />
+                  );
+
+                case 'image':
+                  return (
+                    <figure key={idx} className="my-10">
+                      <img src={block.url} alt={block.caption || 'Content Image'} className="w-full rounded-xl shadow-sm border border-gray-100" />
+                      {block.caption && <figcaption className="text-center text-sm text-gray-500 mt-3 italic">{block.caption}</figcaption>}
+                    </figure>
+                  );
+
+                case 'video':
+                  return (
+                    <div key={idx} className="my-10">
+                      <div className="aspect-video rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-50">
+                        <iframe
+                          src={getEmbedUrl(block.url)}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    </div>
+                  );
+
+                case 'embed':
+                  const platform = block.platform || 'link';
+
+                  return (
+                    <div key={idx} className="my-10 flex justify-center w-full">
+                      {['twitter', 'instagram', 'tiktok', 'facebook'].includes(platform) ? (
+                        <div className={`w-full ${platform === 'twitter' ? 'max-w-[500px]' : platform === 'instagram' ? 'max-w-[400px]' : platform === 'tiktok' ? 'max-w-[325px]' : 'max-w-[550px]'}`}>
+                          <SocialEmbed platform={platform} url={block.url || ''} />
+                        </div>
+                      ) : (
+                        <div className="p-6 bg-gray-50 border border-gray-200 rounded-xl overflow-hidden w-full">
+                          <div className="font-bold text-xs uppercase tracking-widest text-gray-400 mb-2">
+                            {block.platform || 'Link'} Embed
+                          </div>
+                          <a href={block.url} target="_blank" rel="noopener noreferrer" className="text-brand-accent font-bold underline break-all">
+                            {block.url}
+                          </a>
+                          <p className="text-xs text-gray-400 mt-2">External content</p>
+                        </div>
+                      )}
+                    </div>
+                  );
+
+                default:
+                  return null;
+              }
+            })}
 
             {/* Tags */}
             <div className="mt-16 pt-8 border-t border-gray-100">
               <div className="flex flex-wrap gap-2">
-                {post.tags && post.tags.map(tag => (
+                {post.tags && post.tags.map((tag: string) => (
                   <span key={tag} className="bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider">
                     #{tag}
                   </span>

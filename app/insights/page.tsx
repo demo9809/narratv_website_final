@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function Insights() {
-  const posts = BLOG_POSTS;
+  const posts = [...BLOG_POSTS].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <>

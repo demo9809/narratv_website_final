@@ -1377,33 +1377,23 @@ export const BLOG_POSTS: BlogPost[] = [
         heading: '5. Common Mistakes Kerala Advertisers Are Making Post-Update',
         content: `
           <p>To build credibility as an advertiser, we must call out the bad habits that worked in 2022 but are failing in 2025.</p>
-          <div class="overflow-x-auto mt-6">
-            <table class="w-full text-left border-collapse border border-gray-200">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="p-3 border-b font-bold">Mistake</th>
-                  <th class="p-3 border-b font-bold">Why it Fails Now</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="p-3 border-b border-r">Over-Optimizing for Cheap Leads</td>
-                  <td class="p-3 border-b">Andromeda rewards "Value." Cheap leads often don't convert, and the AI will optimize for "clickers" not "buyers."</td>
-                </tr>
-                <tr>
-                  <td class="p-3 border-b border-r">Recycling Old Creatives</td>
-                  <td class="p-3 border-b">The system recognizes visual patterns. Old "Festive Offer" templates get lower delivery priority.</td>
-                </tr>
-                <tr>
-                  <td class="p-3 border-b border-r">Blindly Trusting Advantage+</td>
-                  <td class="p-3 border-b">Automation without high-quality creative is just a faster way to waste money. Your creative is the fuel.</td>
-                </tr>
-                <tr>
-                  <td class="p-3 border-b border-r">Ignoring "Post-Click" Experience</td>
-                  <td class="p-3 border-b">If your site is slow, Meta penalizes the ad. The "whole sequence" matters.</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="mt-6 space-y-6">
+            <div>
+              <p class="font-bold text-lg mb-2">Over-Optimizing for Cheap Leads</p>
+              <p>Many Kerala businesses brag about getting leads for ₹10 or ₹20. But how many of those leads actually pick up the phone? Andromeda rewards "Value." If you optimize only for volume, the AI will find you people who click on everything but buy nothing.</p>
+            </div>
+            <div>
+              <p class="font-bold text-lg mb-2">Recycling Old Creatives</p>
+              <p>Using the same "Festive Offer" graphic you used for Onam three years ago? Andromeda recognizes the visual pattern and lowers your delivery priority. The system rewards Creative Diversity.</p>
+            </div>
+            <div>
+              <p class="font-bold text-lg mb-2">Blindly Trusting Advantage+ without Quality Assets</p>
+              <p>Meta’s Advantage+ (automated) campaigns are the "vehicle," but your creative is the "fuel." Many businesses turn on automation but give it boring, static images. Automation without high-quality creative is just a faster way to waste money.</p>
+            </div>
+            <div>
+              <p class="font-bold text-lg mb-2">Ignoring the "Post-Click" Experience</p>
+              <p>Andromeda looks at the whole sequence. If your ad is great but your website takes 10 seconds to load on a mobile connection in Wayanad, Meta will stop showing your ad because the "user experience" is poor.</p>
+            </div>
           </div>
         `
       },

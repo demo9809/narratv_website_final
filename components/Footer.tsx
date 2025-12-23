@@ -1,11 +1,17 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 import { NAV_LINKS } from '../constants';
 import { CONTACT_DETAILS } from '../types';
 import { Button } from './ui';
 
 const Footer: React.FC = () => {
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) return null;
+
   return (
     <footer className="bg-brand-black text-white pt-32 pb-12 border-t border-gray-900">
       <div className="container mx-auto px-6 md:px-12 max-w-7xl">

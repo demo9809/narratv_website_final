@@ -143,16 +143,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
               </div>
             ))}
 
-            {/* Quote Break */}
-            {post.quote && (
-              <div className="my-16 relative">
-                <Quote className="w-12 h-12 text-brand-accent/20 absolute -top-6 -left-6" />
-                <blockquote className="text-3xl font-bold text-brand-black leading-tight relative z-10 pl-6 border-l-4 border-brand-accent">
-                  "{post.quote.text}"
-                </blockquote>
-                <cite className="block mt-4 text-gray-500 font-medium not-italic">— {post.quote.author}</cite>
-              </div>
-            )}
+
 
             {/* Tags */}
             <div className="mt-16 pt-8 border-t border-gray-100">

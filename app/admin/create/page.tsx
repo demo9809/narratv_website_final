@@ -18,6 +18,7 @@ export default function CreateBlogPost() {
     const [loading, setLoading] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [toast, setToast] = useState<{ show: boolean, message: string, type: 'success' | 'error' }>({ show: false, message: '', type: 'success' });
+    const [isCustomCategory, setIsCustomCategory] = useState(false);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -202,12 +203,36 @@ export default function CreateBlogPost() {
                         </div>
                         <div>
                             <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Category</label>
-                            <select name="category" value={formData.category} onChange={handleChange} className="w-full p-4 border-2 border-gray-100 rounded-xl bg-white focus:border-brand-black focus:outline-none appearance-none">
+                            <select
+                                name="category"
+                                value={isCustomCategory ? 'custom' : formData.category}
+                                onChange={(e) => {
+                                    if (e.target.value === 'custom') {
+                                        setIsCustomCategory(true);
+                                        setFormData(prev => ({ ...prev, category: '' }));
+                                    } else {
+                                        setIsCustomCategory(false);
+                                        setFormData(prev => ({ ...prev, category: e.target.value }));
+                                    }
+                                }}
+                                className="w-full p-4 border-2 border-gray-100 rounded-xl bg-white focus:border-brand-black focus:outline-none appearance-none"
+                            >
                                 <option value="Performance">Performance</option>
                                 <option value="Branding">Branding</option>
                                 <option value="Strategy">Strategy</option>
                                 <option value="Video">Video</option>
+                                <option value="custom" className="font-bold text-brand-accent">+ Limitless Custom Category</option>
                             </select>
+                            {isCustomCategory && (
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    placeholder="Enter new category name..."
+                                    value={formData.category}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                                    className="w-full mt-2 p-3 border-2 border-brand-accent/50 rounded-xl bg-brand-accent/5 focus:border-brand-accent focus:outline-none text-brand-black font-bold animate-in fade-in slide-in-from-top-1"
+                                />
+                            )}
                         </div>
                     </div>
 

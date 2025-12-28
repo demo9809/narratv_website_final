@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Trash2, MoveUp, MoveDown, Plus, Image as ImageIcon, Type, Video, Link as LinkIcon, Heading } from 'lucide-react';
+import React from 'react';
+import { Trash2, MoveUp, MoveDown, Plus, Image as ImageIcon, Type, Video, Link as LinkIcon, Heading, Megaphone } from 'lucide-react';
 import RichTextEditor from './RichTextEditor';
 import { supabase } from '../../lib/supabaseClient';
 
-export type BlockType = 'heading' | 'text' | 'image' | 'video' | 'embed';
+export type BlockType = 'heading' | 'text' | 'image' | 'video' | 'embed' | 'cta';
 
 export interface ContentBlock {
     id: string;
@@ -15,6 +15,9 @@ export interface ContentBlock {
     url?: string;
     caption?: string;
     platform?: 'youtube' | 'twitter' | 'instagram' | 'tiktok' | 'facebook';
+    // CTA specific
+    buttonText?: string;
+    style?: 'light' | 'dark';
 }
 
 interface BlockEditorProps {
@@ -30,6 +33,7 @@ export default function BlockEditor({ blocks, setBlocks }: BlockEditorProps) {
             type,
             content: '',
             level: 'h2', // Default for headings
+            style: 'light' // Default for CTA
         };
 
         if (index !== undefined) {
@@ -100,6 +104,9 @@ export default function BlockEditor({ blocks, setBlocks }: BlockEditorProps) {
                 <button type='button' onClick={() => addBlock('embed', index)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-brand-black" title="Insert Embed">
                     <LinkIcon className="w-4 h-4" />
                 </button>
+                <button type='button' onClick={() => addBlock('cta', index)} className="p-2 hover:bg-gray-100 rounded-full text-gray-500 hover:text-brand-black" title="Insert CTA">
+                    <Megaphone className="w-4 h-4" />
+                </button>
             </div>
         </div>
     );
@@ -122,10 +129,12 @@ export default function BlockEditor({ blocks, setBlocks }: BlockEditorProps) {
                 <button type='button' onClick={() => addBlock('embed')} className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 transition-colors">
                     <LinkIcon className="w-4 h-4" /> Embed
                 </button>
+                <button type='button' onClick={() => addBlock('cta')} className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 transition-colors">
+                    <Megaphone className="w-4 h-4" /> CTA
+                </button>
             </div>
 
             <div className="space-y-4 pb-24">
-                {/* Added bottom padding to ensure dropping items at bottom is easy */}
                 {blocks.map((block, index) => (
                     <div key={block.id} className="relative group/block mb-8">
                         {/* Wrapper for hover effect logic */}
@@ -261,6 +270,44 @@ export default function BlockEditor({ blocks, setBlocks }: BlockEditorProps) {
                                 </div>
                             )}
 
+                            {block.type === 'cta' && (
+                                <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div className="flex gap-4">
+                                        <select
+                                            value={block.style || 'light'}
+                                            onChange={(e) => updateBlock(block.id, { style: e.target.value as any })}
+                                            className="p-3 border-2 border-gray-100 rounded-lg font-bold bg-white focus:border-brand-black focus:outline-none w-32"
+                                        >
+                                            <option value="light">Light</option>
+                                            <option value="dark">Dark</option>
+                                        </select>
+                                        <input
+                                            type="text"
+                                            value={block.content || ''}
+                                            onChange={(e) => updateBlock(block.id, { content: e.target.value })}
+                                            placeholder="Headline (e.g., Want to transform your brand?)"
+                                            className="flex-1 p-3 border-2 border-gray-100 rounded-lg font-bold focus:border-brand-black focus:outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="text"
+                                            value={block.buttonText || ''}
+                                            onChange={(e) => updateBlock(block.id, { buttonText: e.target.value })}
+                                            placeholder="Button Text (e.g., Reach out ->)"
+                                            className="flex-1 p-3 border-2 border-gray-100 rounded-lg font-mono text-sm focus:border-brand-black focus:outline-none"
+                                        />
+                                        <input
+                                            type="text"
+                                            value={block.url || ''}
+                                            onChange={(e) => updateBlock(block.id, { url: e.target.value })}
+                                            placeholder="Button URL (e.g., /contact)"
+                                            className="flex-1 p-3 border-2 border-gray-100 rounded-lg font-mono text-sm focus:border-brand-black focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
                         </div>
 
                         {/* Quick Insert Button Below Block */}
@@ -285,6 +332,9 @@ export default function BlockEditor({ blocks, setBlocks }: BlockEditorProps) {
                         </button>
                         <button type='button' onClick={() => addBlock('embed')} className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-100 hover:border-brand-black hover:shadow-md rounded-xl font-bold text-gray-700 transition-all">
                             <LinkIcon className="w-5 h-5" /> Embed
+                        </button>
+                        <button type='button' onClick={() => addBlock('cta')} className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-100 hover:border-brand-black hover:shadow-md rounded-xl font-bold text-gray-700 transition-all">
+                            <Megaphone className="w-5 h-5" /> CTA
                         </button>
                     </div>
                 </div>

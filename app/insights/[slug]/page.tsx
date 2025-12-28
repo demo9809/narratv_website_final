@@ -6,6 +6,8 @@ import { getPostBySlug } from '../../../lib/blogService';
 import type { ContentBlock } from '../../../components/admin/BlockEditor';
 import { SocialEmbed } from '../../../components/SocialEmbeds';
 import VideoPlayer from '../../../components/VideoPlayer';
+import ReadingProgress from '../../../components/ReadingProgress';
+import TableOfContents from '../../../components/TableOfContents';
 
 // Force dynamic rendering for fresh content
 export const dynamic = 'force-dynamic';
@@ -51,6 +53,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
 
   return (
     <>
+      <ReadingProgress />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
@@ -118,6 +121,9 @@ export default async function InsightDetail({ params }: { params: { slug: string
                   <Button variant="primary" mode="light" className="w-full text-sm">Book a Call</Button>
                 </Link>
               </div>
+
+              {/* Table of Contents */}
+              <TableOfContents blocks={post.articleSections || []} />
             </div>
           </aside>
 
@@ -206,6 +212,18 @@ export default async function InsightDetail({ params }: { params: { slug: string
                     </div>
                   );
 
+                case 'cta':
+                  return (
+                    <div key={idx} className={`my-12 p-8 rounded-xl ${block.style === 'dark' ? 'bg-brand-black text-white' : 'bg-brand-cream text-brand-black border border-brand-accent/20'} text-center md:text-left`}>
+                      <h3 className="text-2xl font-bold mb-6">{block.content}</h3>
+                      <Link href={block.url || '#'}>
+                        <Button variant={block.style === 'dark' ? 'primary' : 'primary'} className="w-full md:w-auto">
+                          {block.buttonText || 'Learn More'} <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </Link>
+                    </div>
+                  );
+
                 default:
                   return null;
               }
@@ -223,8 +241,38 @@ export default async function InsightDetail({ params }: { params: { slug: string
             </div>
 
           </article>
-
         </div>
+
+        {/* 3. FOOTER CTA - High Impact */}
+        <div className="mt-24 mb-12 bg-brand-black rounded-2xl p-12 text-center relative overflow-hidden">
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+              Ready to transform your digital strategy?
+            </h2>
+            <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+              Join the leading brands working with Narratv. Let's discuss how we can help you achieve your goals.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/contact">
+                <Button variant="primary" className="w-full sm:w-auto min-w-[200px] text-lg py-6">
+                  Get a Quote
+                </Button>
+              </Link>
+              <Link href="/work">
+                <Button variant="outline" className="w-full sm:w-auto min-w-[200px] text-lg py-6 border-white/20 text-white hover:bg-white/10">
+                  View Our Work
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Decorative background elements */}
+          <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+            <div className="absolute top-[-50%] left-[-10%] w-[50%] h-[100%] bg-brand-accent/20 blur-[100px] rounded-full" />
+            <div className="absolute bottom-[-50%] right-[-10%] w-[50%] h-[100%] bg-blue-600/20 blur-[100px] rounded-full" />
+          </div>
+        </div>
+
       </Section>
     </>
   );

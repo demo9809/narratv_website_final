@@ -69,7 +69,7 @@ export default function LocationPage({ params }: { params: { slug: string } }) {
                         </div>
                         <div>
                             <Link href="#contact">
-                                <Button variant="primary" mode="light" className="whitespace-nowrap">
+                                <Button variant="primary" mode="light" className="whitespace-nowrap !bg-brand-accent !text-white !border-transparent hover:!bg-brand-accent">
                                     {location.ctaText}
                                 </Button>
                             </Link>
@@ -140,7 +140,7 @@ export default function LocationPage({ params }: { params: { slug: string } }) {
                     <h2 className="text-3xl md:text-5xl font-bold mb-8">Let's build your legacy in {location.name}.</h2>
                     <div className="flex justify-center gap-4">
                         <Link href="/contact">
-                            <Button variant="primary" mode="dark">Start a Project</Button>
+                            <Button variant="primary" mode="dark" className="!bg-brand-accent !text-white !border-transparent hover:!bg-brand-accent">Start a Project</Button>
                         </Link>
                         <Link href="/services">
                             <Button variant="outline" mode="dark">Explore Services</Button>

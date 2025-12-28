@@ -118,7 +118,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
                 <h4 className="font-bold text-xl mb-4">Need help with this?</h4>
                 <p className="text-gray-400 text-sm mb-6">Our strategy team in Kerala is ready to help you implement these insights.</p>
                 <Link href="/contact">
-                  <Button variant="primary" mode="light" className="w-full text-sm">Book a Call</Button>
+                  <Button variant="primary" mode="light" className="w-full text-sm !bg-brand-accent !text-white !border-transparent hover:!bg-brand-accent">Book a Call</Button>
                 </Link>
               </div>
 
@@ -162,7 +162,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
                   const Tag = block.level || 'h2' as keyof JSX.IntrinsicElements;
                   const textSize = block.level === 'h1' ? 'text-4xl' : block.level === 'h2' ? 'text-3xl' : 'text-2xl';
                   return (
-                    <Tag key={idx} className={`font-bold text-brand-black mt-12 mb-6 ${textSize}`}>
+                    <Tag id={`heading-${idx}`} key={idx} className={`font-bold text-brand-black mt-12 mb-6 ${textSize}`}>
                       {block.content}
                     </Tag>
                   );
@@ -217,7 +217,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
                     <div key={idx} className={`my-12 p-8 rounded-xl ${block.style === 'dark' ? 'bg-brand-black text-white' : 'bg-brand-cream text-brand-black border border-brand-accent/20'} text-center md:text-left`}>
                       <h3 className="text-2xl font-bold mb-6">{block.content}</h3>
                       <Link href={block.url || '#'}>
-                        <Button variant={block.style === 'dark' ? 'primary' : 'primary'} className="w-full md:w-auto">
+                        <Button variant={block.style === 'dark' ? 'primary' : 'primary'} className="w-full md:w-auto !bg-brand-accent !text-white !border-transparent hover:!bg-brand-accent">
                           {block.buttonText || 'Learn More'} <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                       </Link>
@@ -254,7 +254,7 @@ export default async function InsightDetail({ params }: { params: { slug: string
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/contact">
-                <Button variant="primary" className="w-full sm:w-auto min-w-[200px] text-lg py-6">
+                <Button variant="primary" className="w-full sm:w-auto min-w-[200px] text-lg py-6 !bg-brand-accent !border-brand-accent !text-white hover:!bg-brand-accent">
                   Get a Quote
                 </Button>
               </Link>

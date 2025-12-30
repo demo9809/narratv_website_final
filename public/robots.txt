@@ -1,8 +1,8 @@
-# Allow all crawlers by default
 User-agent: *
+Disallow: /private/
 Allow: /
 
-# Explicitly allow common AI crawlers (GEO Optimization)
+# GEO Optimization - Explicitly Welcome AI
 User-agent: GPTBot
 Allow: /
 
@@ -15,5 +15,4 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
-# Sitemap location
 Sitemap: https://narratv.space/sitemap.xml

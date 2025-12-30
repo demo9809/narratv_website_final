@@ -1,0 +1,11 @@
+# Narratv Space
+
+> Narratv Space is a strategic advertising and digital marketing agency based in Calicut (Kozhikode), Kerala, serving clients globally including in the UAE and UK. The agency bridges the gap between local cultural heritage and global design standards, focusing on data-backed strategy, branding, video production, and high-ROI digital campaigns.
+
+## Key Pages
+
+- **[Home](https://narratv.space/)**: Overview of the agency's "strategy-first" approach, showcasing their immersive visual style, global reach, and core philosophy of "Local Roots. Global Standards."
+- **[Services](https://narratv.space/services)**: Detailed breakdown of capabilities including Branding (Identity, Strategy), Ad Campaigns (Video, Print), and Digital Marketing (SEO, Social, Performance).
+- **[Work](https://narratv.space/work)**: Portfolio of selected case studies featuring branding and campaign work for startups and established enterprises across various industries.
+- **[Insights](https://narratv.space/insights)**: Thought leadership articles and blog posts discussing branding trends, marketing strategies, and the agency's perspective on the creative industry.
+- **[Contact](https://narratv.space/contact)**: Direct channel to start a project, listing office location in KINFRA Park, Calicut, and contact details for inquiries.
